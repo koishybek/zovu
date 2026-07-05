@@ -1,10 +1,13 @@
 // Форматтеры. Тенге — целые (без тиынов), пробел-разделитель тысяч (₸ после числа).
 
+// U+202F — узкая неразрывная шпация: «5 000 ₸» не переносится и не разрывается.
+const NNBSP = ' ';
+
 export function formatTenge(amount: number): string {
   const sign = amount < 0 ? '−' : '';
   const abs = Math.abs(Math.round(amount));
-  const grouped = abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-  return `${sign}${grouped} ₸`;
+  const grouped = abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, NNBSP);
+  return `${sign}${grouped}${NNBSP}₸`;
 }
 
 export function formatDistanceKm(km: number): string {

@@ -1,0 +1,17 @@
+.row {
+  display: inline-flex;
+  gap: var(--s-1);
+}
+
+.star {
+  display: grid;
+  place-items: center;
+  padding: 2px;
+  transition: transform var(--m-fast) var(--ease-out);
+  &:not(:disabled):active {
+    transform: scale(0.85);
+  }
+  &:disabled {
+    cursor: default;
+  }
+}

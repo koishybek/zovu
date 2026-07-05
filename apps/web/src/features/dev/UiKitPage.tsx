@@ -19,10 +19,15 @@ import {
   ProgressBar,
   Switch,
   EmptyState,
+  Rating,
+  Slider,
+  RadioRow,
+  CheckboxRow,
+  Celebration,
   Icon,
 } from '../../components/ui';
 import { setLang, getLang, type Lang } from '../../i18n';
-import { statusPill } from '../../theme/tokens';
+import { formatDistanceKm } from '../../lib/format';
 import styles from './UiKitPage.module.scss';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -34,7 +39,18 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-/** /dev/uikit — витрина UI-кита (M1). Не в проде, только для сверки со standalone. */
+// Русские подписи статус-пиллов (то, что видит юзер). Ключи enum — только в коде.
+const PILLS: { kind: 'new' | 'inProgress' | 'waiting' | 'review' | 'accepted' | 'done' | 'notSelected'; key: string }[] = [
+  { kind: 'new', key: 'status.new' },
+  { kind: 'inProgress', key: 'status.inProgress' },
+  { kind: 'waiting', key: 'status.waiting' },
+  { kind: 'review', key: 'status.review' },
+  { kind: 'accepted', key: 'status.accepted' },
+  { kind: 'done', key: 'status.done' },
+  { kind: 'notSelected', key: 'status.notSelected' },
+];
+
+/** /dev/uikit — витрина UI-кита. Не в проде, только для сверки со standalone. */
 export function UiKitPage() {
   const { t, i18n } = useTranslation();
   const [otp, setOtp] = useState('12');
@@ -44,6 +60,10 @@ export function UiKitPage() {
   const [chip, setChip] = useState('new');
   const [sw, setSw] = useState(true);
   const [sheet, setSheet] = useState(false);
+  const [stars, setStars] = useState(4);
+  const [dist, setDist] = useState(15);
+  const [pay, setPay] = useState('kaspi');
+  const [cats, setCats] = useState<string[]>(['Электрика']);
 
   return (
     <Screen>
@@ -78,21 +98,16 @@ export function UiKitPage() {
         </Button>
       </Section>
 
-      <Section title="Status pills">
+      <Section title="Статус-пиллы (русские подписи)">
         <div className={styles.row}>
-          {Object.entries(statusPill).map(([k, c]) => (
-            <span
-              key={k}
-              className={styles.pillDemo}
-              style={{ background: c.bg, color: c.fg }}
-            >
-              {k}
-            </span>
+          {PILLS.map((p) => (
+            <StatusPill key={p.kind} kind={p.kind} label={t(p.key as never)} />
           ))}
         </div>
+        <div className={styles.hint}>«Принят» soft ↔ «Выполнен» fill; «Ожидание» soft ↔ «На рассмотрении» fill.</div>
       </Section>
 
-      <Section title="Chips">
+      <Section title="Chips (тап-таргет 44pt)">
         <div className={styles.row}>
           <Chip selected={chip === 'new'} onClick={() => setChip('new')} count={4}>
             {t('specialist.filterNew')}
@@ -128,40 +143,62 @@ export function UiKitPage() {
           <div className={styles.cardAddr}>ул. Абая, 150</div>
           <div className={styles.cardBottom}>
             <Price amount={5000} size="md" />
-            <span className={styles.dist}>1.2 км</span>
+            <span className={styles.dist}>{formatDistanceKm(1.2)}</span>
           </div>
         </Card>
-        <Card selected pressable>
-          <div className={styles.cardRow}>
-            <Avatar name="Асхат Нурланов" size={44} />
-            <div style={{ flex: 1 }}>
-              <div className={styles.cardTitle}>Асхат Нурланов</div>
-              <DiplomaBadge label={t('specialist.diplomaBadge')} />
-            </div>
-            <Price amount={4750} size="sm" />
-          </div>
-        </Card>
+      </Section>
+
+      <Section title="Card отклика — обычная и выбранная">
+        <BidCard selected={false} />
+        <BidCard selected />
       </Section>
 
       <Section title="Inputs">
         <TextField label={t('onboarding.fullName')} placeholder="Иван Иванов" required />
-        <TextField
-          label={t('auth.phoneTitle')}
-          prefix="+7"
-          placeholder="701 234-56-78"
-          inputMode="tel"
+        <TextField label={t('auth.phoneTitle')} prefix="+7" placeholder="701 234-56-78" inputMode="tel" />
+        <TextField label="С ошибкой" defaultValue="abc" error={t('auth.phoneInvalid')} />
+        <TextArea
+          label={t('onboarding.about')}
+          maxLength={500}
+          value={about}
+          placeholder="Расскажите о себе…"
+          onChange={(e) => setAbout(e.target.value)}
         />
-        <TextField label="С ошибкой" defaultValue="abc" error="Введите корректный номер" />
-        <TextArea label={t('onboarding.about')} maxLength={500} value={about} onChange={(e) => setAbout(e.target.value)} />
       </Section>
 
-      <Section title="OTP">
-        <OtpInput value={otp} onChange={setOtp} error={otpErr} />
-        <div className={styles.row}>
-          <Button fullWidth={false} variant="secondary" onClick={() => setOtpErr((v) => !v)}>
-            Toggle error
-          </Button>
+      <Section title="OTP — все состояния">
+        <OtpStatesDemo />
+        <div style={{ marginTop: 12 }}>
+          <div className={styles.hint}>Интерактивно (ввод → bounce, «Toggle error» → shake):</div>
+          <OtpInput value={otp} onChange={setOtp} error={otpErr} />
+          <div className={styles.row} style={{ marginTop: 12 }}>
+            <Button fullWidth={false} variant="secondary" onClick={() => setOtpErr((v) => !v)}>
+              Toggle error
+            </Button>
+          </div>
         </div>
+      </Section>
+
+      <Section title="Rating (S-27)">
+        <Rating value={stars} onChange={setStars} />
+        <div className={styles.muted}>Выбрано: {stars}★ · read-only: <Rating value={4} size={20} readOnly /></div>
+      </Section>
+
+      <Section title="Slider (S-21 «Расстояние»)">
+        <Slider value={dist} min={1} max={50} onChange={setDist} label={t('client.distance')} formatValue={(v) => formatDistanceKm(v)} />
+      </Section>
+
+      <Section title="Radio (способ оплаты)">
+        <RadioRow checked={pay === 'kaspi'} onChange={() => setPay('kaspi')}>{t('specialist.kaspi')}</RadioRow>
+        <RadioRow checked={pay === 'card'} onChange={() => setPay('card')}>{t('specialist.bankCard')}</RadioRow>
+      </Section>
+
+      <Section title="Checkbox (мультивыбор категорий)">
+        {['Электрика', 'Сантехника', 'Уборка'].map((c) => (
+          <CheckboxRow key={c} checked={cats.includes(c)} onChange={() => setCats((v) => (v.includes(c) ? v.filter((x) => x !== c) : [...v, c]))}>
+            {c}
+          </CheckboxRow>
+        ))}
       </Section>
 
       <Section title="Progress (онбординг)">
@@ -179,6 +216,7 @@ export function UiKitPage() {
           </CountBadge>
           <Avatar name="Иван Петров" size={48} />
           <Avatar size={48} />
+          <DiplomaBadge label={t('specialist.diplomaBadge')} />
         </div>
       </Section>
 
@@ -195,18 +233,62 @@ export function UiKitPage() {
         </BottomSheet>
       </Section>
 
+      <Section title="Success (S-08 / S-26)">
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, padding: '16px 0' }}>
+          <Celebration />
+          <div style={{ fontSize: 20, fontWeight: 700 }}>{t('onboarding.verificationPassed')}</div>
+        </div>
+      </Section>
+
       <Section title="Empty state">
         <EmptyState
           icon="orders"
           title="Заказов пока нет"
           hint="Загляните на карту — там могут быть заказы рядом"
-          action={
-            <Button fullWidth={false} variant="secondary">
-              {t('specialist.viewMap')}
-            </Button>
-          }
+          action={<Button fullWidth={false} variant="secondary">{t('specialist.viewMap')}</Button>}
         />
       </Section>
     </Screen>
+  );
+}
+
+function BidCard({ selected }: { selected: boolean }) {
+  const { t } = useTranslation();
+  return (
+    <Card selected={selected} pressable>
+      <div className={styles.cardRow}>
+        <Avatar name="Асхат Нурланов" size={44} />
+        <div style={{ flex: 1 }}>
+          <div className={styles.cardTitle}>Асхат Нурланов</div>
+          <div className={styles.bidMeta}>
+            <Rating value={5} size={14} readOnly />
+            <span className={styles.dist}>· {t('specialist.diplomaBadge')}</span>
+          </div>
+        </div>
+        <Price amount={4750} size="sm" />
+      </div>
+    </Card>
+  );
+}
+
+// Статичная витрина 4 состояний OTP-ячейки (без клика).
+function OtpStatesDemo() {
+  const cells: { label: string; content: string; cls: string }[] = [
+    { label: 'Пустая', content: '–', cls: styles.otpEmpty },
+    { label: 'Активная', content: '', cls: styles.otpActive },
+    { label: 'Заполнена', content: '5', cls: styles.otpFilled },
+    { label: 'Ошибка', content: '3', cls: styles.otpError },
+  ];
+  return (
+    <div className={styles.otpStates}>
+      {cells.map((c) => (
+        <div key={c.label} className={styles.otpCol}>
+          <div className={[styles.otpCell, c.cls].join(' ')}>
+            {c.content || <span className={styles.caret} />}
+          </div>
+          <span className={styles.otpLabel}>{c.label}</span>
+        </div>
+      ))}
+    </div>
   );
 }

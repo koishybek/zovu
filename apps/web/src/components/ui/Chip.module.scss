@@ -3,8 +3,10 @@
 .chip {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--s-2);
-  padding: 9px 14px;
+  min-height: 44px; // iOS-минимум тап-таргета
+  padding: 0 14px;
   border-radius: var(--r-chip);
   background: #f2f3f6;
   color: var(--c-ink-muted-alt);

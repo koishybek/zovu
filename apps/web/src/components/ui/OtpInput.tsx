@@ -61,6 +61,7 @@ export function OtpInput({ length = 4, value, onChange, error, autoFocus }: OtpI
           className={[styles.cell, value[i] ? styles.filled : '', error ? styles.error : ''].join(' ')}
           inputMode="numeric"
           maxLength={1}
+          placeholder="–"
           value={value[i] ?? ''}
           onChange={(e) => setDigit(i, e.target.value)}
           onKeyDown={(e) => onKeyDown(i, e)}

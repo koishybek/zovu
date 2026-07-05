@@ -59,6 +59,8 @@
 | Ожидает подтверждения | `warningText #B45309` | `warningSoft #FBEFDD` | Завершение S-26 (ЗВ-01…ЗВ-04) |
 | Выполнен / Выполнен (автозакрытие) | `success #16A34A` | `successSoft #E7F6EC` | Истории обеих ролей (ЗВ-02, ЗВ-03) |
 | Не выбран | `inkSecondary #6B7280` | `divider #F0F1F4` | Каскадный отказ после принятия чужого отклика |
+
+**Разведение пар одного цвета (M1-polish).** Чтобы статусы одного цвета различались в ленте, пары разведены soft ↔ fill: пассивное/раннее состояние — soft-фон, активное/финальное — заливка. Итог: Новый → primary soft, **В работе → primary fill (белый текст)**; Ожидание ответа → warning soft, **На рассмотрении → тёмный янтарь `#B45309` fill (белый текст)**; Принят → success soft, **Выполнен → success fill (белый текст)**; Не выбран/Отменён → gray soft. Реализовано в `statusPill`-токенах.
 | Отменён | `inkSecondary #6B7280` | `divider #F0F1F4` | Отменённые заказы (ЗВ-07) |
 | На рассмотрении | `warningText #B45309` | `warningSoft #FBEFDD` | Спор/тикет по заказу (ЗВ-06) |
 | Отклик отправлен | TODO(M1) | TODO(M1) | История специалиста (ИС-02); в standalone и промпте цвет не зафиксирован — по логике = «Ожидание ответа» |
@@ -195,8 +197,8 @@ flowchart TD
 ## 14. Дизайн-система в коде (майлстоун M1)
 
 - Токены: `src/theme/tokens.ts` (+ CSS-переменные `src/styles/tokens.scss`) — **создан в M0**.
-- UI-kit по чеклисту канваса «Компоненты»: кнопки, инпуты, чипы/бейджи, статус-пиллы, карточки, bottom sheets, OTP-поле, progress bar.
+- UI-kit `src/components/ui/`: Button, TextField/TextArea, OtpInput (плейсхолдер «–», bounce/shake), StatusPill, Chip (тап-таргет ≥44pt), Card, Price (узкая неразрывная шпация U+202F в валюте), Badge, Avatar, SegmentedControl (44pt), BottomSheet, ProgressBar, TabBar, Switch, EmptyState, **Rating (5★, S-27), Slider (S-21), RadioRow/CheckboxRow (S-13/S-16), Celebration (confetti-burst, S-08/S-26)**, Screen, AppBar, Icon.
 - Два таббар-шелла (заказчик: Заказы/Отклики/Чаты/Профиль; специалист: Карта/Заказы/Отклики/Профиль).
-- Скрытый экран **`/dev/uikit`** со всеми компонентами и состояниями (empty/loading/error из канваса «Состояния»).
+- Скрытый экран **`/dev/uikit`** со всеми компонентами и состояниями (в т.ч. 4 состояния OTP-ячейки статично, карточка отклика обычная+выбранная, статус-пиллы русскими подписями).
 - Каждый экран React (PWA) должен визуально совпадать со своим аналогом в standalone.
 - Анимации/haptics/empty states полируются в M8 (см. [10-status.md](10-status.md)).

@@ -38,15 +38,19 @@ export const color = {
   dangerSoft: '#FDECEC',
 } as const;
 
-/** Статус-пиллы: фон / текст / (опц.) бордер. Канон — секция «СТАТУС-ПИЛЛЫ» standalone. */
+/**
+ * Статус-пиллы: фон / текст. Канон — секция «СТАТУС-ПИЛЛЫ» standalone.
+ * Пары одного цвета разведены soft ↔ fill, чтобы различаться в ленте:
+ * пассивное/раннее состояние — soft-фон; активное/финальное — заливка.
+ */
 export const statusPill = {
-  new: { bg: color.primarySoft, fg: color.primary }, // Новый
-  waiting: { bg: color.warningSoft, fg: color.warningInk }, // Ожидание ответа
-  accepted: { bg: color.successSoft, fg: color.success }, // Принят
-  done: { bg: color.successSoft, fg: color.success }, // Выполнен
-  notSelected: { bg: color.divider, fg: color.inkSecondary }, // Не выбран / Отменён
-  inProgress: { bg: color.primarySoft, fg: color.primary }, // В работе
-  review: { bg: color.warningSoft, fg: color.warningInk }, // На рассмотрении
+  new: { bg: color.primarySoft, fg: color.primary }, // Новый — primary soft
+  inProgress: { bg: color.primary, fg: '#FFFFFF' }, // В работе — primary fill
+  waiting: { bg: color.warningSoft, fg: color.warningInk }, // Ожидание ответа — warning soft
+  review: { bg: color.warningInk, fg: '#FFFFFF' }, // На рассмотрении — тёмный янтарь fill
+  accepted: { bg: color.successSoft, fg: color.success }, // Принят — success soft
+  done: { bg: color.success, fg: '#FFFFFF' }, // Выполнен — success fill
+  notSelected: { bg: color.divider, fg: color.inkSecondary }, // Не выбран / Отменён — gray soft
 } as const;
 
 /** Радиусы (px). Точные значения standalone: чипы 999, CTA 15, карточки 18, инпуты 13, OTP 14, шиты 22. */

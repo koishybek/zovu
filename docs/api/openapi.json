@@ -256,6 +256,46 @@
           "categories"
         ]
       }
+    },
+    "/v1/specialist/verification": {
+      "post": {
+        "operationId": "VerificationController_submitVerification",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "S-06: селфи + селфи с документом (В-06)",
+        "tags": [
+          "specialist"
+        ]
+      }
+    },
+    "/v1/specialist/diploma": {
+      "post": {
+        "operationId": "VerificationController_submitDiploma",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "S-05a: диплом jpg/png/pdf ≤10МБ (ДС-*, НФ-09)",
+        "tags": [
+          "specialist"
+        ]
+      }
     }
   },
   "info": {

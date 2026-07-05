@@ -3,6 +3,17 @@ import { DeviceFrame } from '../app/shells/DeviceFrame';
 import { RoleShell } from '../app/shells/RoleShell';
 import { ScreenStub } from '../components/ScreenStub';
 import { UiKitPage } from '../features/dev/UiKitPage';
+import { RootRedirect } from './RootRedirect';
+import { RequireAuth } from './RequireAuth';
+import { WelcomeScreen } from '../features/auth/WelcomeScreen';
+import { PhoneScreen } from '../features/auth/PhoneScreen';
+import { OtpScreen } from '../features/auth/OtpScreen';
+import { RoleScreen } from '../features/auth/RoleScreen';
+import { ClientNameScreen } from '../features/auth/ClientNameScreen';
+import { SpecialistProfileScreen } from '../features/onboarding/SpecialistProfileScreen';
+import { VerificationScreen } from '../features/onboarding/VerificationScreen';
+import { PendingScreen } from '../features/onboarding/PendingScreen';
+import { SuccessScreen } from '../features/onboarding/SuccessScreen';
 import { routes, SPECIALIST_TABS, CLIENT_TABS } from './routes';
 
 // M1: экраны — заглушки (ScreenStub), реализация в M3–M7. Пути — канон docs/05-screens.md.
@@ -15,22 +26,26 @@ export const router = createBrowserRouter([
     path: '/',
     element: <DeviceFrame />,
     children: [
-      { index: true, element: <Navigate to={routes.welcome} replace /> },
+      { index: true, element: <RootRedirect /> },
 
       // Онбординг и auth (S-01…S-08) — вне таббара
-      { path: routes.welcome, element: stub('S-01', 'Welcome', 'M3') },
-      { path: routes.phone, element: stub('S-02', 'Ввод номера', 'M3') },
-      { path: routes.otp, element: stub('S-03', 'OTP', 'M3') },
-      { path: routes.role, element: stub('S-04', 'Выбор роли', 'M3') },
-      { path: routes.spProfileForm, element: stub('S-05', 'Анкета специалиста', 'M3') },
-      { path: routes.spVerification, element: stub('S-06', 'Верификация', 'M3') },
-      { path: routes.spPending, element: stub('S-07', 'Проверяем данные', 'M3') },
-      { path: routes.spSuccess, element: stub('S-08', 'Верификация пройдена', 'M3') },
-      { path: routes.clientName, element: stub('—', 'ФИО заказчика', 'M3') },
+      { path: routes.welcome, element: <WelcomeScreen /> },
+      { path: routes.phone, element: <PhoneScreen /> },
+      { path: routes.otp, element: <OtpScreen /> },
+      { path: routes.role, element: <RequireAuth><RoleScreen /></RequireAuth> },
+      { path: routes.spProfileForm, element: <RequireAuth><SpecialistProfileScreen /></RequireAuth> },
+      { path: routes.spVerification, element: <RequireAuth><VerificationScreen /></RequireAuth> },
+      { path: routes.spPending, element: <RequireAuth><PendingScreen /></RequireAuth> },
+      { path: routes.spSuccess, element: <RequireAuth><SuccessScreen /></RequireAuth> },
+      { path: routes.clientName, element: <RequireAuth><ClientNameScreen /></RequireAuth> },
 
       // Специалист (shell с таббаром, S-10…S-18)
       {
-        element: <RoleShell tabs={SPECIALIST_TABS} />,
+        element: (
+          <RequireAuth>
+            <RoleShell tabs={SPECIALIST_TABS} />
+          </RequireAuth>
+        ),
         children: [
           { path: routes.spMap, element: stub('S-10', 'Карта специалиста', 'M4') },
           { path: routes.spOrders, element: stub('S-11', 'Лента (Колода/Список/Карта)', 'M4') },
@@ -47,7 +62,11 @@ export const router = createBrowserRouter([
 
       // Заказчик (shell с таббаром, S-20…S-27)
       {
-        element: <RoleShell tabs={CLIENT_TABS} />,
+        element: (
+          <RequireAuth>
+            <RoleShell tabs={CLIENT_TABS} />
+          </RequireAuth>
+        ),
         children: [
           { path: routes.clientOrders, element: stub('—', 'Мои заказы', 'M4') },
           { path: routes.clientBids, element: stub('S-23', 'Отклики', 'M4') },

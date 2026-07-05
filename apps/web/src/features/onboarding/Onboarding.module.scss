@@ -1,0 +1,113 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  margin-top: var(--s-5);
+}
+
+.fieldLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-ink-muted-alt);
+  margin-bottom: var(--s-2);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.uploads {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  margin-top: var(--s-5);
+}
+
+.uploadCard {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-4);
+  border-radius: var(--r-card);
+  background: var(--c-surface);
+  cursor: pointer;
+  transition: background var(--m-fast) var(--ease-out);
+}
+.uploadCard:active {
+  background: var(--c-divider);
+}
+.uploadCard.filled {
+  background: var(--c-success-soft);
+}
+
+.uploadIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--c-primary-soft);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.uploadIcon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.filled .uploadIcon {
+  background: var(--c-success);
+}
+
+.uploadText {
+  flex: 1;
+}
+.uploadTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--c-ink);
+}
+.uploadHint {
+  font-size: 13px;
+  color: var(--c-ink-secondary);
+}
+
+.hidden {
+  display: none;
+}
+
+.pending {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--s-4);
+  padding: var(--s-8) var(--s-5);
+}
+
+.illo {
+  width: 120px;
+  height: 120px;
+  border-radius: 999px;
+  background: linear-gradient(160deg, #dce4fb, #c9d6f7);
+  display: grid;
+  place-items: center;
+}
+.illo.success {
+  background: linear-gradient(160deg, #3fd37a, #22c55e);
+}
+
+.pendingTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--c-ink);
+}
+.pendingHint {
+  font-size: 15px;
+  color: var(--c-ink-secondary);
+  max-width: 300px;
+}

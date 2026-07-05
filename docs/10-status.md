@@ -17,7 +17,7 @@
 | M0 | **Phase 0: `docs/` вики + `CLAUDE.md` + скелет монорепо + docker-compose (postgres+postgis, minio) + `.env.example`** | ✅ done | Вики (12 страниц) написана и проверена двумя критиками, design-ассеты латиницей, скелет монорепо (apps/api, apps/admin, apps/web) собран, `docker-compose`/`.env.example`/`CLAUDE.md`/`README` на месте, `apps/web` собирается. |
 | M1 | **Дизайн-система React** | ✅ done | Дизайн-токены (`tokens.ts` + `tokens.scss`), UI-kit из 18 компонентов (Button, TextField/TextArea, OtpInput, StatusPill, Chip, Card, Price, Badge, Avatar, SegmentedControl, BottomSheet, ProgressBar, TabBar, Switch, EmptyState, Screen, AppBar, Icon) — значения сверены с точной спецификацией standalone, два таббар-шелла (специалист/заказчик) + `DeviceFrame`, каркас React Router со всеми S-роутами S-01…S-35 (заглушки `ScreenStub`), i18next ru/kk (типобезопасный), витрина `/dev/uikit`. `npm run build` зелёный. |
 | M2 | **API-ядро** | ✅ done | Prisma-схема (18 сущностей + AdminAudit) + миграции; гео-фоллбэк `cube`/`earthdistance` вместо PostGIS (ADR-005, проверено на локальном PG17 :5434); auth OTP+JWT с refresh-ротацией (НФ-05); users/me/roles + анкета специалиста; категории + seed (12); интеграции за интерфейсами (SMS/moderator/storage/push/payment — dev-моки); Swagger + экспорт `docs/api/openapi.json`. Smoke-тест всего auth-флоу прошёл вживую; 10 jest-тестов зелёные. |
-| M3 | **Онбординг** | ⏳ pending | S-01…S-08 end-to-end, загрузка файлов в MinIO, очередь верификации в админке, `AUTO_APPROVE_VERIFICATION` для dev, дипломы (ДС-*). |
+| M3 | **Онбординг** | ✅ done | S-01…S-08 end-to-end на реальном API: Welcome/Phone(+7 маска)/OTP(таймер 45с, авто-верификация)/Role/Анкета(категории, прогресс)/Верификация(2 файла)/Pending(polling)/Success(haptic). web→API слой (axios + refresh-интерцептор, Zustand auth-стор, TanStack Query). Backend: verification/diploma (multipart, Storage local-адаптер, приватный бакет НФ-09), `AUTO_APPROVE_VERIFICATION` (~5с). Guards роутов (RequireAuth, RootRedirect по роли). E2E specialist-флоу проверен вживую (профиль→загрузка→авто-approve). Очередь верификации в админке — TODO(M7). |
 | M4 | **Заказы** | ⏳ pending | Создание с фото и гео, PostGIS-выдача feed/map (фильтры Ф-02…Ф-05, блок «Новые» С-03/С-04), колода со свайпами, карточка заказа, отклики + каскад «Не выбран», экраны S-22…S-24. |
 | M5 | **Деньги** | ⏳ pending | Транзакции, cron подписки (Б-03…Б-05, + `subscriptionFreeUntil`), пополнение-мок, блокировки S-17 (БП-02/БП-06), активация БП-07, комиссия при принятии (ADR-001), экраны S-15/S-16, streak. |
 | M6 | **Сделка** | ⏳ pending | Чат WS + read-статусы (Ч-*), уведомления (лента + бейдж, НФ-06), завершение с таймерами 24 ч (ЗВ-02/ЗВ-03/ЗВ-04), отзывы + стоп-словарь + жалобы (О-*, ОМ-*), S-25…S-27, S-30, S-32, S-33. |
@@ -28,7 +28,7 @@
 flowchart LR
     M0["M0 — Phase 0<br/>✅ done"] --> M1["M1 — Дизайн-система React<br/>✅ done"]
     M1 --> M2["M2 — API-ядро<br/>✅ done"]
-    M2 --> M3["M3 — Онбординг"]
+    M2 --> M3["M3 — Онбординг<br/>✅ done"]
     M3 --> M4["M4 — Заказы"]
     M4 --> M5["M5 — Деньги"]
     M5 --> M6["M6 — Сделка"]
@@ -37,6 +37,7 @@ flowchart LR
     style M0 fill:#EEF1FF,stroke:#4C6FFF,color:#141824
     style M1 fill:#EEF1FF,stroke:#4C6FFF,color:#141824
     style M2 fill:#EEF1FF,stroke:#4C6FFF,color:#141824
+    style M3 fill:#EEF1FF,stroke:#4C6FFF,color:#141824
 ```
 
 **Гейт выхода из каждого M** (ZOVU_PROMPT.md §10): `apps/web` собирается (`npm run build` без ошибок) + ESLint/Prettier, jest-тесты бизнес-правил зелёные, обновлён этот файл, один conventional commit (пример: `feat(m4): orders, deck & bids`).
@@ -60,9 +61,9 @@ flowchart LR
 
 ## 3. Дальше
 
-1. **M3 — Онбординг S-01…S-08 end-to-end:** экраны Welcome/Phone/OTP/Role/Анкета/Верификация/Pending/Success на реальном API (auth готов в M2), загрузка файлов в Storage (local-адаптер), очередь верификации в админке, `AUTO_APPROVE_VERIFICATION` для dev, дипломы (ДС-*).
+1. **M4 — Заказы:** создание заказа с фото и гео (S-20), PostGIS-фоллбэк-выдача feed/map через `earth_distance` (фильтры Ф-02…Ф-05, блок «Новые» С-03/С-04), Tinder-колода со свайпами (§4.3), карточка заказа (S-12), отклики + каскад «Не выбран», экраны заказчика S-22…S-24.
 
-Дальше по цепочке M4 → M8 без пауз на подтверждение (правило работы №1 из ZOVU_PROMPT.md §11).
+Дальше по цепочке M5 → M8 без пауз на подтверждение (правило работы №1 из ZOVU_PROMPT.md §11).
 
 ---
 
@@ -87,3 +88,4 @@ flowchart LR
 | 2026-07-05 | M0 закрыт (✅ done): скелет монорепо (apps/api, apps/admin, apps/web), docker-compose, .env.example, CLAUDE.md, README, дизайн-токены, `apps/web` собирается. Учтён **ADR-008** (Flutter → React PWA): M1 стал «Дизайн-система React», секции «Сделано», «Дальше» и «Риски» обновлены. |
 | 2026-07-05 | M1 закрыт (✅ done): UI-kit (18 компонентов), 2 таббар-шелла + DeviceFrame, React Router (все S-роуты, заглушки), i18next ru/kk, `/dev/uikit`, утилиты/иконки. Извлечён точный спек компонентов из standalone; добавлен **ADR-009** (исключение по градиенту). `npm run build` зелёный. Следующий — M2 (API-ядро). |
 | 2026-07-05 | M2 закрыт (✅ done): Prisma-схема (18+1 сущностей) + миграции на локальном PG17 :5434, гео-фоллбэк cube/earthdistance (ADR-005, проверен вживую), auth OTP+JWT+refresh-ротация (НФ-05), users/me/roles + анкета специалиста, категории + seed (12), интеграции за интерфейсами (dev-моки), Swagger + `docs/api/openapi.json`. Smoke-тест auth-флоу прошёл; 10 jest-тестов зелёные. Следующий — M3 (онбординг). |
+| 2026-07-05 | M3 закрыт (✅ done): онбординг S-01…S-08 на реальном API (web→API слой, auth-стор, guards), verification/diploma с загрузкой файлов и AUTO_APPROVE; e2e specialist-флоу проверен вживую; openapi.json — 11 путей. Следующий — M4 (заказы). |

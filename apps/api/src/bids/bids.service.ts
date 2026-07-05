@@ -31,7 +31,12 @@ export class BidsService {
     if (!order || order.status !== 'active') throw new BadRequestException('order_not_active');
     if (order.clientId === userId) throw new BadRequestException('own_order');
 
-    // TODO(M5): блокировка нового отклика при неактивной подписке (БП-02, экран S-17).
+    // БП-02, S-17: новые отклики блокируются при неактивной подписке (Б-01).
+    const canBid =
+      profile.subscriptionActive ||
+      (profile.subscriptionFreeUntil != null && profile.subscriptionFreeUntil > new Date());
+    if (!canBid) throw new ForbiddenException('subscription_inactive');
+
     const commission = Math.round((price * this.commissionPct()) / 100);
 
     const bid = await this.prisma.bid.upsert({

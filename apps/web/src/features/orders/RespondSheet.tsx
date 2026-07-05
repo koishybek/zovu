@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { BottomSheet, Button, RadioRow, TextField, Price } from '../../components/ui';
 import { commission, payout, formatTenge } from '../../lib/format';
 import { createBid } from './api';
 import { apiError } from '../../api/client';
+import { routes } from '../../router/routes';
 import type { FeedOrder, Order } from './api';
 
 const COMMISSION_PCT = 5; // ADR-001, для предпросмотра; сервер пересчитывает авторитетно
@@ -21,6 +23,7 @@ export function RespondSheet({
   onDone: () => void;
 }) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [mode, setMode] = useState<'accept' | 'own'>('accept');
   const [own, setOwn] = useState('');
   const [loading, setLoading] = useState(false);
@@ -38,6 +41,11 @@ export function RespondSheet({
       onDone();
     } catch (e) {
       const code = apiError(e);
+      if (code === 'subscription_inactive') {
+        onClose();
+        navigate(routes.spSubscriptionLock); // S-17 (БП-02)
+        return;
+      }
       setError(code === 'not_verified' ? 'Сначала пройдите верификацию' : code === 'own_order' ? 'Это ваш заказ' : 'Не удалось отправить отклик');
     } finally {
       setLoading(false);

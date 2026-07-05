@@ -20,6 +20,10 @@ import { MyBidsScreen } from '../features/orders/MyBidsScreen';
 import { CreateOrderScreen } from '../features/orders/CreateOrderScreen';
 import { MyOrdersScreen } from '../features/orders/MyOrdersScreen';
 import { OrderBidsScreen } from '../features/orders/OrderBidsScreen';
+import { BalanceScreen } from '../features/billing/BalanceScreen';
+import { TopupScreen } from '../features/billing/TopupScreen';
+import { SubscriptionLockScreen } from '../features/billing/SubscriptionLockScreen';
+import { ProfileScreen } from '../features/billing/ProfileScreen';
 import { routes, SPECIALIST_TABS, CLIENT_TABS } from './routes';
 
 // M1: экраны — заглушки (ScreenStub), реализация в M3–M7. Пути — канон docs/05-screens.md.
@@ -56,15 +60,14 @@ export const router = createBrowserRouter([
           { path: routes.spMap, element: stub('S-10', 'Карта специалиста', 'M8') },
           { path: routes.spOrders, element: <FeedScreen /> },
           { path: routes.spBids, element: <MyBidsScreen /> },
-          { path: routes.spProfile, element: stub('S-18', 'Профиль специалиста', 'M5') },
+          { path: routes.spProfile, element: <ProfileScreen /> },
         ],
       },
       // Специалист — полноэкранные (вне таббара)
       { path: routes.spOrder(), element: <RequireAuth><OrderDetailScreen /></RequireAuth> },
-      { path: routes.spRespond(), element: stub('S-13', 'Отклик', 'M4') },
-      { path: routes.spBalance, element: stub('S-15', 'Баланс', 'M5') },
-      { path: routes.spTopup, element: stub('S-16', 'Пополнение', 'M5') },
-      { path: routes.spSubscriptionLock, element: stub('S-17', 'Пополните баланс', 'M5') },
+      { path: routes.spBalance, element: <RequireAuth><BalanceScreen /></RequireAuth> },
+      { path: routes.spTopup, element: <RequireAuth><TopupScreen /></RequireAuth> },
+      { path: routes.spSubscriptionLock, element: <RequireAuth><SubscriptionLockScreen /></RequireAuth> },
 
       // Заказчик (shell с таббаром, S-20…S-27)
       {

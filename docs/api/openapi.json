@@ -585,6 +585,76 @@
           "bids"
         ]
       }
+    },
+    "/v1/balance": {
+      "get": {
+        "operationId": "BillingController_balance",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "S-15: баланс + статус подписки",
+        "tags": [
+          "billing"
+        ]
+      }
+    },
+    "/v1/transactions": {
+      "get": {
+        "operationId": "BillingController_transactions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "S-15: история операций",
+        "tags": [
+          "billing"
+        ]
+      }
+    },
+    "/v1/topup": {
+      "post": {
+        "operationId": "BillingController_topup",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "S-16: пополнение (мок) + активация БП-07",
+        "tags": [
+          "billing"
+        ]
+      }
     }
   },
   "info": {
@@ -797,6 +867,26 @@
         },
         "required": [
           "price"
+        ]
+      },
+      "TopupDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 2000
+          },
+          "method": {
+            "type": "string",
+            "enum": [
+              "kaspi",
+              "card"
+            ]
+          }
+        },
+        "required": [
+          "amount",
+          "method"
         ]
       }
     }

@@ -24,6 +24,10 @@ import { BalanceScreen } from '../features/billing/BalanceScreen';
 import { TopupScreen } from '../features/billing/TopupScreen';
 import { SubscriptionLockScreen } from '../features/billing/SubscriptionLockScreen';
 import { ProfileScreen } from '../features/billing/ProfileScreen';
+import { ChatScreen } from '../features/deal/ChatScreen';
+import { ActiveOrderScreen } from '../features/deal/ActiveOrderScreen';
+import { ReviewScreen } from '../features/deal/ReviewScreen';
+import { NotificationsScreen } from '../features/deal/NotificationsScreen';
 import { routes, SPECIALIST_TABS, CLIENT_TABS } from './routes';
 
 // M1: экраны — заглушки (ScreenStub), реализация в M3–M7. Пути — канон docs/05-screens.md.
@@ -88,16 +92,16 @@ export const router = createBrowserRouter([
       { path: routes.clientMap, element: stub('S-22', 'Карта заказчика', 'M8') },
       { path: routes.clientOrderBids(), element: <RequireAuth><OrderBidsScreen /></RequireAuth> },
       { path: routes.clientBid(), element: <RequireAuth><OrderBidsScreen /></RequireAuth> },
-      { path: routes.clientOrder(), element: stub('S-25', 'Активный заказ', 'M6') },
-      { path: routes.clientOrderReview(), element: stub('S-27', 'Оценка и отзыв', 'M6') },
+      { path: routes.clientOrder(), element: <RequireAuth><ActiveOrderScreen /></RequireAuth> },
+      { path: routes.clientOrderReview(), element: <RequireAuth><ReviewScreen /></RequireAuth> },
 
       // Общие (S-30…S-35)
-      { path: routes.chat(), element: stub('S-30', 'Чат', 'M6') },
+      { path: routes.chat(), element: <RequireAuth><ChatScreen /></RequireAuth> },
       { path: routes.support, element: stub('S-31', 'Поддержка', 'M7') },
       { path: routes.supportNew, element: stub('S-31', 'Новое обращение', 'M7') },
       { path: routes.supportTicket(), element: stub('S-31', 'Тикет поддержки', 'M7') },
-      { path: routes.notifications, element: stub('S-32', 'Уведомления', 'M6') },
-      { path: routes.reviews(), element: stub('S-33', 'Отзывы', 'M6') },
+      { path: routes.notifications, element: <RequireAuth><NotificationsScreen /></RequireAuth> },
+      { path: routes.reviews(), element: stub('S-33', 'Отзывы', 'M8') },
       { path: routes.roleSwitch, element: stub('S-34', 'Роль', 'M7') },
       { path: routes.settings, element: stub('S-35', 'Настройки', 'M7') },
 

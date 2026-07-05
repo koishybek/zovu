@@ -177,6 +177,7 @@ model Order {
   status          OrderStatus @default(active)
   filters         Json        @default("{}") // certifiedOnly, minRating, minOrders, maxDistanceKm
   acceptedBidId   String?     @unique
+  completeRequestedAt DateTime? // когда заказчик нажал «Завершить» (ЗВ-01) — для таймера ЗВ-03
   completedAt     DateTime?
   autoClosedAt    DateTime?
   specialistDoneAt DateTime?  // ЗВ-04

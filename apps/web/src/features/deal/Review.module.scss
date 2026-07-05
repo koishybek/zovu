@@ -1,0 +1,34 @@
+.hint {
+  color: var(--c-ink-secondary);
+  margin-bottom: var(--s-5);
+}
+.stars {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-3);
+  margin-bottom: var(--s-6);
+}
+.starLabel {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--c-primary);
+}
+.error {
+  color: var(--c-danger);
+  font-size: 13px;
+  margin-top: var(--s-3);
+}
+.doneWrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-4);
+}
+.doneTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--c-ink);
+}

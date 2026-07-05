@@ -296,6 +296,295 @@
           "specialist"
         ]
       }
+    },
+    "/v1/orders": {
+      "post": {
+        "operationId": "OrdersController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "S-20: создать заказ",
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/v1/orders/my": {
+      "get": {
+        "operationId": "OrdersController_myOrders",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Мои заказы (заказчик, ИЗ-02)",
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/v1/orders/feed": {
+      "get": {
+        "operationId": "OrdersController_feed",
+        "parameters": [
+          {
+            "name": "lat",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "lng",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "S-11: лента специалиста (гео + фильтры Ф-07 + блок «Новые»)",
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/v1/orders/{id}": {
+      "get": {
+        "operationId": "OrdersController_getOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "S-12: карточка заказа",
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/v1/orders/{id}/hide": {
+      "post": {
+        "operationId": "OrdersController_hide",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "S-11: скрыть заказ (свайп влево)",
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/v1/orders/{id}/bids": {
+      "post": {
+        "operationId": "OrdersController_createBid",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBidDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "S-13: откликнуться на заказ",
+        "tags": [
+          "orders"
+        ]
+      },
+      "get": {
+        "operationId": "OrdersController_orderBids",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "S-23: отклики на заказ (заказчик)",
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/v1/bids/my": {
+      "get": {
+        "operationId": "BidsController_myBids",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "S-14: мои отклики (специалист)",
+        "tags": [
+          "bids"
+        ]
+      }
+    },
+    "/v1/bids/{id}/accept": {
+      "post": {
+        "operationId": "BidsController_accept",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "S-24: принять отклик (каскад «Не выбран» + чат + комиссия)",
+        "tags": [
+          "bids"
+        ]
+      }
+    },
+    "/v1/bids/{id}/decline": {
+      "post": {
+        "operationId": "BidsController_decline",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "S-24: отклонить отклик",
+        "tags": [
+          "bids"
+        ]
+      }
     }
   },
   "info": {
@@ -438,6 +727,77 @@
       "SuggestCategoryDto": {
         "type": "object",
         "properties": {}
+      },
+      "OrderFiltersDto": {
+        "type": "object",
+        "properties": {
+          "certifiedOnly": {
+            "type": "boolean"
+          },
+          "minRating": {
+            "type": "number"
+          },
+          "minOrders": {
+            "type": "number"
+          },
+          "maxDistanceKm": {
+            "type": "number"
+          }
+        }
+      },
+      "CreateOrderDto": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "budget": {
+            "type": "number"
+          },
+          "address": {
+            "type": "string"
+          },
+          "lat": {
+            "type": "number"
+          },
+          "lng": {
+            "type": "number"
+          },
+          "filters": {
+            "$ref": "#/components/schemas/OrderFiltersDto"
+          }
+        },
+        "required": [
+          "categoryId",
+          "title",
+          "description",
+          "budget",
+          "address"
+        ]
+      },
+      "CreateBidDto": {
+        "type": "object",
+        "properties": {
+          "price": {
+            "type": "number",
+            "description": "Цена специалиста (предзаполнена бюджетом заказа)"
+          }
+        },
+        "required": [
+          "price"
+        ]
       }
     }
   }

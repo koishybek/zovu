@@ -18,7 +18,7 @@
 | M1 | **Дизайн-система React** | ✅ done | Дизайн-токены (`tokens.ts` + `tokens.scss`), UI-kit из 18 компонентов (Button, TextField/TextArea, OtpInput, StatusPill, Chip, Card, Price, Badge, Avatar, SegmentedControl, BottomSheet, ProgressBar, TabBar, Switch, EmptyState, Screen, AppBar, Icon) — значения сверены с точной спецификацией standalone, два таббар-шелла (специалист/заказчик) + `DeviceFrame`, каркас React Router со всеми S-роутами S-01…S-35 (заглушки `ScreenStub`), i18next ru/kk (типобезопасный), витрина `/dev/uikit`. `npm run build` зелёный. |
 | M2 | **API-ядро** | ✅ done | Prisma-схема (18 сущностей + AdminAudit) + миграции; гео-фоллбэк `cube`/`earthdistance` вместо PostGIS (ADR-005, проверено на локальном PG17 :5434); auth OTP+JWT с refresh-ротацией (НФ-05); users/me/roles + анкета специалиста; категории + seed (12); интеграции за интерфейсами (SMS/moderator/storage/push/payment — dev-моки); Swagger + экспорт `docs/api/openapi.json`. Smoke-тест всего auth-флоу прошёл вживую; 10 jest-тестов зелёные. |
 | M3 | **Онбординг** | ✅ done | S-01…S-08 end-to-end на реальном API: Welcome/Phone(+7 маска)/OTP(таймер 45с, авто-верификация)/Role/Анкета(категории, прогресс)/Верификация(2 файла)/Pending(polling)/Success(haptic). web→API слой (axios + refresh-интерцептор, Zustand auth-стор, TanStack Query). Backend: verification/diploma (multipart, Storage local-адаптер, приватный бакет НФ-09), `AUTO_APPROVE_VERIFICATION` (~5с). Guards роутов (RequireAuth, RootRedirect по роли). E2E specialist-флоу проверен вживую (профиль→загрузка→авто-approve). Очередь верификации в админке — TODO(M7). |
-| M4 | **Заказы** | ⏳ pending | Создание с фото и гео, PostGIS-выдача feed/map (фильтры Ф-02…Ф-05, блок «Новые» С-03/С-04), колода со свайпами, карточка заказа, отклики + каскад «Не выбран», экраны S-22…S-24. |
+| M4 | **Заказы** | ✅ done | Backend: orders (создание, feed с гео-фоллбэком earth_distance/haversine + фильтры Ф-02…Ф-05/Ф-07, блок «Новые» С-03, hide-свайп), bids (отклик с комиссией ADR-001, **каскад «Не выбран»** при принятии + чат + списание комиссии, decline, streak). Web: Tinder-колода со свайпами (§4.3: rotation, overlay ✓/✕, haptic, undo-снекбар), S-11 лента (Колода/Список/сегмент), S-20 создание заказа, S-12 карточка + S-13 отклик (RespondSheet с «Вы получите»), S-14 отклики, S-23/S-24 отклики заказчику + принятие. 21 jest-тест (+ Ф-07 фильтры, каскад); e2e-smoke всего флоу прошёл вживую. Карта (S-10/S-22) и фильтры-UI (S-21) — TODO(M8). |
 | M5 | **Деньги** | ⏳ pending | Транзакции, cron подписки (Б-03…Б-05, + `subscriptionFreeUntil`), пополнение-мок, блокировки S-17 (БП-02/БП-06), активация БП-07, комиссия при принятии (ADR-001), экраны S-15/S-16, streak. |
 | M6 | **Сделка** | ⏳ pending | Чат WS + read-статусы (Ч-*), уведомления (лента + бейдж, НФ-06), завершение с таймерами 24 ч (ЗВ-02/ЗВ-03/ЗВ-04), отзывы + стоп-словарь + жалобы (О-*, ОМ-*), S-25…S-27, S-30, S-32, S-33. |
 | M7 | **Поддержка** | ⏳ pending | S-31 + админ-очередь тикетов (СП-*), роль/настройки (S-34, S-35, Р-*), админка целиком (5 очередей + аудит-лог НФ-13), отмена/спор заказа (ЗВ-06/ЗВ-07). |
@@ -29,7 +29,7 @@ flowchart LR
     M0["M0 — Phase 0<br/>✅ done"] --> M1["M1 — Дизайн-система React<br/>✅ done"]
     M1 --> M2["M2 — API-ядро<br/>✅ done"]
     M2 --> M3["M3 — Онбординг<br/>✅ done"]
-    M3 --> M4["M4 — Заказы"]
+    M3 --> M4["M4 — Заказы<br/>✅ done"]
     M4 --> M5["M5 — Деньги"]
     M5 --> M6["M6 — Сделка"]
     M6 --> M7["M7 — Поддержка"]
@@ -38,6 +38,7 @@ flowchart LR
     style M1 fill:#EEF1FF,stroke:#4C6FFF,color:#141824
     style M2 fill:#EEF1FF,stroke:#4C6FFF,color:#141824
     style M3 fill:#EEF1FF,stroke:#4C6FFF,color:#141824
+    style M4 fill:#EEF1FF,stroke:#4C6FFF,color:#141824
 ```
 
 **Гейт выхода из каждого M** (ZOVU_PROMPT.md §10): `apps/web` собирается (`npm run build` без ошибок) + ESLint/Prettier, jest-тесты бизнес-правил зелёные, обновлён этот файл, один conventional commit (пример: `feat(m4): orders, deck & bids`).
@@ -61,9 +62,9 @@ flowchart LR
 
 ## 3. Дальше
 
-1. **M4 — Заказы:** создание заказа с фото и гео (S-20), PostGIS-фоллбэк-выдача feed/map через `earth_distance` (фильтры Ф-02…Ф-05, блок «Новые» С-03/С-04), Tinder-колода со свайпами (§4.3), карточка заказа (S-12), отклики + каскад «Не выбран», экраны заказчика S-22…S-24.
+1. **M5 — Деньги:** транзакции + экран баланса S-15 (градиент balance card, ADR-009), cron подписки 00:00 Almaty (Б-03…Б-05 + `subscriptionFreeUntil`), пополнение-мок S-16, блокировка отклика при неактивной подписке S-17 (БП-02/БП-06), активация БП-07, streak-чип в профиле S-18. Комиссия при принятии уже списывается (сделано в M4-каскаде).
 
-Дальше по цепочке M5 → M8 без пауз на подтверждение (правило работы №1 из ZOVU_PROMPT.md §11).
+Дальше по цепочке M6 → M8 без пауз на подтверждение (правило работы №1 из ZOVU_PROMPT.md §11).
 
 ---
 
@@ -89,3 +90,5 @@ flowchart LR
 | 2026-07-05 | M1 закрыт (✅ done): UI-kit (18 компонентов), 2 таббар-шелла + DeviceFrame, React Router (все S-роуты, заглушки), i18next ru/kk, `/dev/uikit`, утилиты/иконки. Извлечён точный спек компонентов из standalone; добавлен **ADR-009** (исключение по градиенту). `npm run build` зелёный. Следующий — M2 (API-ядро). |
 | 2026-07-05 | M2 закрыт (✅ done): Prisma-схема (18+1 сущностей) + миграции на локальном PG17 :5434, гео-фоллбэк cube/earthdistance (ADR-005, проверен вживую), auth OTP+JWT+refresh-ротация (НФ-05), users/me/roles + анкета специалиста, категории + seed (12), интеграции за интерфейсами (dev-моки), Swagger + `docs/api/openapi.json`. Smoke-тест auth-флоу прошёл; 10 jest-тестов зелёные. Следующий — M3 (онбординг). |
 | 2026-07-05 | M3 закрыт (✅ done): онбординг S-01…S-08 на реальном API (web→API слой, auth-стор, guards), verification/diploma с загрузкой файлов и AUTO_APPROVE; e2e specialist-флоу проверен вживую; openapi.json — 11 путей. Следующий — M4 (заказы). |
+| 2026-07-05 | M1-polish (ревью заказчика): статус-пиллы разведены soft/fill, узкая шпация в валюте, чипы/segmented 44pt, компоненты Rating/Slider/Radio/Checkbox/Celebration, OTP-плейсхолдер, витрина с рус. подписями. Коммит 3949745. |
+| 2026-07-05 | M4 закрыт (✅ done): orders+bids+**каскад** на реальном API (гео-фоллбэк, фильтры Ф-07, комиссия ADR-001), Tinder-колода §4.3, экраны заказчика/специалиста; 21 jest-тест + e2e-smoke всего флоу вживую. Следующий — M5 (деньги). |

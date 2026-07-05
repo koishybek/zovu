@@ -16,7 +16,7 @@
 |---|---|---|---|
 | M0 | **Phase 0: `docs/` вики + `CLAUDE.md` + скелет монорепо + docker-compose (postgres+postgis, minio) + `.env.example`** | ✅ done | Вики (12 страниц) написана и проверена двумя критиками, design-ассеты латиницей, скелет монорепо (apps/api, apps/admin, apps/web) собран, `docker-compose`/`.env.example`/`CLAUDE.md`/`README` на месте, `apps/web` собирается. |
 | M1 | **Дизайн-система React** | ✅ done | Дизайн-токены (`tokens.ts` + `tokens.scss`), UI-kit из 18 компонентов (Button, TextField/TextArea, OtpInput, StatusPill, Chip, Card, Price, Badge, Avatar, SegmentedControl, BottomSheet, ProgressBar, TabBar, Switch, EmptyState, Screen, AppBar, Icon) — значения сверены с точной спецификацией standalone, два таббар-шелла (специалист/заказчик) + `DeviceFrame`, каркас React Router со всеми S-роутами S-01…S-35 (заглушки `ScreenStub`), i18next ru/kk (типобезопасный), витрина `/dev/uikit`. `npm run build` зелёный. |
-| M2 | **API-ядро** | ⏳ pending | Prisma-схема + миграции, auth OTP+JWT (НФ-05), users/roles, категории + seed, Swagger (экспорт `openapi.json`). |
+| M2 | **API-ядро** | ✅ done | Prisma-схема (18 сущностей + AdminAudit) + миграции; гео-фоллбэк `cube`/`earthdistance` вместо PostGIS (ADR-005, проверено на локальном PG17 :5434); auth OTP+JWT с refresh-ротацией (НФ-05); users/me/roles + анкета специалиста; категории + seed (12); интеграции за интерфейсами (SMS/moderator/storage/push/payment — dev-моки); Swagger + экспорт `docs/api/openapi.json`. Smoke-тест всего auth-флоу прошёл вживую; 10 jest-тестов зелёные. |
 | M3 | **Онбординг** | ⏳ pending | S-01…S-08 end-to-end, загрузка файлов в MinIO, очередь верификации в админке, `AUTO_APPROVE_VERIFICATION` для dev, дипломы (ДС-*). |
 | M4 | **Заказы** | ⏳ pending | Создание с фото и гео, PostGIS-выдача feed/map (фильтры Ф-02…Ф-05, блок «Новые» С-03/С-04), колода со свайпами, карточка заказа, отклики + каскад «Не выбран», экраны S-22…S-24. |
 | M5 | **Деньги** | ⏳ pending | Транзакции, cron подписки (Б-03…Б-05, + `subscriptionFreeUntil`), пополнение-мок, блокировки S-17 (БП-02/БП-06), активация БП-07, комиссия при принятии (ADR-001), экраны S-15/S-16, streak. |
@@ -27,7 +27,7 @@
 ```mermaid
 flowchart LR
     M0["M0 — Phase 0<br/>✅ done"] --> M1["M1 — Дизайн-система React<br/>✅ done"]
-    M1 --> M2["M2 — API-ядро"]
+    M1 --> M2["M2 — API-ядро<br/>✅ done"]
     M2 --> M3["M3 — Онбординг"]
     M3 --> M4["M4 — Заказы"]
     M4 --> M5["M5 — Деньги"]
@@ -36,6 +36,7 @@ flowchart LR
     M7 --> M8["M8 — Polish"]
     style M0 fill:#EEF1FF,stroke:#4C6FFF,color:#141824
     style M1 fill:#EEF1FF,stroke:#4C6FFF,color:#141824
+    style M2 fill:#EEF1FF,stroke:#4C6FFF,color:#141824
 ```
 
 **Гейт выхода из каждого M** (ZOVU_PROMPT.md §10): `apps/web` собирается (`npm run build` без ошибок) + ESLint/Prettier, jest-тесты бизнес-правил зелёные, обновлён этот файл, один conventional commit (пример: `feat(m4): orders, deck & bids`).
@@ -59,9 +60,9 @@ flowchart LR
 
 ## 3. Дальше
 
-1. **M2 — API-ядро:** Prisma-схема + миграции (проверить PostGIS/фоллбэк на локальном PG17), auth OTP+JWT (НФ-05), users/roles, категории + seed, Swagger → экспорт `docs/api/openapi.json`.
+1. **M3 — Онбординг S-01…S-08 end-to-end:** экраны Welcome/Phone/OTP/Role/Анкета/Верификация/Pending/Success на реальном API (auth готов в M2), загрузка файлов в Storage (local-адаптер), очередь верификации в админке, `AUTO_APPROVE_VERIFICATION` для dev, дипломы (ДС-*).
 
-Дальше по цепочке M3 → M8 без пауз на подтверждение (правило работы №1 из ZOVU_PROMPT.md §11).
+Дальше по цепочке M4 → M8 без пауз на подтверждение (правило работы №1 из ZOVU_PROMPT.md §11).
 
 ---
 
@@ -71,7 +72,8 @@ flowchart LR
 |---|---|---|
 | **Docker не установлен на машине** | `docker compose up` для postgres+postgis и minio может не подняться локально. | **ADR-005** в [09-decisions.md](09-decisions.md) — фоллбэки (локальный PG, файловое хранилище вместо MinIO в dev). |
 | **Клиент — PWA, не натив** | Клиентское приложение — React PWA (две вкладки браузера вместо двух устройств для демо), нативной сборки под iOS/Android в MVP нет. | Подход зафиксирован **ADR-008**; API стек-независим, поэтому нативный порт (напр., Flutter) возможен позже поверх того же бэкенда без его переработки. |
-| **PostGIS на локальном PG17 не проверен** | Гео-запросы `ST_DWithin`/`ST_Distance` (M4, фильтр Ф-05, выдача feed/map) не прогонялись на локальном PostgreSQL 17. | Проверить при старте M2 (миграции); фоллбэк на `cube`/`earthdistance` за интерфейсом гео-репозитория — **ADR-005**. |
+| **PostGIS недоступен — используется фоллбэк** | На локальном PG17 (:5434) PostGIS-расширения нет; используются `cube`/`earthdistance` (ADR-005). Проверено в M2: `earth_distance` корректно считает дистанцию (5444 м между двумя точками Алматы). Гео-выдача feed/map (M4) будет на `ll_to_earth`/`earth_distance`. | **ADR-005**; для прод-БД с PostGIS форма гео-запросов инкапсулирована в гео-репозитории. |
+| **Локальный PG-кластер вместо службы** | Служба `postgresql-x64-17` не стартует без прав администратора; поднят собственный кластер в `%LOCALAPPDATA%\zovu-pgdata` на порту 5434 (`pg_ctl`). | Стартовать перед dev-сессией: `pg_ctl -D %LOCALAPPDATA%\zovu-pgdata -o "-p 5434" start`. Зафиксировать в ADR-005/README при финализации. |
 | **kk-переводы черновые** | Все казахские строки в ресурсах i18next — машинный черновик с пометкой `// TODO native review` (правило №4, ZOVU_PROMPT.md §11). | Нативная вычитка до релиза; трекается в ресурсах i18next (kk). |
 | **`openapi.json` ещё не существует** | [04-api.md](04-api.md) ссылается на `docs/api/openapi.json`, который появится только в **M2** (экспорт из Swagger). | До M2 контур API — по [04-api.md](04-api.md). |
 
@@ -84,3 +86,4 @@ flowchart LR
 | 2026-07-05 | Страница создана в рамках M0 (Phase 0). Статус: M0 in progress, M1–M8 pending. |
 | 2026-07-05 | M0 закрыт (✅ done): скелет монорепо (apps/api, apps/admin, apps/web), docker-compose, .env.example, CLAUDE.md, README, дизайн-токены, `apps/web` собирается. Учтён **ADR-008** (Flutter → React PWA): M1 стал «Дизайн-система React», секции «Сделано», «Дальше» и «Риски» обновлены. |
 | 2026-07-05 | M1 закрыт (✅ done): UI-kit (18 компонентов), 2 таббар-шелла + DeviceFrame, React Router (все S-роуты, заглушки), i18next ru/kk, `/dev/uikit`, утилиты/иконки. Извлечён точный спек компонентов из standalone; добавлен **ADR-009** (исключение по градиенту). `npm run build` зелёный. Следующий — M2 (API-ядро). |
+| 2026-07-05 | M2 закрыт (✅ done): Prisma-схема (18+1 сущностей) + миграции на локальном PG17 :5434, гео-фоллбэк cube/earthdistance (ADR-005, проверен вживую), auth OTP+JWT+refresh-ротация (НФ-05), users/me/roles + анкета специалиста, категории + seed (12), интеграции за интерфейсами (dev-моки), Swagger + `docs/api/openapi.json`. Smoke-тест auth-флоу прошёл; 10 jest-тестов зелёные. Следующий — M3 (онбординг). |

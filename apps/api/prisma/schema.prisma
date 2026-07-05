@@ -1,0 +1,372 @@
+// Zovu — модель данных. Source of truth: ../../docs/03-data-model.md.
+// Гео без PostGIS (ADR-005): lat/lng Float + cube/earthdistance для запросов.
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [cube, earthdistance]
+}
+
+// ---------- Enums ----------
+
+enum Lang {
+  ru
+  kk
+}
+
+enum Role {
+  client
+  specialist
+}
+
+enum ApprovalStatus {
+  none
+  pending
+  approved
+  rejected
+}
+
+enum CategoryStatus {
+  approved
+  pending
+  rejected
+}
+
+enum OrderStatus {
+  active
+  in_progress
+  awaiting_confirmation
+  completed
+  completed_auto
+  cancelled
+  disputed
+}
+
+enum BidStatus {
+  pending
+  accepted
+  declined
+  not_selected
+}
+
+enum ReviewStatus {
+  published
+  hidden
+}
+
+enum ComplaintStatus {
+  open
+  resolved
+}
+
+enum SupportTicketStatus {
+  new
+  in_progress
+  resolved
+}
+
+enum SupportSenderType {
+  user
+  agent
+}
+
+enum TransactionType {
+  topup
+  subscription
+  commission
+  bonus
+}
+
+// ---------- Core ----------
+
+model User {
+  id            String   @id @default(cuid())
+  phone         String   @unique
+  name          String?
+  dob           DateTime?
+  lang          Lang     @default(ru)
+  isClient      Boolean  @default(false)
+  isSpecialist  Boolean  @default(false)
+  activeRole    Role     @default(client)
+  // СП-09 / ADR-007: блокировка/предупреждение поддержкой
+  blockedAt     DateTime?
+  blockedReason String?
+  // Хэш текущего refresh-токена для ротации (НФ-05). MVP: одна активная сессия.
+  refreshTokenHash String?
+  createdAt     DateTime @default(now())
+
+  specialistProfile SpecialistProfile?
+  orders            Order[]           @relation("ClientOrders")
+  transactions      Transaction[]
+  messages          Message[]
+  reviewsGiven      Review[]          @relation("ReviewFrom")
+  reviewsReceived   Review[]          @relation("ReviewTo")
+  reviewComplaints  ReviewComplaint[]
+  supportTickets    SupportTicket[]
+  notifications     Notification[]
+  devices           Device[]
+  categoriesCreated Category[]
+}
+
+model SpecialistProfile {
+  id                    String         @id @default(cuid())
+  userId                String         @unique
+  user                  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  about                 String?
+  mainCategoryId        String?
+  mainCategory          Category?      @relation("MainCategory", fields: [mainCategoryId], references: [id])
+  rating                Float          @default(0) // кэш среднего, пересчёт ОМ-06
+  completedOrdersCount  Int            @default(0)
+  verificationStatus    ApprovalStatus @default(none)
+  diplomaStatus         ApprovalStatus @default(none)
+  diplomaFileKey        String?
+  balance               Int            @default(0) // целые тенге
+  subscriptionActive    Boolean        @default(false)
+  subscriptionFreeUntil DateTime?      // ADR-002 бонус
+  streakDays            Int            @default(0)
+  streakLastDate        DateTime?
+  createdAt             DateTime       @default(now())
+
+  categories           SpecialistCategory[]
+  bids                 Bid[]
+  hiddenOrders         HiddenOrder[]
+  verificationRequests VerificationRequest[]
+}
+
+model Category {
+  id          String         @id @default(cuid())
+  name        String         @unique
+  nameKk      String?
+  status      CategoryStatus @default(approved)
+  createdById String?
+  createdBy   User?          @relation(fields: [createdById], references: [id])
+  createdAt   DateTime       @default(now())
+
+  specialists     SpecialistCategory[]
+  mainForProfiles SpecialistProfile[]  @relation("MainCategory")
+  orders          Order[]
+}
+
+model SpecialistCategory {
+  specialistId String
+  specialist   SpecialistProfile @relation(fields: [specialistId], references: [id], onDelete: Cascade)
+  categoryId   String
+  category     Category          @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([specialistId, categoryId])
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  clientId        String
+  client          User        @relation("ClientOrders", fields: [clientId], references: [id])
+  categoryId      String
+  category        Category    @relation(fields: [categoryId], references: [id])
+  title           String
+  description     String
+  photos          String[]    @default([]) // ключи в Storage, ≤5
+  budget          Int
+  address         String
+  lat             Float?
+  lng             Float?
+  status          OrderStatus @default(active)
+  filters         Json        @default("{}") // certifiedOnly, minRating, minOrders, maxDistanceKm
+  acceptedBidId   String?     @unique
+  completedAt     DateTime?
+  autoClosedAt    DateTime?
+  specialistDoneAt DateTime?  // ЗВ-04
+  disputeTicketId String?
+  createdAt       DateTime    @default(now())
+
+  bids         Bid[]
+  hiddenBy     HiddenOrder[]
+  chat         Chat?
+  reviews      Review[]
+  supportTickets SupportTicket[]
+
+  @@index([status, categoryId])
+  @@index([createdAt])
+}
+
+model Bid {
+  id           String            @id @default(cuid())
+  orderId      String
+  order        Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  specialistId String
+  specialist   SpecialistProfile @relation(fields: [specialistId], references: [id])
+  price        Int
+  commission   Int               @default(0) // ADR-001, списывается при accept
+  status       BidStatus         @default(pending)
+  createdAt    DateTime          @default(now())
+
+  @@unique([orderId, specialistId])
+  @@index([specialistId, status])
+}
+
+model HiddenOrder {
+  specialistId String
+  specialist   SpecialistProfile @relation(fields: [specialistId], references: [id], onDelete: Cascade)
+  orderId      String
+  order        Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  createdAt    DateTime          @default(now())
+
+  @@id([specialistId, orderId])
+}
+
+model Chat {
+  id        String    @id @default(cuid())
+  orderId   String    @unique
+  order     Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  closedAt  DateTime?
+  createdAt DateTime  @default(now())
+
+  messages Message[]
+}
+
+model Message {
+  id        String    @id @default(cuid())
+  chatId    String
+  chat      Chat      @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  senderId  String
+  sender    User      @relation(fields: [senderId], references: [id])
+  text      String
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([chatId, createdAt])
+}
+
+model Transaction {
+  id          String          @id @default(cuid())
+  userId      String
+  user        User            @relation(fields: [userId], references: [id])
+  type        TransactionType
+  amount      Int             // signed: пополнение +, списания −
+  balanceAfter Int
+  meta        Json            @default("{}")
+  createdAt   DateTime        @default(now())
+
+  @@index([userId, createdAt])
+}
+
+model Review {
+  id            String       @id @default(cuid())
+  orderId       String
+  order         Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fromUserId    String
+  fromUser      User         @relation("ReviewFrom", fields: [fromUserId], references: [id])
+  toUserId      String
+  toUser        User         @relation("ReviewTo", fields: [toUserId], references: [id])
+  stars         Int          // 1..5
+  text          String?
+  status        ReviewStatus @default(published)
+  editableUntil DateTime     // ОМ-07: 24 ч
+  createdAt     DateTime     @default(now())
+
+  complaints ReviewComplaint[]
+
+  @@unique([orderId, fromUserId]) // О-04: один раз на заказ с каждой стороны
+  @@index([toUserId, status])
+}
+
+model ReviewComplaint {
+  id         String          @id @default(cuid())
+  reviewId   String
+  review     Review          @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  byUserId   String
+  byUser     User            @relation(fields: [byUserId], references: [id])
+  reason     String
+  status     ComplaintStatus @default(open)
+  resolution String?
+  createdAt  DateTime        @default(now())
+}
+
+model VerificationRequest {
+  id              String            @id @default(cuid())
+  specialistId    String
+  specialist      SpecialistProfile @relation(fields: [specialistId], references: [id], onDelete: Cascade)
+  selfieKey       String
+  selfieWithDocKey String
+  status          ApprovalStatus    @default(pending)
+  reason          String?
+  reviewedAt      DateTime?
+  createdAt       DateTime          @default(now())
+}
+
+model SupportTicket {
+  id        String              @id @default(cuid())
+  userId    String
+  user      User                @relation(fields: [userId], references: [id])
+  category  String              // Заказ/Оплата/Жалоба/Верификация/Иное (СП-03)
+  orderId   String?
+  order     Order?              @relation(fields: [orderId], references: [id])
+  status    SupportTicketStatus @default(new)
+  rating    Int?                // СП-10, 1..5 после закрытия
+  createdAt DateTime            @default(now())
+
+  messages SupportMessage[]
+
+  @@index([status, createdAt])
+}
+
+model SupportMessage {
+  id          String            @id @default(cuid())
+  ticketId    String
+  ticket      SupportTicket     @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  senderType  SupportSenderType
+  text        String
+  attachments String[]          @default([]) // ключи Storage, ≤5
+  createdAt   DateTime          @default(now())
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  type      String
+  title     String
+  body      String
+  payload   Json      @default("{}") // { route: "/chat/42" } для диплинка
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, createdAt])
+}
+
+model Device {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fcmToken  String
+  platform  String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, fcmToken])
+}
+
+model OtpCode {
+  id        String   @id @default(cuid())
+  phone     String
+  codeHash  String
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([phone])
+}
+
+// Audit-log действий админа (НФ-13)
+model AdminAudit {
+  id        String   @id @default(cuid())
+  action    String
+  target    String
+  meta      Json     @default("{}")
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}

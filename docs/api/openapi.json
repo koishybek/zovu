@@ -1,0 +1,404 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/v1/auth/otp/request": {
+      "post": {
+        "operationId": "AuthController_requestOtp",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Запросить OTP (НФ-05: TTL 2 мин, resend 45 с)",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/otp/verify": {
+      "post": {
+        "operationId": "AuthController_verifyOtp",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Проверить OTP → tokens + is_new_user",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Обновить пару токенов (ротация refresh)",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/me": {
+      "get": {
+        "operationId": "UsersController_getMe",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Текущий пользователь + профиль специалиста",
+        "tags": [
+          "me"
+        ]
+      },
+      "patch": {
+        "operationId": "UsersController_updateMe",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "me"
+        ]
+      }
+    },
+    "/v1/me/role": {
+      "post": {
+        "operationId": "UsersController_switchRole",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SwitchRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Переключить/активировать роль (Р-01…Р-05)",
+        "tags": [
+          "me"
+        ]
+      }
+    },
+    "/v1/me/devices": {
+      "post": {
+        "operationId": "UsersController_registerDevice",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDeviceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "me"
+        ]
+      }
+    },
+    "/v1/specialist/profile": {
+      "post": {
+        "operationId": "UsersController_specialistProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpecialistProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Анкета специалиста (S-05)",
+        "tags": [
+          "me"
+        ]
+      }
+    },
+    "/v1/categories": {
+      "get": {
+        "operationId": "CategoriesController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Справочник одобренных категорий (К-06)",
+        "tags": [
+          "categories"
+        ]
+      }
+    },
+    "/v1/categories/suggest": {
+      "post": {
+        "operationId": "CategoriesController_suggest",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SuggestCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Предложить категорию (К-02 → pending)",
+        "tags": [
+          "categories"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Zovu API",
+    "description": "C2C-маркетплейс услуг — REST /v1. Source of truth: docs/04-api.md",
+    "version": "0.2.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "RequestOtpDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "example": "+77012345678",
+            "description": "Номер КЗ (нормализуется на сервере)"
+          }
+        },
+        "required": [
+          "phone"
+        ]
+      },
+      "VerifyOtpDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "example": "+77012345678"
+          },
+          "code": {
+            "type": "string",
+            "example": "1111",
+            "description": "OTP из SMS (dev — всегда 1111)"
+          }
+        },
+        "required": [
+          "phone",
+          "code"
+        ]
+      },
+      "RefreshDto": {
+        "type": "object",
+        "properties": {
+          "refresh_token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "refresh_token"
+        ]
+      },
+      "UpdateMeDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "dob": {
+            "type": "string",
+            "example": "1998-05-12"
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "ru",
+              "kk"
+            ]
+          }
+        }
+      },
+      "SwitchRoleDto": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "client",
+              "specialist"
+            ]
+          }
+        },
+        "required": [
+          "role"
+        ]
+      },
+      "RegisterDeviceDto": {
+        "type": "object",
+        "properties": {
+          "fcmToken": {
+            "type": "string"
+          },
+          "platform": {
+            "type": "string",
+            "example": "web"
+          }
+        },
+        "required": [
+          "fcmToken",
+          "platform"
+        ]
+      },
+      "SpecialistProfileDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "dob": {
+            "type": "string",
+            "example": "1990-01-01"
+          },
+          "mainCategoryId": {
+            "type": "string"
+          },
+          "categoryIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "about": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "mainCategoryId"
+        ]
+      },
+      "SuggestCategoryDto": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  }
+}

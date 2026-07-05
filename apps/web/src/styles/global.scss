@@ -1,0 +1,52 @@
+@use './tokens.scss';
+
+// CSS-reset (минимальный, iOS-минимализм) + база типографики.
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 400;
+  color: var(--c-ink);
+  background: var(--c-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+a {
+  color: var(--c-primary);
+  text-decoration: none;
+}
+
+// Мобильный контейнер: приложение живёт в колонке телефонной ширины по центру.
+#root {
+  display: flex;
+  justify-content: center;
+  background: var(--c-surface);
+}

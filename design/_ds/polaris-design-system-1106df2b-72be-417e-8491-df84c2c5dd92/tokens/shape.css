@@ -1,0 +1,26 @@
+/* =========================================================================
+   SHAPE — border radius & border width
+   Polaris leans on small, soft radii. Cards use 300 (12px), controls use
+   200 (8px), and pills/avatars use "full". From Shopify Polaris
+   (polaris-tokens base border).
+   ========================================================================= */
+:root {
+  /* Radius */
+  --p-border-radius-0: 0px;
+  --p-border-radius-050: 2px;
+  --p-border-radius-100: 4px;
+  --p-border-radius-150: 6px;
+  --p-border-radius-200: 8px;
+  --p-border-radius-300: 12px;
+  --p-border-radius-400: 16px;
+  --p-border-radius-500: 20px;
+  --p-border-radius-750: 30px;
+  --p-border-radius-full: 9999px;
+
+  /* Width */
+  --p-border-width-0: 0px;
+  --p-border-width-0165: 0.66px;
+  --p-border-width-025: 1px;
+  --p-border-width-050: 2px;
+  --p-border-width-100: 4px;
+}

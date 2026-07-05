@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#EDEEF1;-webkit-font-smoothing:antialiased}
+  .zscroll::-webkit-scrollbar{width:0;height:0}.zscroll{scrollbar-width:none}
+  .pf{width:390px;height:844px;border-radius:44px;box-shadow:0 30px 70px -34px rgba(20,24,40,.34),0 0 0 1px rgba(20,24,40,.04);position:relative;overflow:hidden;display:flex;flex-direction:column;font-family:-apple-system,'SF Pro Display','SF Pro Text','Inter',system-ui,sans-serif;color:#141824;background:#fff}
+  .sb{display:flex;justify-content:space-between;align-items:center;padding:15px 26px 4px;font:600 15px/1 -apple-system,sans-serif;flex:none}
+  .home{position:absolute;left:50%;transform:translateX(-50%);bottom:9px;width:134px;height:5px;border-radius:3px;background:#141824;opacity:.9}
+  .bk{width:30px;height:30px;display:flex;align-items:center;justify-content:center;flex:none;margin-left:-4px;cursor:pointer}
+  .cta{height:54px;border-radius:15px;background:#4C6FFF;display:flex;align-items:center;justify-content:center;font:600 16px/1 system-ui;color:#fff;cursor:pointer}
+  .cta2{height:54px;border-radius:15px;background:#EEF1FF;display:flex;align-items:center;justify-content:center;font:600 16px/1 system-ui;color:#4C6FFF;cursor:pointer}
+  .h1{font:700 27px/1.15 -apple-system,sans-serif;letter-spacing:-.5px}
+  .sub{font:400 15px/1.5 system-ui;color:#7A808E;margin-top:10px}
+  .tt{font:700 18px/1 -apple-system,sans-serif;letter-spacing:-.3px}
+  .pill{font:600 12px/1 system-ui;padding:7px 12px;border-radius:999px;display:inline-flex;align-items:center;gap:5px}
+  .sh{box-shadow:0 1px 2px rgba(20,24,40,.04),0 6px 18px -10px rgba(20,24,40,.12)}
+  .ico{display:flex;gap:6px;align-items:center}
+  .tabs{position:absolute;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);box-shadow:0 -1px 0 #ECEDF1;padding:9px 22px 26px;display:flex;justify-content:space-between}
+  .tb{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+  .prog{height:100%;background:#4C6FFF;border-radius:3px;transition:width .3s ease}
+  .fbtn{font:600 13px/1 system-ui;padding:10px 16px;border-radius:999px;cursor:pointer;border:none;white-space:nowrap}
+</style>
+</helmet>
+
+<div style="font-family:-apple-system,'SF Pro Display','SF Pro Text','Inter',system-ui,sans-serif;color:#141824;padding:52px 60px 90px">
+
+  <div style="font:800 34px/1 -apple-system,sans-serif;letter-spacing:-1px;color:#4C6FFF">Кликабельные прототипы</div>
+  <div style="font:500 14px/1.5 system-ui;color:#6B7280;max-width:720px;margin:10px 0 24px">Выберите флоу и тапайте по кнопкам, чтобы пройти его. Стрелка «назад» и «Сначала» — для навигации.</div>
+
+  <!-- flow picker -->
+  <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+    <button onClick="{{ pickA }}" style="{{ tabAStyle }}">А · Онбординг специалиста</button>
+    <button onClick="{{ pickB }}" style="{{ tabBStyle }}">Б · Заказчик: заказ → оценка</button>
+    <button onClick="{{ pickC }}" style="{{ tabCStyle }}">В · Специалист: лента → выполнен</button>
+    <button onClick="{{ pickD }}" style="{{ tabDStyle }}">Г · Баланс → пейволл → пополнение</button>
+  </div>
+  <div style="display:flex;align-items:center;gap:14px;max-width:520px;margin-bottom:30px">
+    <div style="flex:1;height:6px;border-radius:3px;background:#E1E4EB;overflow:hidden"><div class="prog" style="width:{{ progPct }}"></div></div>
+    <span style="font:600 12px/1 system-ui;color:#9AA0AD;white-space:nowrap">{{ stepLabel }}</span>
+    <span onClick="{{ restart }}" style="font:600 13px/1 system-ui;color:#4C6FFF;cursor:pointer;white-space:nowrap">Сначала</span>
+  </div>
+
+  <div class="pf">
+    <div class="sb"><span>9:41</span><span class="ico"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+    <div style="flex:1;position:relative;overflow:hidden">{{ screen }}</div>
+    <div class="home"></div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { flow: 'A', step: 0 };
+  steps = { A: 8, B: 6, C: 5, D: 4 };
+  labels = {
+    A: ['Welcome','Номер','Код','Роль','Анкета','Верификация','Проверка','Готово'],
+    B: ['Создание','Отклики','Приняли','Чат','Завершение','Оценка'],
+    C: ['Лента','Карточка','Отклик','Принят','Выполнен'],
+    D: ['Баланс 0 ₸','Пейволл','Пополнение','Готово'],
+  };
+  pick(f){ this.setState({ flow: f, step: 0 }); }
+  next(){ this.setState(s => ({ step: Math.min(s.step + 1, this.steps[s.flow] - 1) })); }
+  back(){ this.setState(s => ({ step: Math.max(s.step - 1, 0) })); }
+  restart(){ this.setState(s => ({ step: 0 })); }
+
+  el(tag, style, children){ return React.createElement(tag, typeof style === 'string' ? { style: this.css(style) } : style, children); }
+  css(s){ const o={}; s.split(';').forEach(r=>{ const i=r.indexOf(':'); if(i<0)return; const k=r.slice(0,i).trim(); const v=r.slice(i+1).trim(); if(!k)return; const ck=k.replace(/-([a-z])/g,(_,c)=>c.toUpperCase()); o[ck]=v; }); return o; }
+
+  renderVals(){
+    const { flow, step } = this.state;
+    const total = this.steps[flow];
+    const mk = (f)=>this.pick.bind(this,f);
+    const tabStyle = (f)=>{ const on=flow===f; return `font:600 13px/1 system-ui;padding:10px 16px;border-radius:999px;cursor:pointer;border:none;white-space:nowrap;${on?'background:#4C6FFF;color:#fff;':'background:#fff;color:#5A6172;box-shadow:inset 0 0 0 1px #E1E4EB;'}`; };
+    return {
+      pickA: mk('A'), pickB: mk('B'), pickC: mk('C'), pickD: mk('D'),
+      tabAStyle: tabStyle('A'), tabBStyle: tabStyle('B'), tabCStyle: tabStyle('C'), tabDStyle: tabStyle('D'),
+      progPct: Math.round(((step+1)/total)*100) + '%',
+      stepLabel: `${step+1} / ${total} · ${this.labels[flow][step]}`,
+      restart: this.restart.bind(this),
+      screen: this.renderScreen(flow, step),
+    };
+  }
+
+  // ---- screen helpers ----
+  scr(children){ return this.el('div','position:absolute;inset:0;display:flex;flex-direction:column;background:#fff', children); }
+  center(children, bg){ return this.el('div',`position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 36px;background:${bg||'#fff'}`, children); }
+  ill(bg, inner){ return this.el('div',`width:118px;height:118px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:${bg}`, inner); }
+  svg(d, stroke, extra){ return React.createElement('svg', { width: (extra&&extra.w)||24, height:(extra&&extra.h)||24, viewBox:'0 0 24 24', fill:(extra&&extra.fill)||'none', stroke: stroke||'#4C6FFF', strokeWidth:(extra&&extra.sw)||1.7, strokeLinecap:'round', strokeLinejoin:'round', dangerouslySetInnerHTML:{__html:d} }); }
+  cta(label, onClick, variant){ const base = variant==='2'?'background:#EEF1FF;color:#4C6FFF;':'background:#4C6FFF;color:#fff;'; return this.el('div',{ onClick, style:this.css(`height:54px;border-radius:15px;display:flex;align-items:center;justify-content:center;font:600 16px/1 system-ui;cursor:pointer;${base}`) }, label); }
+  footer(node){ return this.el('div','padding:0 24px 40px', node); }
+  header(title, back){ return this.el('div','display:flex;align-items:center;justify-content:center;position:relative;padding:8px 24px 12px', [ back?this.el('div',{ key:'b', onClick:this.back.bind(this), style:this.css('position:absolute;left:24px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer') }, this.svg('<path d="M15 5l-7 7 7 7"/>','#141824',{sw:2})):null, this.el('div',{key:'t', style:this.css('font:700 18px/1 -apple-system,sans-serif;letter-spacing:-.3px')}, title) ]); }
+  pill(text, kind){ const c={grey:'background:#F0F1F4;color:#6B7280',indigo:'background:#EEF1FF;color:#4C6FFF',amber:'background:#FBEFDD;color:#B45309',green:'background:#E7F6EC;color:#16A34A'}[kind||'indigo']; return this.el('span',`font:600 12px/1 system-ui;padding:7px 12px;border-radius:999px;display:inline-flex;${c}`, text); }
+  card(children, pad){ return this.el('div',`background:#fff;border-radius:18px;padding:${pad||'15px 16px'};box-shadow:0 1px 2px rgba(20,24,40,.04),0 6px 18px -10px rgba(20,24,40,.12)`, children); }
+  star(fill){ return React.createElement('svg',{width:15,height:15,viewBox:'0 0 24 24',fill:fill||'#E8981F',dangerouslySetInnerHTML:{__html:'<path d="m12 3 2.5 5.5 6 .5-4.5 4 1.4 6L12 16l-5.4 3 1.4-6-4.5-4 6-.5L12 3Z"/>'}}); }
+  badge(){ return this.el('span','display:inline-flex;align-items:center;gap:6px;font:600 12px/1 system-ui;color:#4C6FFF;background:#EEF1FF;padding:7px 13px;border-radius:999px',['Дипломированный ', React.createElement('svg',{key:'s',width:14,height:14,viewBox:'0 0 24 24',fill:'#4C6FFF',dangerouslySetInnerHTML:{__html:'<circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'}})]); }
+
+  renderScreen(flow, step){
+    const N = this.next.bind(this);
+    // ============ FLOW A ============
+    if(flow==='A'){
+      if(step===0) return this.scr([
+        this.center([
+          this.el('div','position:relative;width:180px;height:144px;margin-bottom:34px',[
+            this.el('div','position:absolute;inset:0;border-radius:28px;background:linear-gradient(160deg,#F4F6FE,#E9F0FB);overflow:hidden'),
+            this.el('div','position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:999px 999px 999px 5px;background:#4C6FFF;transform:rotate(-45deg);box-shadow:0 12px 22px -6px rgba(76,111,255,.6);display:flex;align-items:center;justify-content:center', this.el('div','width:16px;height:16px;border-radius:999px;background:#fff;transform:rotate(45deg)'))
+          ]),
+          this.el('div','font:800 50px/1 -apple-system,sans-serif;letter-spacing:-2px;color:#4C6FFF','Zovu'),
+          this.el('div','font:500 16px/1.5 system-ui;color:#7A808E;margin-top:14px','Находим специалистов рядом')
+        ]),
+        this.footer(this.cta('Начать', N))
+      ]);
+      if(step===1) return this.scr([
+        this.el('div','padding:8px 24px 0', this.el('div',{onClick:this.back.bind(this),style:this.css('width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer')}, this.svg('<path d="M15 5l-7 7 7 7"/>','#141824',{sw:2}))),
+        this.el('div','flex:1;padding:30px 24px 0',[
+          this.el('div','font:700 27px/1.15 -apple-system,sans-serif;letter-spacing:-.5px','Ваш номер'),
+          this.el('div','font:400 15px/1.5 system-ui;color:#7A808E;margin-top:10px','Отправим SMS с кодом подтверждения'),
+          this.el('div','margin-top:28px;height:58px;border-radius:13px;box-shadow:inset 0 0 0 1px #E4E6EC;display:flex;align-items:center;padding:0 16px;font:600 18px/1 -apple-system,sans-serif',[this.el('span','','+7'),this.el('div','width:1px;height:24px;background:#E4E6EC;margin:0 14px'),this.el('span','color:#141824','701 234-56-78')])
+        ]),
+        this.footer(this.cta('Получить код', N))
+      ]);
+      if(step===2){ const box=(v,act)=>this.el('div',`flex:1;height:64px;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1.5px ${act?'#4C6FFF':'#E4E6EC'};display:flex;align-items:center;justify-content:center;font:700 26px/1 -apple-system,sans-serif`, v); return this.scr([
+        this.el('div','padding:8px 24px 0', this.el('div',{onClick:this.back.bind(this),style:this.css('width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer')}, this.svg('<path d="M15 5l-7 7 7 7"/>','#141824',{sw:2}))),
+        this.el('div','flex:1;padding:30px 24px 0',[
+          this.el('div','font:700 27px/1.15 -apple-system,sans-serif;letter-spacing:-.5px','Введите код из SMS'),
+          this.el('div','font:400 15px/1.5 system-ui;color:#7A808E;margin-top:10px','Отправили на +7 701 234-56-78'),
+          this.el('div','display:flex;gap:12px;margin-top:30px',[box('5',true),box('2',true),box('4',true),box('8',true)]),
+          this.el('div','text-align:center;font:500 12px/1 system-ui;color:#B9BEC9;margin-top:22px','Код действует 2 минуты')
+        ]),
+        this.footer(this.cta('Подтвердить', N))
+      ]); }
+      if(step===3){ const roleCard=(t,d,sel,icon)=>this.el('div',`display:flex;align-items:center;gap:16px;border-radius:18px;padding:20px;margin-top:${sel?'26px':'14px'};${sel?'background:#F4F6FF;box-shadow:inset 0 0 0 2px #4C6FFF':'background:#fff;box-shadow:inset 0 0 0 1px #E4E6EC'}`,[ this.el('div',`width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none;${sel?'background:#fff':'background:#F2F3F6'}`, this.svg(icon, sel?'#4C6FFF':'#6B7280',{sw:1.8,w:26,h:26})), this.el('div','flex:1',[this.el('div','font:700 17px/1.2 -apple-system,sans-serif',t),this.el('div','font:500 13px/1.4 system-ui;color:#7A808E;margin-top:4px',d)]) ]); return this.scr([
+        this.el('div','flex:1;padding:38px 24px 0',[
+          this.el('div','font:700 27px/1.15 -apple-system,sans-serif;letter-spacing:-.5px','Кто вы?'),
+          this.el('div','font:400 15px/1.5 system-ui;color:#7A808E;margin-top:10px','Вторую роль можно активировать позже'),
+          roleCard('Я специалист','Откликаюсь на заказы',true,'<path d="M5 8h14l-1.5 11H6.5L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>'),
+          roleCard('Я заказчик','Публикую задачи',false,'<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/>')
+        ]),
+        this.footer(this.cta('Продолжить', N))
+      ]); }
+      if(step===4){ const inp=(t,ic,chev)=>this.el('div','background:#fff;border-radius:13px;box-shadow:inset 0 0 0 1px #E4E6EC;display:flex;align-items:center;gap:12px;padding:0 15px;height:52px;margin-bottom:12px;font:500 15px/1 system-ui',[this.svg(ic,'#A2A8B4',{sw:1.8,w:20,h:20}),this.el('span','flex:1',t),chev?this.svg('<path d="M6 9l6 6 6-6"/>','#C3C8D2',{sw:2,w:18,h:18}):null]); return this.scr([
+        this.header('Расскажите о себе', true),
+        this.el('div','flex:1;padding:8px 24px 0',[
+          inp('Данияр Сериков','<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/>',false),
+          inp('14.03.1992','<rect x="4" y="6" width="16" height="14" rx="3"/><path d="M8 6V4M16 6V4M4 11h16"/>',true),
+          inp('Электрика','<path d="M4 7l2-3h12l2 3M4 7h16M4 7v11a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V7"/>',true),
+          this.el('div','display:flex;flex-wrap:wrap;gap:8px;margin-top:6px',[this.el('span','font:600 13px/1 system-ui;color:#4C6FFF;background:#EEF1FF;padding:9px 13px;border-radius:999px','Мелкий ремонт'),this.el('span','font:600 13px/1 system-ui;color:#4C6FFF;background:#EEF1FF;padding:9px 13px;border-radius:999px','Сборка мебели')])
+        ]),
+        this.footer(this.cta('Продолжить', N))
+      ]); }
+      if(step===5){ const tile=(t,d)=>this.el('div','flex:1;background:#fff;border-radius:18px;box-shadow:inset 0 0 0 1px #E4E6EC;padding:22px 12px;text-align:center',[this.el('div','width:56px;height:56px;border-radius:16px;background:#EEF1FF;display:flex;align-items:center;justify-content:center;margin:0 auto', this.svg('<rect x="3" y="6" width="18" height="14" rx="3"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/>','#4C6FFF',{w:26,h:26})),this.el('div','font:600 14px/1.2 system-ui;margin-top:14px',t),this.el('div','font:500 12px/1.35 system-ui;color:#9AA0AD;margin-top:5px',d)]); return this.scr([
+        this.header('Подтверждение личности', true),
+        this.el('div','flex:1;padding:8px 24px 0;text-align:center',[
+          this.el('div','font:400 15px/1.5 system-ui;color:#7A808E;margin-bottom:22px','Загрузите фотографии для проверки'),
+          this.el('div','display:flex;gap:14px',[tile('Селфи','Ваше лицо'),tile('Селфи с документом','Удостоверение')]),
+          this.el('div','font:500 13px/1 system-ui;color:#9AA0AD;margin-top:24px','Обычно проверка занимает до 1 часа')
+        ]),
+        this.footer(this.cta('Отправить на проверку', N))
+      ]); }
+      if(step===6) return this.scr([
+        this.center([
+          this.ill('linear-gradient(160deg,#DCE4FB,#C9D6F7)', this.el('div','width:88px;height:88px;border-radius:999px;background:#fff;display:flex;align-items:center;justify-content:center', this.svg('<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5l3.5 2"/>','#4C6FFF',{w:50,h:50,sw:1.6}))),
+          this.el('div','font:700 24px/1.3 -apple-system,sans-serif;margin-top:32px;letter-spacing:-.4px','Проверяем ваши данные'),
+          this.el('div','font:400 15px/1.55 system-ui;color:#7A808E;margin-top:12px','Обычно до 1 часа. Пришлём уведомление.')
+        ]),
+        this.footer(this.cta('Готово, проверка прошла', N, '2'))
+      ]);
+      if(step===7) return this.scr([
+        this.center([
+          this.ill('linear-gradient(160deg,#3FD37A,#22C55E)', this.svg('<path d="m6 12.5 4 4 8-9"/>','#fff',{w:58,h:58,sw:2.4})),
+          this.el('div','font:700 24px/1.3 -apple-system,sans-serif;margin-top:32px;letter-spacing:-.4px','Верификация пройдена'),
+          this.el('div','font:400 15px/1.55 system-ui;color:#7A808E;margin-top:12px','Профиль подтверждён — можно откликаться на заказы.')
+        ]),
+        this.footer(this.cta('Смотреть заказы', this.restart.bind(this)))
+      ]);
+    }
+    // ============ FLOW B ============
+    if(flow==='B'){
+      if(step===0) return this.scr([
+        this.header('Создание заказа', false),
+        this.el('div','flex:1;padding:6px 24px 0',[
+          this.el('div','display:flex;align-items:center;gap:13px;background:#fff;border-radius:14px;padding:15px 16px;box-shadow:inset 0 0 0 1px #E4E6EC',[this.el('div','width:40px;height:40px;border-radius:11px;background:#EEF1FF;display:flex;align-items:center;justify-content:center', this.svg('<path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/>','#4C6FFF',{w:21,h:21})),this.el('div','flex:1',[this.el('div','font:500 11px/1 system-ui;color:#9AA0AD','Категория'),this.el('div','font:600 15px/1.2 system-ui;margin-top:3px','Электрика')])]),
+          this.el('div','background:#fff;border-radius:14px;box-shadow:inset 0 0 0 1px #E4E6EC;padding:14px 15px;margin-top:14px;font:400 14px/1.45 system-ui;min-height:70px','Установить двойную розетку в гостиной'),
+          this.el('div','display:flex;align-items:center;background:#fff;border-radius:14px;box-shadow:inset 0 0 0 1px #E4E6EC;padding:0 16px;height:56px;margin-top:14px',[this.el('span','font:700 19px/1 -apple-system,sans-serif;flex:1','5 000'),this.el('span','font:700 19px/1 -apple-system,sans-serif;color:#9AA0AD','₸')]),
+          this.el('div','display:flex;align-items:center;gap:12px;background:#fff;border-radius:14px;box-shadow:inset 0 0 0 1px #E4E6EC;padding:14px 16px;margin-top:14px',[this.svg('<path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/>','#4C6FFF',{w:20,h:20,sw:1.8}),this.el('div','flex:1',[this.el('div','font:600 14px/1.2 system-ui','ул. Абая, 150'),this.el('div','font:500 11px/1 system-ui;color:#16A34A;margin-top:3px','Определён автоматически')])])
+        ]),
+        this.footer(this.cta('Опубликовать', N))
+      ]);
+      if(step===1){ const resp=(n,av,avbg,price,tag,tagc,dipl)=>this.card(this.el('div','display:flex;gap:13px',[this.el('div',`width:48px;height:48px;border-radius:999px;background:${avbg};display:flex;align-items:center;justify-content:center;font:700 18px/1 -apple-system,sans-serif;color:#4C6FFF;flex:none`,av),this.el('div','flex:1;min-width:0',[this.el('div','display:flex;align-items:center;gap:5px',[this.el('span','font:600 15px/1.2 system-ui',n), dipl?React.createElement('svg',{key:'d',width:15,height:15,viewBox:'0 0 24 24',fill:'#4C6FFF',dangerouslySetInnerHTML:{__html:'<circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'}}):null]),this.el('div','font:500 12px/1 system-ui;color:#9AA0AD;margin-top:4px','4.9 · 63 заказа')]),this.el('div','text-align:right;flex:none',[this.el('div',`font:800 16px/1 -apple-system,sans-serif;color:${tagc};white-space:nowrap`,price),this.el('div',`font:500 10px/1 system-ui;color:${tagc};margin-top:3px`,tag)])])); return this.scr([
+        this.header('Отклики · 3', true),
+        this.el('div','flex:1;overflow-y:auto;padding:6px 20px 20px;display:flex;flex-direction:column;gap:12px',[
+          this.el('div',{onClick:N,style:this.css('cursor:pointer')}, resp('Ержан Т.','Е','#EEF1FF','5 000 ₸','принял','#16A34A',true)),
+          resp('Марат Ж.','М','#FDECEC','4 500 ₸','своя цена','#4C6FFF',false),
+          resp('Алия К.','А','#E7F6EC','6 000 ₸','своя цена','#4C6FFF',true),
+          this.el('div','font:500 12px/1.4 system-ui;color:#9AA0AD;text-align:center;margin-top:4px','Нажмите на отклик Ержана, чтобы открыть')
+        ])
+      ]); }
+      if(step===2) return this.scr([
+        this.header('Детали отклика', true),
+        this.el('div','flex:1;overflow-y:auto;padding:16px 24px 0',[
+          this.el('div','display:flex;flex-direction:column;align-items:center;text-align:center',[this.el('div','width:80px;height:80px;border-radius:999px;background:#EEF1FF;display:flex;align-items:center;justify-content:center;font:700 30px/1 -apple-system,sans-serif;color:#4C6FFF','Е'),this.el('div','display:flex;align-items:center;gap:6px;margin-top:12px',[this.el('span','font:800 20px/1 -apple-system,sans-serif','Ержан Т.'),React.createElement('svg',{key:'d',width:18,height:18,viewBox:'0 0 24 24',fill:'#4C6FFF',dangerouslySetInnerHTML:{__html:'<circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'}})]),this.el('div','margin-top:10px',this.badge())]),
+          this.el('div','background:#EEF1FF;border-radius:16px;padding:16px;margin-top:20px',[this.el('div','font:600 13px/1 system-ui;color:#4C6FFF;margin-bottom:8px','Предложение'),this.el('div','display:flex;justify-content:space-between;align-items:baseline',[this.el('span','font:800 24px/1 -apple-system,sans-serif','5 000 ₸'),this.el('span','font:500 13px/1 system-ui;color:#4C6FFF','принял вашу цену')])])
+        ]),
+        this.el('div','padding:14px 24px 40px;display:flex;gap:12px',[this.el('div','width:120px;flex:none;height:52px;border-radius:15px;background:#fff;box-shadow:inset 0 0 0 1px #E4E6EC;display:flex;align-items:center;justify-content:center;font:600 15px/1 system-ui;color:#141824','Отклонить'),this.el('div',{onClick:N,style:this.css('flex:1;height:54px;border-radius:15px;background:#4C6FFF;display:flex;align-items:center;justify-content:center;font:600 16px/1 system-ui;color:#fff;cursor:pointer')},'Принять')])
+      ]);
+      if(step===3) return this.scr([
+        this.el('div','display:flex;align-items:center;gap:12px;padding:4px 20px 12px;background:#fff;box-shadow:0 1px 0 #ECEDF1',[this.el('div',{onClick:this.back.bind(this),style:this.css('width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer')},this.svg('<path d="M15 5l-7 7 7 7"/>','#141824',{sw:2})),this.el('div','width:40px;height:40px;border-radius:999px;background:#EEF1FF;display:flex;align-items:center;justify-content:center;font:700 15px/1 -apple-system,sans-serif;color:#4C6FFF','Е'),this.el('div','flex:1',[this.el('div','font:600 15px/1.2 system-ui','Ержан Т.'),this.el('div','font:500 12px/1 system-ui;color:#16A34A;margin-top:2px','в сети')]),this.el('span','font:600 12px/1 system-ui;color:#DC2626','Пожаловаться')]),
+        this.el('div','flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:10px;background:#F5F6F8',[
+          this.el('div','align-self:flex-start;max-width:76%;background:#fff;border-radius:18px 18px 18px 5px;padding:11px 14px;font:400 14px/1.4 system-ui;box-shadow:0 1px 2px rgba(20,24,40,.05)','Здравствуйте! Могу подъехать к 18:30'),
+          this.el('div','align-self:flex-end;max-width:76%;background:#4C6FFF;color:#fff;border-radius:18px 18px 5px 18px;padding:11px 14px;font:400 14px/1.4 system-ui','Да, отлично. Домофон 42')
+        ]),
+        this.footer(this.cta('Работа выполнена → завершить', N))
+      ]);
+      if(step===4) return this.scr([
+        this.header('Заказ', true),
+        this.el('div','flex:1;padding:16px 24px 0',[
+          this.card([this.el('div','width:72px;height:72px;border-radius:999px;background:#FBEFDD;display:flex;align-items:center;justify-content:center;margin:0 auto', this.svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>','#B45309',{w:36,h:36,sw:1.8})),this.el('div','font:700 19px/1.3 -apple-system,sans-serif;margin-top:16px;text-align:center','Ожидает подтверждения'),this.el('div','font:400 14px/1.5 system-ui;color:#7A808E;margin-top:10px;text-align:center','Исполнитель подтвердит завершение. Если не ответит за 24 часа — заказ закроется автоматически.'),this.el('div','text-align:center;margin-top:16px',this.pill('Автозакрытие через 24 ч','amber'))],'22px')
+        ]),
+        this.footer(this.cta('Заказ выполнен → оценить', N))
+      ]);
+      if(step===5){ const stars=this.el('div','display:flex;justify-content:center;gap:12px;margin-top:24px',[0,1,2,3].map(i=>React.createElement('svg',{key:i,width:42,height:42,viewBox:'0 0 24 24',fill:'#E8981F',dangerouslySetInnerHTML:{__html:'<path d="m12 3 2.5 5.5 6 .5-4.5 4 1.4 6L12 16l-5.4 3 1.4-6-4.5-4 6-.5L12 3Z"/>'}}).valueOf ? React.createElement('svg',{key:i,width:42,height:42,viewBox:'0 0 24 24',fill:'#E8981F',dangerouslySetInnerHTML:{__html:'<path d="m12 3 2.5 5.5 6 .5-4.5 4 1.4 6L12 16l-5.4 3 1.4-6-4.5-4 6-.5L12 3Z"/>'}}) : null).concat([React.createElement('svg',{key:4,width:42,height:42,viewBox:'0 0 24 24',fill:'none',stroke:'#E1E3E9',strokeWidth:1.6,dangerouslySetInnerHTML:{__html:'<path d="m12 3 2.5 5.5 6 .5-4.5 4 1.4 6L12 16l-5.4 3 1.4-6-4.5-4 6-.5L12 3Z" stroke-linejoin="round"/>'}})])); return this.scr([
+        this.el('div','flex:1;padding:30px 24px 0;text-align:center;display:flex;flex-direction:column',[
+          this.el('div','width:80px;height:80px;border-radius:999px;background:#EEF1FF;display:flex;align-items:center;justify-content:center;margin:0 auto;font:700 30px/1 -apple-system,sans-serif;color:#4C6FFF','Е'),
+          this.el('div','font:700 22px/1.3 -apple-system,sans-serif;margin-top:18px;letter-spacing:-.4px','Оцените работу Ержана'),
+          stars,
+          this.el('div','background:#F5F6F8;border-radius:14px;padding:14px 15px;font:400 14px/1.45 system-ui;color:#141824;min-height:90px;text-align:left;margin-top:26px','Всё аккуратно и быстро, приехал вовремя.'),
+          this.el('div','text-align:right;font:500 12px/1 system-ui;color:#9AA0AD;margin-top:6px','54 / 300'),
+          this.el('div','font:500 12px/1 system-ui;color:#9AA0AD;margin-top:14px','Можно изменить в течение 24 часов'),
+          this.el('div','flex:1'),
+          this.el('div',{onClick:this.restart.bind(this),style:this.css('height:54px;border-radius:15px;background:#4C6FFF;display:flex;align-items:center;justify-content:center;font:600 16px/1 system-ui;color:#fff;cursor:pointer;margin-bottom:34px')},'Отправить оценку')
+        ])
+      ]); }
+    }
+    // ============ FLOW C ============
+    if(flow==='C'){
+      if(step===0){ const ord=(cat,catc,title,dist,price,onClick)=>this.el('div',onClick?{onClick,style:this.css('cursor:pointer')}:{}, this.card([this.el('div','display:flex;justify-content:space-between;align-items:center;margin-bottom:9px',[this.pill(cat,catc),this.el('span','font:500 12px/1 system-ui;color:#9AA0AD',dist.t)]),this.el('div','font:600 16px/1.25 system-ui',title),this.el('div','display:flex;justify-content:space-between;align-items:baseline;margin-top:11px',[this.el('span','font:700 17px/1 -apple-system,sans-serif;white-space:nowrap',price),this.el('span','font:600 13px/1 system-ui;color:#7A808E',dist.d)])])); return this.scr([
+        this.header('Лента заказов', false),
+        this.el('div','flex:1;overflow-y:auto;padding:6px 20px 20px;display:flex;flex-direction:column;gap:12px',[
+          this.el('div','font:700 12px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:#9AA0AD;margin:4px 2px 0','Рядом'),
+          ord('Электрика','indigo','Установить розетку',{t:'16 мин',d:'800 м'},'5 000 ₸',N),
+          ord('Сантехника','indigo','Подключить панель',{t:'22 мин',d:'2,1 км'},'8 500 ₸',null),
+          this.el('div','font:500 12px/1.4 system-ui;color:#9AA0AD;text-align:center','Нажмите на первый заказ')
+        ])
+      ]); }
+      if(step===1) return this.scr([
+        this.header('Заказ', true),
+        this.el('div','flex:1;overflow-y:auto;padding:6px 24px 0',[
+          this.pill('Электрика','indigo'),
+          this.el('div','font:700 23px/1.15 -apple-system,sans-serif;letter-spacing:-.5px;margin-top:14px','Установить розетку'),
+          this.el('div','display:flex;align-items:center;gap:8px;margin-top:12px',[this.svg('<path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/>','#7A808E',{w:18,h:18,sw:1.8}),this.el('span','font:500 14px/1.3 system-ui;color:#3A3F4B','Бостандыкский р-н · 800 м')]),
+          this.el('div','display:flex;align-items:center;gap:8px;margin-top:10px;background:#FBEFDD;border-radius:12px;padding:10px 12px',[this.svg('<rect x="4" y="6" width="16" height="14" rx="3"/><path d="M8 6V4M16 6V4M4 11h16"/>','#B45309',{w:16,h:16,sw:1.9}),this.el('span','font:500 12px/1.3 system-ui;color:#8A5209','Точный адрес откроется после принятия')]),
+          this.el('div','font:400 14px/1.5 system-ui;color:#3A3F4B;margin-top:18px','Нужно установить двойную розетку. Проводка уже подведена.')
+        ]),
+        this.footer(this.cta('Откликнуться', N))
+      ]);
+      if(step===2){ return this.scr([
+        this.el('div','position:absolute;inset:0;background:rgba(20,24,40,.4)'),
+        this.el('div','position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:26px 26px 0 0;padding:10px 22px 30px;box-shadow:0 -20px 50px -20px rgba(20,24,40,.4)',[
+          this.el('div','width:40px;height:5px;border-radius:3px;background:#E1E3E9;margin:2px auto 16px'),
+          this.el('div','font:700 20px/1 -apple-system,sans-serif;margin-bottom:16px','Ваш отклик'),
+          this.el('div','display:flex;justify-content:space-between;align-items:center;border-radius:14px;padding:15px 16px;background:#EEF1FF;box-shadow:inset 0 0 0 2px #4C6FFF;margin-bottom:12px',[this.el('div',[this.el('div','font:600 15px/1.2 system-ui','Принять цену заказчика'),this.el('div','font:500 12px/1.2 system-ui;color:#7A808E;margin-top:3px','Соглашаетесь на 5 000 ₸')]),this.el('div','font:700 16px/1 -apple-system,sans-serif','5 000 ₸')]),
+          this.el('div','display:flex;justify-content:space-between;align-items:center;border-radius:14px;padding:15px 16px;background:#F5F6F8;box-shadow:inset 0 0 0 1px #E4E6EC',[this.el('div','font:600 15px/1.2 system-ui','Предложить свою цену'),this.el('div','width:22px;height:22px;border-radius:999px;box-shadow:inset 0 0 0 1.5px #C3C8D2')]),
+          this.el('div','font:400 12px/1.4 system-ui;color:#9AA0AD;text-align:center;margin:16px 0 12px','Без комиссии · клиент увидит вашу цену'),
+          this.cta('Отправить отклик', N)
+        ])
+      ]); }
+      if(step===3) return this.scr([
+        this.header('Мой отклик', true),
+        this.el('div','flex:1;padding:16px 24px 0',[
+          this.el('div','text-align:center',this.pill('Принят','indigo')),
+          this.el('div','font:700 22px/1.3 -apple-system,sans-serif;text-align:center;margin-top:14px;letter-spacing:-.4px','Заказчик принял отклик'),
+          this.el('div','font:400 14px/1.5 system-ui;color:#7A808E;text-align:center;margin-top:8px','Адрес теперь доступен. Свяжитесь в чате.'),
+          this.card([this.el('div','display:flex;justify-content:space-between;padding:4px 0',[this.el('span','font:500 14px/1 system-ui;color:#7A808E','Адрес'),this.el('span','font:600 14px/1 system-ui','ул. Абая, 150, кв. 42')]),this.el('div','height:1px;background:#F0F1F4;margin:8px 0'),this.el('div','display:flex;justify-content:space-between;padding:4px 0',[this.el('span','font:500 14px/1 system-ui;color:#7A808E','Цена'),this.el('span','font:600 14px/1 system-ui','5 000 ₸')])],'16px')
+        ]),
+        this.footer(this.cta('Отметить выполненным', N))
+      ]);
+      if(step===4) return this.scr([
+        this.center([
+          this.ill('linear-gradient(160deg,#3FD37A,#22C55E)', this.svg('<path d="m6 12.5 4 4 8-9"/>','#fff',{w:58,h:58,sw:2.4})),
+          this.el('div','font:700 24px/1.3 -apple-system,sans-serif;margin-top:32px;letter-spacing:-.4px','Заказ выполнен'),
+          this.el('div','font:400 15px/1.55 system-ui;color:#7A808E;margin-top:12px','Клиент подтвердил завершение. Ждите оценку — она попадёт в ваш профиль.')
+        ]),
+        this.footer(this.cta('К ленте заказов', this.restart.bind(this)))
+      ]);
+    }
+    // ============ FLOW D ============
+    if(flow==='D'){
+      if(step===0) return this.scr([
+        this.header('Баланс', true),
+        this.el('div','flex:1;padding:6px 20px 0',[
+          this.el('div','background:linear-gradient(150deg,#8A93A5,#6B7280);border-radius:22px;padding:22px;box-shadow:0 18px 34px -16px rgba(20,24,40,.4)',[this.el('div','font:500 13px/1 system-ui;color:rgba(255,255,255,.8)','Текущий баланс'),this.el('div','font:800 40px/1 -apple-system,sans-serif;color:#fff;letter-spacing:-1px;margin-top:8px','0 ₸')]),
+          this.el('div','display:flex;align-items:center;gap:10px;background:#FBEFDD;border-radius:16px;padding:14px 16px;margin-top:14px',[this.el('div','width:9px;height:9px;border-radius:999px;background:#B45309'),this.el('span','font:600 14px/1 system-ui;color:#8A5209;flex:1','Подписка неактивна')]),
+          this.el('div','font:400 13px/1.5 system-ui;color:#7A808E;margin-top:16px;text-align:center','Пополните баланс, чтобы откликаться на заказы')
+        ]),
+        this.footer(this.cta('Попробовать откликнуться', N))
+      ]);
+      if(step===1) return this.scr([
+        this.el('div','position:absolute;inset:0;padding:100px 24px 0;filter:blur(2px);opacity:.4',[this.el('div','font:700 23px/1.15 -apple-system,sans-serif','Заменить люстру'),this.el('div','height:150px;border-radius:18px;background:#EDEFF3;margin-top:16px')]),
+        this.el('div','position:absolute;inset:0;background:rgba(20,24,40,.45);display:flex;align-items:center;justify-content:center;padding:28px', this.el('div','background:#fff;border-radius:24px;padding:26px 22px;text-align:center;width:100%;box-shadow:0 30px 60px -20px rgba(20,24,40,.5)',[
+          this.el('div','width:90px;height:90px;border-radius:999px;background:linear-gradient(160deg,#EEF1FF,#DDE4FB);display:flex;align-items:center;justify-content:center;margin:0 auto', this.svg('<path d="M3 8a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v1M3 8v9a2 2 0 0 0 2 2h13a1 1 0 0 0 1-1v-3M21 11v4h-4a2 2 0 0 1 0-4h4Z"/>','#4C6FFF',{w:42,h:42,sw:1.6})),
+          this.el('div','font:700 20px/1.3 -apple-system,sans-serif;margin-top:18px','Подписка неактивна'),
+          this.el('div','font:400 14px/1.5 system-ui;color:#7A808E;margin-top:9px','Баланс 0 ₸ — новые отклики недоступны. Пополните баланс.'),
+          this.el('div','margin-top:20px',this.cta('Пополнить баланс', N)),
+          this.el('div','font:600 14px/1 system-ui;color:#7A808E;margin-top:16px','Не сейчас')
+        ]))
+      ]);
+      if(step===2){ const chip=(v,sel)=>this.el('div',`flex:1;text-align:center;font:600 14px/1 system-ui;padding:11px 0;border-radius:12px;${sel?'color:#4C6FFF;background:#EEF1FF;box-shadow:inset 0 0 0 1.5px #4C6FFF':'color:#7A808E;background:#F2F3F6'}`,v); const method=(name,ic,sel,icbg)=>this.el('div',`display:flex;align-items:center;gap:13px;background:#fff;border-radius:14px;padding:14px 16px;margin-top:12px;${sel?'box-shadow:inset 0 0 0 1.5px #4C6FFF':'box-shadow:inset 0 0 0 1px #E4E6EC'}`,[this.el('div',`width:40px;height:40px;border-radius:11px;background:${icbg};display:flex;align-items:center;justify-content:center;font:800 15px/1 -apple-system,sans-serif;color:#fff`,ic),this.el('span','flex:1;font:600 15px/1 system-ui',name),this.el('div',`width:22px;height:22px;border-radius:999px;${sel?'background:#4C6FFF':'box-shadow:inset 0 0 0 1.5px #C3C8D2'};display:flex;align-items:center;justify-content:center`, sel?this.svg('<path d="m5 12 5 5 9-11"/>','#fff',{w:13,h:13,sw:3}):null)]); return this.scr([
+        this.header('Пополнение', true),
+        this.el('div','flex:1;padding:16px 24px 0',[
+          this.el('div','display:flex;align-items:center;background:#fff;border-radius:14px;box-shadow:inset 0 0 0 1px #E4E6EC;padding:0 16px;height:58px',[this.el('span','font:700 22px/1 -apple-system,sans-serif;flex:1','2 000'),this.el('span','font:700 22px/1 -apple-system,sans-serif;color:#9AA0AD','₸')]),
+          this.el('div','display:flex;gap:8px;margin-top:12px',[chip('1 000',false),chip('2 000',true),chip('5 000',false),chip('10 000',false)]),
+          method('Kaspi','K',true,'#FF3B30'),
+          method('Банковская карта','',false,'#F0F1F4')
+        ]),
+        this.footer(this.cta('Пополнить на 2 000 ₸', N))
+      ]); }
+      if(step===3) return this.scr([
+        this.center([
+          this.ill('linear-gradient(160deg,#3FD37A,#22C55E)', this.svg('<path d="m6 12.5 4 4 8-9"/>','#fff',{w:58,h:58,sw:2.4})),
+          this.el('div','font:700 24px/1.3 -apple-system,sans-serif;margin-top:32px;letter-spacing:-.4px','Баланс пополнен'),
+          this.el('div','font:400 15px/1.55 system-ui;color:#7A808E;margin-top:12px','+2 000 ₸ зачислены. Подписка активна — можно откликаться на заказы.'),
+          this.el('div','margin-top:20px',this.pill('Подписка активна','green'))
+        ]),
+        this.footer(this.cta('Готово', this.restart.bind(this)))
+      ]);
+    }
+    return this.el('div','padding:40px;text-align:center;color:#9AA0AD','—');
+  }
+}
+</script>
+</body>
+</html>

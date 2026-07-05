@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:#EDEEF1;font-family:-apple-system,'SF Pro Display','SF Pro Text','Inter',system-ui,sans-serif;color:#141824;-webkit-font-smoothing:antialiased}
+  .navbtn{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:12px;cursor:pointer;border:none;width:100%;text-align:left;background:transparent;transition:background .12s ease}
+  .navbtn:hover{background:#F0F1F4}
+  iframe{border:0;width:100%;height:100%;display:block;background:#EDEEF1}
+</style>
+</helmet>
+
+<div style="display:flex;height:100vh;width:100%;overflow:hidden">
+
+  <!-- SIDEBAR -->
+  <div style="width:280px;flex:none;background:#fff;box-shadow:1px 0 0 #E7E9EE;display:flex;flex-direction:column;height:100%">
+    <div style="padding:26px 22px 18px;display:flex;align-items:center;gap:11px;flex:none">
+      <div style="width:38px;height:38px;border-radius:11px;background:#4C6FFF;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.4"/></svg></div>
+      <div><div style="font:800 20px/1 -apple-system,sans-serif;letter-spacing:-.6px;color:#4C6FFF">Zovu</div><div style="font:500 11px/1 system-ui;color:#9AA0AD;margin-top:4px">дизайн-приложение</div></div>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:6px 12px 20px">{{ nav }}</div>
+    <div style="padding:14px 20px 20px;flex:none;border-top:1px solid #F0F1F4;font:500 11px/1.5 system-ui;color:#B0B5C0">B2C · 2 роли · RU/KZ · 390×844</div>
+  </div>
+
+  <!-- MAIN -->
+  <div style="flex:1;display:flex;flex-direction:column;height:100%;min-width:0">
+    <div style="height:56px;flex:none;background:#fff;box-shadow:0 1px 0 #E7E9EE;display:flex;align-items:center;gap:12px;padding:0 22px">
+      <div style="font:700 16px/1 -apple-system,sans-serif;flex:1">{{ title }}</div>
+      <span style="font:500 12px/1 system-ui;color:#9AA0AD">{{ subtitle }}</span>
+      <a href="{{ openHref }}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font:600 12px/1 system-ui;color:#4C6FFF;text-decoration:none;background:#EEF1FF;padding:9px 13px;border-radius:999px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M21 3l-9 9M10 5H5v14h14v-5"/></svg>В новой вкладке</a>
+    </div>
+    <div style="flex:1;min-height:0"><iframe src="{{ src }}" title="{{ title }}"></iframe></div>
+  </div>
+
+</div>
+
+<template id="__bundler_thumbnail" data-bg-color="#4C6FFF">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#4C6FFF"/>
+    <g transform="translate(600 360)" fill="none" stroke="#ffffff" stroke-width="26" stroke-linejoin="round">
+      <path d="M0 150 C-95 30 -140 -30 -140 -95 A140 140 0 1 1 140 -95 C140 -30 95 30 0 150 Z"/>
+      <circle cx="0" cy="-95" r="46" fill="#ffffff" stroke="none"/>
+    </g>
+    <text x="600" y="640" font-family="-apple-system, Inter, sans-serif" font-size="120" font-weight="800" letter-spacing="-4" fill="#ffffff" text-anchor="middle">Zovu</text>
+  </svg>
+</template></x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { i: 7 };
+  items = [
+    { g:'Флоу', name:'Онбординг специалиста', sub:'9 экранов', file:'Zovu - Онбординг.dc.html', tint:'#EEF1FF', stroke:'#4C6FFF', icon:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/>' },
+    { g:'Флоу', name:'Заказчик', sub:'10 экранов', file:'Zovu - Заказчик.dc.html', tint:'#EEF1FF', stroke:'#4C6FFF', icon:'<path d="M5 8h14l-1.5 11H6.5L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>' },
+    { g:'Флоу', name:'Специалист', sub:'11 экранов', file:'Zovu - Специалист.dc.html', tint:'#EEF1FF', stroke:'#4C6FFF', icon:'<path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/>' },
+    { g:'Флоу', name:'Общие экраны', sub:'4 экрана', file:'Zovu - Общие.dc.html', tint:'#EEF1FF', stroke:'#4C6FFF', icon:'<path d="M12 3a4 4 0 0 1 4 4v3l2 4H6l2-4V7a4 4 0 0 1 4-4Z"/><path d="M10 20a2 2 0 0 0 4 0"/>' },
+    { g:'Флоу', name:'Ключевые экраны', sub:'токены + 5', file:'Zovu - Ключевые экраны.dc.html', tint:'#EEF1FF', stroke:'#4C6FFF', icon:'<rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/>' },
+    { g:'Ресурсы', name:'Состояния', sub:'17 состояний', file:'Zovu - Состояния.dc.html', tint:'#FBEFDD', stroke:'#B45309', icon:'<circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/>' },
+    { g:'Ресурсы', name:'Компоненты', sub:'библиотека', file:'Zovu - Компоненты.dc.html', tint:'#E7F6EC', stroke:'#16A34A', icon:'<rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/>' },
+    { g:'Ресурсы', name:'Прототипы', sub:'4 флоу · кликабельно', file:'Zovu - Прототип.dc.html', tint:'#4C6FFF', stroke:'#fff', icon:'<path d="M7 4v16l13-8-13-8Z"/>' },
+    { g:'Ресурсы', name:'Карта экранов', sub:'обзор проекта', file:'Zovu - Карта экранов.dc.html', tint:'#EEF1FF', stroke:'#4C6FFF', icon:'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/>' },
+  ];
+
+  renderNav(){
+    const cur = this.state.i;
+    const out = [];
+    let lastG = null;
+    this.items.forEach((it, idx) => {
+      if (it.g !== lastG) {
+        out.push(React.createElement('div', { key:'g'+idx, style:{ font:'700 11px/1 system-ui', letterSpacing:'.12em', textTransform:'uppercase', color:'#9AA0AD', margin: idx===0 ? '10px 12px 8px' : '20px 12px 8px' } }, it.g));
+        lastG = it.g;
+      }
+      const active = idx === cur;
+      out.push(React.createElement('button', {
+        key: idx,
+        onClick: () => this.setState({ i: idx }),
+        className: 'navbtn',
+        style: active ? { background:'#EEF1FF' } : {},
+      }, [
+        React.createElement('span', { key:'ic', style:{ width:'34px', height:'34px', borderRadius:'10px', background: it.tint, display:'flex', alignItems:'center', justifyContent:'center', flex:'none' } },
+          React.createElement('svg', { width:18, height:18, viewBox:'0 0 24 24', fill:'none', stroke: it.stroke, strokeWidth:1.8, strokeLinecap:'round', strokeLinejoin:'round', dangerouslySetInnerHTML:{ __html: it.icon } })),
+        React.createElement('span', { key:'tx', style:{ flex:1, minWidth:0 } }, [
+          React.createElement('span', { key:'n', style:{ display:'block', font: active?'700 14px/1.2 system-ui':'600 14px/1.2 system-ui', color: active?'#3B58D6':'#141824' } }, it.name),
+          React.createElement('span', { key:'s', style:{ display:'block', font:'500 11px/1 system-ui', color:'#9AA0AD', marginTop:'4px' } }, it.sub),
+        ]),
+      ]));
+    });
+    return out;
+  }
+
+  renderVals(){
+    const it = this.items[this.state.i];
+    return { nav: this.renderNav(), src: it.file, title: it.name, subtitle: it.sub, openHref: it.file };
+  }
+}
+</script>
+</body>
+</html>

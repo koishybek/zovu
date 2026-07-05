@@ -1,0 +1,41 @@
+/* =========================================================================
+   BASE / RESET
+   Minimal global defaults so any page that links the design system inherits
+   Polaris typography and surface colors. Component styles never depend on
+   this — it only sets sensible document-level defaults.
+   ========================================================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--p-font-family-sans);
+  font-size: var(--p-font-size-325);
+  font-weight: var(--p-font-weight-regular);
+  line-height: var(--p-font-line-height-500);
+  letter-spacing: var(--p-font-letter-spacing-normal);
+  color: var(--p-color-text);
+  background-color: var(--p-color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga' 1, 'calt' 1;
+}
+
+/* Inter renders best with these features; respect reduced motion globally. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

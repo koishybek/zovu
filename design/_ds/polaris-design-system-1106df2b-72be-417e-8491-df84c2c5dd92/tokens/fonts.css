@@ -1,0 +1,26 @@
+/* =========================================================================
+   WEBFONTS
+   Polaris specifies "Inter" with a system fallback stack. The Polaris repo
+   does not ship the Inter binary, so this design system self-references Inter
+   as a variable font (weight axis 100–900). A continuous weight axis is
+   REQUIRED because Polaris uses non-standard weights: regular 450, medium 550,
+   semibold 650.
+   --- SUBSTITUTION NOTE: these @font-face src URLs point at the open-source
+   Inter variable woff2 (served via jsDelivr / Fontsource). For offline or
+   air-gapped builds, download the woff2 files into a local /fonts folder and
+   repoint the src() below. ---
+   ========================================================================= */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('https://cdn.jsdelivr.net/fontsource/fonts/inter:vf@latest/latin-wght-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('https://cdn.jsdelivr.net/fontsource/fonts/inter:vf@latest/latin-wght-italic.woff2') format('woff2');
+}

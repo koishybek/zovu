@@ -1,0 +1,30 @@
+# Node / NestJS / React PWA / Admin
+node_modules/
+dist/
+dist-ssr/
+coverage/
+*.log
+
+# Vite / PWA (apps/web)
+apps/web/dev-dist/
+.vite/
+
+# Env / secrets
+.env
+.env.local
+*.env
+!.env.example
+
+# Dev storage fallback (ADR-005)
+apps/api/.storage/
+
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+Thumbs.db
+.DS_Store
+
+# Obsidian workspace (локальное состояние, не контент)
+docs/.obsidian/workspace.json
+docs/.obsidian/workspace-mobile.json

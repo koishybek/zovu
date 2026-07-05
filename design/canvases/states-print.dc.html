@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style data-omelette-print-defaults>
+@media print {
+  @page { margin: 0.5in; }
+  h1, h2, h3, h4, h5, h6 { break-after: avoid; }
+  figure, table, pre, blockquote, img, svg, tr, [class~="card" i] { break-inside: avoid; }
+  img, svg { max-width: 100%; }
+  p { orphans: 3; widows: 3; }
+}
+</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#EDEEF1;-webkit-font-smoothing:antialiased}
+  .zscroll::-webkit-scrollbar{width:0;height:0}.zscroll{scrollbar-width:none}
+  .zf{width:390px;height:844px;border-radius:44px;box-shadow:0 30px 70px -34px rgba(20,24,40,.34),0 0 0 1px rgba(20,24,40,.04);position:relative;overflow:hidden;display:flex;flex-direction:column;font-family:-apple-system,'SF Pro Display','SF Pro Text','Inter',system-ui,sans-serif;color:#141824}
+  .zhome{position:absolute;left:50%;transform:translateX(-50%);bottom:9px;width:134px;height:5px;border-radius:3px;background:#141824;opacity:.9}
+  .zback{width:30px;height:30px;display:flex;align-items:center;justify-content:center;flex:none;margin-left:-4px}
+  .zcap{font:600 13px/1 system-ui;color:#3A3F4B;text-align:center;margin-top:16px}
+  .zcap span{color:#9AA0AD;font-weight:500}
+  .zbtn{height:54px;border-radius:15px;background:#4C6FFF;display:flex;align-items:center;justify-content:center;font:600 16px/1 system-ui;color:#fff}
+  .zbtn2{height:54px;border-radius:15px;background:#EEF1FF;display:flex;align-items:center;justify-content:center;font:600 16px/1 system-ui;color:#4C6FFF}
+  .zsh{box-shadow:0 1px 2px rgba(20,24,40,.04),0 6px 18px -10px rgba(20,24,40,.12)}
+  .zpill{font:600 12px/1 system-ui;padding:7px 12px;border-radius:999px;display:inline-flex;align-items:center;gap:5px}
+  .ztitle{font:700 18px/1 -apple-system,sans-serif;letter-spacing:-.3px}
+  .zsb{display:flex;justify-content:space-between;align-items:center;padding:15px 26px 4px;font:600 15px/1 -apple-system,sans-serif;flex:none}
+  .zill{width:120px;height:120px;border-radius:999px;display:flex;align-items:center;justify-content:center}
+  .zeh{font:700 22px/1.3 -apple-system,sans-serif;letter-spacing:-.4px;margin-top:28px}
+  .zes{font:400 15px/1.55 system-ui;color:#7A808E;margin-top:12px}
+  @keyframes zsk{0%{opacity:.55}50%{opacity:1}100%{opacity:.55}}
+  .sk{background:#EAECF1;border-radius:8px;animation:zsk 1.3s ease-in-out infinite}
+  .grp-h{font:800 20px/1 -apple-system,sans-serif;color:#4C6FFF;margin:8px 0 22px;letter-spacing:-.3px}
+</style>
+</helmet>
+
+<div style="font-family:-apple-system,'SF Pro Display','SF Pro Text','Inter',system-ui,sans-serif;color:#141824;padding:52px 60px 80px">
+
+  <div style="font:800 34px/1 -apple-system,sans-serif;letter-spacing:-1px;color:#4C6FFF">Состояния</div>
+  <div style="font:500 14px/1.5 system-ui;color:#6B7280;max-width:740px;margin:10px 0 40px">Пустые · загрузка · ошибки · нет GPS · блокировки · флоу «Предложить свою категорию». Мягкие дружелюбные иллюстрации, line-иконки, без эмодзи.</div>
+
+  <!-- ===== ПУСТЫЕ ===== -->
+  <div class="grp-h">Пустые состояния</div>
+  <div style="display:flex;flex-wrap:wrap;gap:44px;align-items:flex-start;margin-bottom:52px">
+
+    <!-- нет заказов рядом -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div class="zsb"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="display:flex;align-items:center;justify-content:center;padding:8px 20px 12px"><div class="ztitle">Лента заказов</div></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 40px;text-align:center">
+          <div class="zill" style="background:linear-gradient(160deg,#EEF1FF,#DDE4FB)"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.5"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.4"/></svg></div>
+          <div class="zeh">Рядом пока нет заказов</div>
+          <div class="zes">Как только поблизости появится задача по вашим категориям — она сразу окажется здесь.</div>
+        </div>
+        <div style="padding:0 24px 44px"><div class="zbtn2">Расширить радиус поиска</div></div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">Пусто · нет заказов рядом</figcaption>
+    </figure>
+
+    <!-- нет откликов + Ф-08 -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div class="zsb"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:8px 24px 12px"><div style="position:absolute;left:24px" class="zback"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#141824" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></div><div class="ztitle">Отклики</div></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 34px;text-align:center">
+          <div class="zill" style="background:linear-gradient(160deg,#EEF1FF,#DDE4FB)"><svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.5"><path d="M4 5h16v11H9l-4 3v-3H4V5Z" stroke-linejoin="round"/><path d="M9 10h6" stroke-linecap="round"/></svg></div>
+          <div class="zeh">Пока нет откликов</div>
+          <div class="zes">Специалисты рядом уже видят ваш заказ. Обычно первые отклики приходят в течение 10 минут.</div>
+          <div style="display:flex;gap:11px;background:#FBEFDD;border-radius:14px;padding:14px 16px;margin-top:22px;text-align:left"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="1.8" style="flex:none;margin-top:1px"><path d="M5 5h14M8 12h8M11 19h2" stroke-linecap="round"/></svg><div><div style="font:600 13px/1.3 system-ui;color:#8A5209">Мало откликов?</div><div style="font:500 13px/1.4 system-ui;color:#9A6212;margin-top:3px">Смягчите фильтры — увеличьте радиус или снизьте мин. рейтинг.</div></div></div>
+        </div>
+        <div style="padding:0 24px 44px"><div class="zbtn2">Смягчить фильтры</div></div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">Пусто · нет откликов <span>(Ф-08)</span></figcaption>
+    </figure>
+
+    <!-- пустая история -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div class="zsb"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="display:flex;align-items:center;justify-content:center;padding:8px 20px 12px"><div class="ztitle">Мои заказы</div></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 40px;text-align:center">
+          <div class="zill" style="background:linear-gradient(160deg,#EEF1FF,#DDE4FB)"><svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.5"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 9h6M9 13h6M9 17h3" stroke-linecap="round"/></svg></div>
+          <div class="zeh">Здесь появятся ваши заказы</div>
+          <div class="zes">Опубликуйте первую задачу — и специалисты рядом откликнутся с ценой.</div>
+        </div>
+        <div style="padding:0 24px 44px"><div class="zbtn">Создать заказ</div></div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">Пусто · история заказов</figcaption>
+    </figure>
+
+    <!-- нет уведомлений -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div class="zsb"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="display:flex;align-items:center;justify-content:center;padding:8px 20px 12px"><div class="ztitle">Уведомления</div></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 40px;text-align:center">
+          <div class="zill" style="background:linear-gradient(160deg,#EEF1FF,#DDE4FB)"><svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.5"><path d="M12 3a4 4 0 0 1 4 4v3l2 4H6l2-4V7a4 4 0 0 1 4-4Z" stroke-linejoin="round"/><path d="M10 20a2 2 0 0 0 4 0" stroke-linecap="round"/></svg></div>
+          <div class="zeh">Уведомлений нет</div>
+          <div class="zes">Здесь будут отклики, статусы заказов, ответы поддержки и результаты проверок.</div>
+        </div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">Пусто · уведомления</figcaption>
+    </figure>
+
+  </div>
+
+  <!-- ===== ЗАГРУЗКА ===== -->
+  <div class="grp-h">Загрузка · скелетоны</div>
+  <div style="display:flex;flex-wrap:wrap;gap:44px;align-items:flex-start;margin-bottom:52px">
+
+    <!-- скелетон ленты -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div class="zsb"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="display:flex;align-items:center;justify-content:center;padding:8px 20px 12px"><div class="ztitle">Лента заказов</div></div>
+        <div style="flex:1;padding:6px 20px 30px">
+          <div class="sk" style="width:120px;height:14px;margin:8px 2px 16px"></div>
+          <div style="background:#fff;border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:inset 0 0 0 1px #F0F1F4"><div style="display:flex;justify-content:space-between"><div class="sk" style="width:70px;height:22px;border-radius:999px"></div><div class="sk" style="width:50px;height:12px"></div></div><div class="sk" style="width:75%;height:16px;margin-top:14px"></div><div class="sk" style="width:55%;height:12px;margin-top:10px"></div><div style="display:flex;justify-content:space-between;margin-top:16px"><div class="sk" style="width:64px;height:18px"></div><div class="sk" style="width:44px;height:12px"></div></div></div>
+          <div style="background:#fff;border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:inset 0 0 0 1px #F0F1F4"><div style="display:flex;justify-content:space-between"><div class="sk" style="width:84px;height:22px;border-radius:999px"></div><div class="sk" style="width:50px;height:12px"></div></div><div class="sk" style="width:65%;height:16px;margin-top:14px"></div><div class="sk" style="width:48%;height:12px;margin-top:10px"></div><div style="display:flex;justify-content:space-between;margin-top:16px"><div class="sk" style="width:64px;height:18px"></div><div class="sk" style="width:44px;height:12px"></div></div></div>
+          <div style="background:#fff;border-radius:20px;padding:16px;box-shadow:inset 0 0 0 1px #F0F1F4"><div style="display:flex;justify-content:space-between"><div class="sk" style="width:76px;height:22px;border-radius:999px"></div><div class="sk" style="width:50px;height:12px"></div></div><div class="sk" style="width:70%;height:16px;margin-top:14px"></div><div class="sk" style="width:52%;height:12px;margin-top:10px"></div><div style="display:flex;justify-content:space-between;margin-top:16px"><div class="sk" style="width:64px;height:18px"></div><div class="sk" style="width:44px;height:12px"></div></div></div>
+        </div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">Загрузка · лента</figcaption>
+    </figure>
+
+    <!-- скелетон карты -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#E6EAF1">
+        <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 58px,#DBE0E9 58px 60px),repeating-linear-gradient(90deg,transparent 0 58px,#DBE0E9 58px 60px),linear-gradient(135deg,#EDEFF3,#E3E7EE);opacity:.6"></div>
+        <div class="zsb" style="position:relative"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="flex:1;position:relative;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px">
+          <div style="width:44px;height:44px;border-radius:999px;border:3px solid #D4DAF6;border-top-color:#4C6FFF;animation:zsk 1s linear infinite"></div>
+          <div style="font:600 14px/1 system-ui;color:#8A90A0">Загружаем заказы рядом…</div>
+        </div>
+        <div style="position:absolute;left:16px;right:16px;bottom:104px;background:#fff;border-radius:20px;padding:16px;box-shadow:0 12px 30px -12px rgba(20,24,40,.25)"><div style="display:flex;align-items:center;gap:12px"><div class="sk" style="width:46px;height:46px;border-radius:13px"></div><div style="flex:1"><div class="sk" style="width:70%;height:14px"></div><div class="sk" style="width:45%;height:11px;margin-top:9px"></div></div><div class="sk" style="width:56px;height:16px"></div></div></div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">Загрузка · карта</figcaption>
+    </figure>
+
+  </div>
+
+  <!-- ===== ОШИБКИ / GPS / ОФФЛАЙН ===== -->
+  <div class="grp-h">Ошибки · GPS · оффлайн</div>
+  <div style="display:flex;flex-wrap:wrap;gap:44px;align-items:flex-start;margin-bottom:52px">
+
+    <!-- неверный OTP -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div class="zsb"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="padding:8px 24px 0"><div class="zback"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#141824" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></div></div>
+        <div style="flex:1;padding:30px 24px 0">
+          <div style="font:700 27px/1.15 -apple-system,sans-serif;letter-spacing:-.5px">Введите код из SMS</div>
+          <div style="font:400 15px/1.5 system-ui;color:#7A808E;margin-top:10px">Отправили на +7 701 234-56-78</div>
+          <div style="display:flex;gap:12px;margin-top:30px">
+            <div style="flex:1;height:64px;border-radius:14px;background:#FDEeee;background:#FDECEC;box-shadow:inset 0 0 0 1.5px #E24545;display:flex;align-items:center;justify-content:center;font:700 26px/1 -apple-system,sans-serif;color:#141824">5</div>
+            <div style="flex:1;height:64px;border-radius:14px;background:#FDECEC;box-shadow:inset 0 0 0 1.5px #E24545;display:flex;align-items:center;justify-content:center;font:700 26px/1 -apple-system,sans-serif">2</div>
+            <div style="flex:1;height:64px;border-radius:14px;background:#FDECEC;box-shadow:inset 0 0 0 1.5px #E24545;display:flex;align-items:center;justify-content:center;font:700 26px/1 -apple-system,sans-serif">8</div>
+            <div style="flex:1;height:64px;border-radius:14px;background:#FDECEC;box-shadow:inset 0 0 0 1.5px #E24545;display:flex;align-items:center;justify-content:center;font:700 26px/1 -apple-system,sans-serif">1</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:7px;justify-content:center;margin-top:18px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E24545" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01" stroke-linecap="round"/></svg><span style="font:500 13px/1 system-ui;color:#E24545">Неверный код. Попробуйте ещё раз</span></div>
+        </div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">Ошибка · неверный OTP</figcaption>
+    </figure>
+
+    <!-- истёк OTP -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div class="zsb"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="padding:8px 24px 0"><div class="zback"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#141824" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></div></div>
+        <div style="flex:1;padding:30px 24px 0">
+          <div style="font:700 27px/1.15 -apple-system,sans-serif;letter-spacing:-.5px">Введите код из SMS</div>
+          <div style="font:400 15px/1.5 system-ui;color:#7A808E;margin-top:10px">Отправили на +7 701 234-56-78</div>
+          <div style="display:flex;gap:12px;margin-top:30px;opacity:.5">
+            <div style="flex:1;height:64px;border-radius:14px;background:#F5F6F8;box-shadow:inset 0 0 0 1.5px #E4E6EC"></div>
+            <div style="flex:1;height:64px;border-radius:14px;background:#F5F6F8;box-shadow:inset 0 0 0 1.5px #E4E6EC"></div>
+            <div style="flex:1;height:64px;border-radius:14px;background:#F5F6F8;box-shadow:inset 0 0 0 1.5px #E4E6EC"></div>
+            <div style="flex:1;height:64px;border-radius:14px;background:#F5F6F8;box-shadow:inset 0 0 0 1.5px #E4E6EC"></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;background:#FBEFDD;border-radius:13px;padding:13px 15px;margin-top:20px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="1.9" style="flex:none"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round"/></svg><span style="font:500 13px/1.4 system-ui;color:#8A5209">Срок действия кода истёк (2 минуты). Запросите новый код.</span></div>
+        </div>
+        <div style="padding:0 24px 44px"><div class="zbtn">Отправить код повторно</div></div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">Ошибка · OTP истёк</figcaption>
+    </figure>
+
+    <!-- нет GPS -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div class="zsb"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 36px;text-align:center">
+          <div class="zill" style="background:linear-gradient(160deg,#EEF1FF,#DDE4FB);position:relative"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.5"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.4"/></svg><div style="position:absolute;left:14px;top:52px;width:96px;height:3px;background:#E24545;transform:rotate(-45deg);border-radius:2px"></div></div>
+          <div class="zeh">Включите геолокацию</div>
+          <div class="zes">Zovu показывает заказы и специалистов рядом. Разрешите доступ к геопозиции, чтобы продолжить.</div>
+        </div>
+        <div style="padding:0 24px 20px"><div class="zbtn">Открыть настройки</div></div>
+        <div style="padding:0 24px 44px"><div style="text-align:center;font:600 14px/1 system-ui;color:#7A808E">Ввести адрес вручную</div></div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">Нет GPS <span>(НФ-04)</span></figcaption>
+    </figure>
+
+    <!-- оффлайн -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div class="zsb"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 36px;text-align:center">
+          <div class="zill" style="background:linear-gradient(160deg,#F0F1F4,#E4E6EC)"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#8A90A0" stroke-width="1.5"><path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0" stroke-linecap="round"/><circle cx="12" cy="19.5" r="1.3" fill="#8A90A0" stroke="none"/><path d="M3 3l18 18" stroke="#E24545" stroke-width="1.9" stroke-linecap="round"/></svg></div>
+          <div class="zeh">Нет соединения</div>
+          <div class="zes">Проверьте интернет и попробуйте снова. Загруженные ранее данные останутся доступны.</div>
+        </div>
+        <div style="padding:0 24px 44px"><div class="zbtn2">Повторить</div></div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">Оффлайн</figcaption>
+    </figure>
+
+  </div>
+
+  <!-- ===== БЛОКИРОВКИ ===== -->
+  <div class="grp-h">Блокировки</div>
+  <div style="display:flex;flex-wrap:wrap;gap:44px;align-items:flex-start;margin-bottom:52px">
+
+    <!-- не верифицирован -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div style="position:absolute;inset:0;padding:100px 24px 0;filter:blur(2px);opacity:.4"><div style="font:700 23px/1.15 -apple-system,sans-serif">Установить розетку</div><div style="height:150px;border-radius:18px;background:#EDEFF3;margin-top:16px"></div><div style="height:60px;border-radius:14px;background:#EDEFF3;margin-top:16px"></div></div>
+        <div style="position:absolute;inset:0;background:rgba(20,24,40,.4)"></div>
+        <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:26px 26px 0 0;padding:24px 24px 30px;text-align:center;box-shadow:0 -20px 50px -20px rgba(20,24,40,.4)">
+          <div style="width:40px;height:5px;border-radius:3px;background:#E1E3E9;margin:0 auto 20px"></div>
+          <div class="zill" style="background:linear-gradient(160deg,#EEF1FF,#DDE4FB);margin:0 auto;width:96px;height:96px"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.6"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3Z" stroke-linejoin="round"/><path d="M12 9v4M12 16h.01" stroke-linecap="round"/></svg></div>
+          <div style="font:700 21px/1.3 -apple-system,sans-serif;margin-top:20px">Сначала пройдите верификацию</div>
+          <div style="font:400 15px/1.5 system-ui;color:#7A808E;margin-top:10px">Чтобы откликаться на заказы, подтвердите личность — селфи и селфи с документом. Обычно до 1 часа.</div>
+          <div class="zbtn" style="margin-top:22px">Пройти верификацию</div>
+        </div>
+        <div style="position:absolute;left:50%;transform:translateX(-50%);bottom:9px;width:134px;height:5px;border-radius:3px;background:#fff;opacity:.95;z-index:6"></div>
+      </div>
+      <figcaption class="zcap">Блок · не верифицирован <span>(В-06)</span></figcaption>
+    </figure>
+
+    <!-- подписка неактивна модалка -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div style="position:absolute;inset:0;padding:100px 24px 0;filter:blur(2px);opacity:.4"><div style="font:700 23px/1.15 -apple-system,sans-serif">Заменить люстру</div><div style="height:150px;border-radius:18px;background:#EDEFF3;margin-top:16px"></div><div style="height:60px;border-radius:14px;background:#EDEFF3;margin-top:16px"></div></div>
+        <div style="position:absolute;inset:0;background:rgba(20,24,40,.45);display:flex;align-items:center;justify-content:center;padding:28px">
+          <div style="background:#fff;border-radius:24px;padding:26px 22px;text-align:center;width:100%;box-shadow:0 30px 60px -20px rgba(20,24,40,.5)">
+            <div class="zill" style="background:linear-gradient(160deg,#EEF1FF,#DDE4FB);margin:0 auto;width:90px;height:90px;position:relative"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.6"><path d="M3 8a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v1M3 8v9a2 2 0 0 0 2 2h13a1 1 0 0 0 1-1v-3M21 11v4h-4a2 2 0 0 1 0-4h4Z" stroke-linejoin="round"/></svg><div style="position:absolute;right:12px;bottom:12px;width:30px;height:30px;border-radius:999px;background:#E8981F;display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M9 6v12M15 6v12"/></svg></div></div>
+            <div style="font:700 20px/1.3 -apple-system,sans-serif;margin-top:18px">Подписка неактивна</div>
+            <div style="font:400 14px/1.5 system-ui;color:#7A808E;margin-top:9px">Баланс 0 ₸ — новые отклики недоступны. Пополните баланс, чтобы откликнуться.</div>
+            <div class="zbtn" style="margin-top:20px">Пополнить баланс</div>
+            <div style="font:600 14px/1 system-ui;color:#7A808E;margin-top:16px">Не сейчас</div>
+          </div>
+        </div>
+        <div style="position:absolute;left:50%;transform:translateX(-50%);bottom:9px;width:134px;height:5px;border-radius:3px;background:#fff;opacity:.95;z-index:6"></div>
+      </div>
+      <figcaption class="zcap">Блок · подписка неактивна <span>(БП-06)</span></figcaption>
+    </figure>
+
+  </div>
+
+  <!-- ===== СВОЯ КАТЕГОРИЯ ===== -->
+  <div class="grp-h">Флоу «Предложить свою категорию»</div>
+  <div style="display:flex;flex-wrap:wrap;gap:44px;align-items:flex-start">
+
+    <!-- выбор категории + предложить -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div style="position:absolute;inset:0;background:rgba(20,24,40,.35)"></div>
+        <div style="position:absolute;left:0;right:0;bottom:0;top:120px;background:#fff;border-radius:26px 26px 0 0;padding:10px 22px 0;box-shadow:0 -20px 50px -20px rgba(20,24,40,.4);display:flex;flex-direction:column">
+          <div style="width:40px;height:5px;border-radius:3px;background:#E1E3E9;margin:2px auto 16px"></div>
+          <div style="font:700 20px/1 -apple-system,sans-serif;margin-bottom:14px">Категория</div>
+          <div style="display:flex;align-items:center;gap:10px;background:#F5F6F8;border-radius:12px;box-shadow:inset 0 0 0 1px #E4E6EC;padding:0 14px;height:48px;margin-bottom:16px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9AA0AD" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3" stroke-linecap="round"/></svg><span style="font:500 15px/1 system-ui;color:#B9BEC9">Поиск категории…</span></div>
+          <div class="zscroll" style="flex:1;overflow-y:auto;padding-bottom:20px">
+            <div style="display:flex;align-items:center;gap:12px;padding:13px 4px"><div style="width:38px;height:38px;border-radius:11px;background:#EEF1FF;display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.7"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" stroke-linejoin="round"/></svg></div><span style="flex:1;font:500 15px/1 system-ui">Электрика</span></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:13px 4px"><div style="width:38px;height:38px;border-radius:11px;background:#EEF1FF;display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.7"><path d="M7 3v6M7 9a3 3 0 0 0 6 0V3M10 12v9" stroke-linecap="round"/></svg></div><span style="flex:1;font:500 15px/1 system-ui">Сантехника</span></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:13px 4px"><div style="width:38px;height:38px;border-radius:11px;background:#EEF1FF;display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.7"><path d="M3 9l2-5h14l2 5M3 9h18M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9" stroke-linejoin="round"/></svg></div><span style="flex:1;font:500 15px/1 system-ui">Сборка мебели</span></div>
+            <div style="height:1px;background:#F0F1F4;margin:8px 0"></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:#F4F6FF;border-radius:13px;border:1.5px dashed #C2CCFF"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.9"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg><div style="flex:1"><div style="font:600 14px/1.2 system-ui;color:#3C55C8">Предложить свою категорию</div><div style="font:500 12px/1 system-ui;color:#8A90FF;margin-top:3px">Проверим и добавим до 1 часа</div></div></div>
+          </div>
+        </div>
+        <div style="position:absolute;left:50%;transform:translateX(-50%);bottom:9px;width:134px;height:5px;border-radius:3px;background:#141824;opacity:.9;z-index:6"></div>
+      </div>
+      <figcaption class="zcap">Категория · предложить свою</figcaption>
+    </figure>
+
+    <!-- на проверке -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div class="zsb"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 36px;text-align:center">
+          <div class="zill" style="background:linear-gradient(160deg,#DCE4FB,#C9D6F7)"><div style="width:88px;height:88px;border-radius:999px;background:#fff;display:flex;align-items:center;justify-content:center"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5l3.5 2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+          <div class="zeh">Категория на проверке</div>
+          <div class="zes">«Ремонт бытовой техники» отправлена на модерацию. Обычно рассмотрение занимает до 1 часа — пришлём уведомление.</div>
+          <span class="zpill" style="background:#EEF1FF;color:#4C6FFF;margin-top:20px">На рассмотрении</span>
+        </div>
+        <div style="padding:0 24px 44px"><div class="zbtn2">Выбрать другую пока</div></div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">Категория · на проверке <span>(до 1 ч)</span></figcaption>
+    </figure>
+
+    <!-- одобрено -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div class="zsb"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 36px;text-align:center;position:relative">
+          <div style="position:absolute;top:150px;left:60px;width:9px;height:9px;border-radius:2px;background:#4C6FFF;transform:rotate(20deg)"></div>
+          <div style="position:absolute;top:186px;right:58px;width:8px;height:8px;border-radius:2px;background:#22C55E;transform:rotate(-15deg)"></div>
+          <div style="position:absolute;top:210px;left:80px;width:7px;height:7px;border-radius:999px;background:#E8981F"></div>
+          <div class="zill" style="background:linear-gradient(160deg,#3FD37A,#22C55E)"><svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="m6 12.5 4 4 8-9" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="zeh">Категория добавлена</div>
+          <div class="zes">«Ремонт бытовой техники» одобрена. В подарок — 3 дня подписки бесплатно за помощь в развитии каталога.</div>
+          <div style="display:flex;align-items:center;gap:10px;background:#E7F6EC;border-radius:13px;padding:12px 16px;margin-top:20px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="1.9"><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6M2 8h20v4H2zM12 8V4M12 4a2 2 0 1 0-3-2M12 4a2 2 0 1 1 3-2" stroke-linejoin="round" stroke-linecap="round"/></svg><span style="font:600 13px/1.3 system-ui;color:#15803D">+3 дня подписки начислены</span></div>
+        </div>
+        <div style="padding:0 24px 44px"><div class="zbtn">Отлично</div></div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">Категория · одобрено <span>(К-03)</span></figcaption>
+    </figure>
+
+    <!-- отклонено -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div class="zsb"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 34px;text-align:center">
+          <div class="zill" style="background:linear-gradient(160deg,#F0F1F4,#E4E6EC)"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#8A90A0" stroke-width="1.8" stroke-linecap="round"><path d="M15 9l-6 6M9 9l6 6"/></svg></div>
+          <div class="zeh">Категория отклонена</div>
+          <div class="zes">«Услуги грузчика» не подошла — она уже есть как «Погрузка / переезд». Выберите её из списка.</div>
+          <div style="display:flex;gap:11px;background:#F5F6F8;border-radius:14px;padding:14px 16px;margin-top:20px;text-align:left"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8A90A0" stroke-width="1.9" style="flex:none;margin-top:1px"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1" stroke-linecap="round" stroke-linejoin="round"/></svg><div style="font:500 13px/1.45 system-ui;color:#7A808E">Дубли и слишком общие названия отклоняются. Можно предложить другую.</div></div>
+        </div>
+        <div style="padding:0 24px 44px"><div class="zbtn2">Выбрать из списка</div></div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">Категория · отклонено <span>(К-04)</span></figcaption>
+    </figure>
+
+  </div>
+</div>
+</x-dc>
+<script>
+(async () => {
+  if (!document.title || !document.title.trim()) document.title = "Zovu - Состояния";
+  // Prepend so page-supplied @page / break rules (deck-stage's margin:0,
+  // author CSS) keep source-order precedence over the baseline.
+  const baseCss = document.createElement('style');
+  baseCss.textContent = "@media print {\n  figure, table { break-inside: avoid; }\n  *, *::before, *::after {\n    print-color-adjust: exact; -webkit-print-color-adjust: exact;\n    backdrop-filter: none !important; -webkit-backdrop-filter: none !important;\n    animation-delay: -99s !important; animation-duration: .001s !important;\n    animation-iteration-count: 1 !important; animation-fill-mode: both !important;\n    animation-play-state: running !important; transition-duration: 0s !important;\n  }\n}";
+  document.head.prepend(baseCss);
+  if (document.readyState === 'loading') {
+    await new Promise((r) => document.addEventListener('DOMContentLoaded', r, { once: true }));
+  }
+  let ds = document.querySelector('deck-stage');
+  // whenDefined never resolves when nothing registers the element, so only
+  // await it when a <deck-stage> tag exists (and race a timeout regardless).
+  if (ds && !customElements.get('deck-stage')) {
+    try {
+      await Promise.race([
+        customElements.whenDefined('deck-stage'),
+        new Promise((r) => setTimeout(r, 3000)),
+      ]);
+    } catch (e) {}
+    ds = document.querySelector('deck-stage');
+  }
+  // dc-runtime assigns window.DCLogic at init and mounts into #dc-root on
+  // DOMContentLoaded; settle on that subtree so React has rendered before
+  // print(). Non-DC pages fall through to weighing body.
+  const isDc = !ds && 'DCLogic' in window;
+  const settleRoot = ds || (isDc ? document.getElementById('dc-root') : null) || document.body;
+  if (settleRoot) {
+    // Weigh only content children — skip script/style/template so inline
+    // Babel/CSS doesn't register as stable "content" before the framework
+    // has mounted anything.
+    const MEDIA = 'img,svg,canvas,video,picture,iframe,embed,object';
+    const weigh = () => {
+      let text = 0, media = 0;
+      for (const c of settleRoot.children) {
+        const t = c.tagName;
+        if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE') continue;
+        text += (c.textContent || '').trim().length;
+        media += c.querySelectorAll(MEDIA).length + (c.matches(MEDIA) ? 1 : 0);
+      }
+      return text + media * 100;
+    };
+    // "Non-zero and stable" alone is not sufficient to mean rendered: generic
+    // body can carry a static shell while async main content is pending, and
+    // #dc-root can carry the root DC's static text while child refs are still
+    // .sc-placeholder boxes. Gate generic on readyState 'complete', and never
+    // accept stability while a dc-runtime placeholder is present.
+    const isGeneric = settleRoot === document.body;
+    const deadline = Date.now() + 15000;
+    let last = -1, stable = 0;
+    while (Date.now() < deadline) {
+      const n = weigh();
+      const ready =
+        (!isGeneric || document.readyState === 'complete') &&
+        !settleRoot.querySelector('.sc-placeholder');
+      if (n > 0 && n === last && ready) { if (++stable >= 2) break; } else { stable = 0; }
+      last = n;
+      await new Promise((r) => setTimeout(r, 250));
+    }
+  }
+  // Project support.js may predate runtime default-seeding; push via bridge.
+  if (isDc && window.__dcSetProps && window.__dcRootName) {
+    try {
+      const dpEl = document.querySelector('script[data-dc-script]');
+      const meta = JSON.parse((dpEl && dpEl.getAttribute('data-props')) || '{}');
+      const bag = {};
+      for (const k in meta)
+        if (k[0] !== '$' && meta[k] && meta[k].default !== undefined)
+          bag[k] = meta[k].default;
+      if (Object.keys(bag).length) {
+        window.__dcSetProps(window.__dcRootName(), bag);
+        await new Promise((r) => setTimeout(r, 50));
+      }
+    } catch (e) {}
+  }
+  // Reveal content gated on scroll or visibility before printing. Lazy <img>,
+  // IntersectionObserver fade-ins, and collapsed <details> don't render while
+  // off-screen, so a long page would print with them blank or closed. Open
+  // every <details>, force native-lazy images eager, and scroll the document
+  // through its full height to trip lazy-load + IO; then wait (bounded) for the
+  // newly-triggered images. Inert for deck-stage (slides aren't scroll-gated).
+  try {
+    for (const d of document.querySelectorAll('details')) d.open = true;
+    for (const img of document.querySelectorAll('img[loading="lazy"]'))
+      img.loading = 'eager';
+    const scroller = document.scrollingElement || document.documentElement;
+    const full = Math.max(scroller.scrollHeight, document.body.scrollHeight);
+    const step = window.innerHeight || 800;
+    for (let y = 0; y <= full; y += step) {
+      window.scrollTo(0, y);
+      await new Promise((r) => requestAnimationFrame(r));
+    }
+    window.scrollTo(0, 0);
+    await Promise.race([
+      Promise.all(
+        [...document.images].map((img) =>
+          img.complete
+            ? null
+            : new Promise((res) => {
+                img.addEventListener('load', res, { once: true });
+                img.addEventListener('error', res, { once: true });
+              })
+        )
+      ),
+      new Promise((r) => setTimeout(r, 4000)),
+    ]);
+  } catch (e) {}
+  try { await document.fonts.ready; } catch (e) {}
+  // Jump every animation to its end state so print() never captures a slide
+  // mid-entrance. Ordering matters: the 0s-transition style must be live
+  // BEFORE data-deck-active is set so attribute-keyed transitions don't
+  // start a (now-0s) run from the pre-active base.
+  const st = document.createElement('style');
+  st.textContent = '*,*::before,*::after{animation-delay:-99s !important;animation-duration:.001s !important;animation-iteration-count:1 !important;animation-fill-mode:both !important;animation-play-state:running !important;transition-duration:0s !important}';
+  document.head.appendChild(st);
+  for (const d of document.querySelectorAll('deck-stage')) {
+    for (const c of d.children) {
+      const t = c.tagName;
+      if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE') continue;
+      c.setAttribute('data-deck-active', '');
+    }
+  }
+  // Re-append deck-stage's @page last so no author @page can add a margin and
+  // spill each full-bleed slide onto two sheets. Backstop for old copies.
+  if (ds) {
+    let pg = document.getElementById('deck-stage-print-page');
+    if (!pg) {
+      pg = document.createElement('style');
+      pg.textContent = '@page{size:' + (+ds.getAttribute('width') || 1920) +
+        'px ' + (+ds.getAttribute('height') || 1080) + 'px;margin:0}';
+    }
+    document.body.appendChild(pg);
+  }
+  try {
+    const sweep = () => {
+      for (const a of document.getAnimations()) {
+        try { a.finish(); } catch (e) {
+          try { a.currentTime = (a.effect && a.effect.getComputedTiming().duration) || 0; a.pause(); } catch (e2) {}
+        }
+      }
+    };
+    sweep();
+    await new Promise((r) => requestAnimationFrame(r));
+    sweep();
+    await new Promise((r) => requestAnimationFrame(r));
+  } catch (e) {}
+  // Size the PDF page to the rendered design unless the file opted into
+  // standard paper via @page{size:letter|A4|…}. Decks own their own @page.
+  // Wrappers (body, …) lose padding+margin so the frame sits at (0,0); the
+  // frame itself loses only margin — its padding is INSIDE the measured
+  // rect and must stay, or content shifts and leaves a gap at bottom/right.
+  var __m = null;
+  try { __m = (() => {
+  var STAMP = true;
+  var docEl = document.documentElement;
+  var doc = { width: docEl.scrollWidth, height: docEl.scrollHeight };
+
+  var ds = document.querySelector('deck-stage');
+  if (ds) {
+    var dw = Number(ds.getAttribute('width')) || 1920;
+    var dh = Number(ds.getAttribute('height')) || 1080;
+    var n = typeof ds.length === 'number' ? ds.length : ds.children.length;
+    var idx = typeof ds.index === 'number' ? ds.index : 0;
+    var frames = [];
+    for (var i = 0; i < n; i++) frames.push({ left: 0, top: 0, width: dw, height: dh });
+    return { kind: 'deck', source: 'declared', doc: doc, frames: frames,
+      authored: frames.map(function(){return{width:true,height:true}}),
+      deck: { width: dw, height: dh, slideCount: n, index: idx },
+      signals: { paperPage: false, pxPage: false } };
+  }
+
+  // Declared kind: a doc-page tag names the kind outright, so no signal
+  // heuristics run (like the deck branch above, signals report false —
+  // they describe inferred classifications only). The tag alone is not
+  // trusted: the element must have upgraded (shadowRoot present), so a
+  // leftover tag whose script was deleted falls through to the heuristics
+  // that handle plain markup.
+  var stageSx = window.scrollX || 0, stageSy = window.scrollY || 0;
+  var dp = document.querySelector('doc-page');
+  if (dp && dp.shadowRoot) {
+    // Crop to the sheet, not the host — the desk around it is screen-only
+    // chrome that must not land in PNG exports.
+    var sheet = dp.shadowRoot.querySelector('.sheet');
+    var sr = (sheet || dp).getBoundingClientRect();
+    return { kind: 'paper-doc', source: 'declared', doc: doc,
+      frames: [{ left: sr.left + stageSx, top: sr.top + stageSy,
+        width: sr.width, height: sr.height }],
+      authored: [{ width: false, height: false }],
+      signals: { paperPage: false, pxPage: false } };
+  }
+  var paperPage = false, pxPage = false;
+  var eachRule = function (fn) {
+    for (var s = 0; s < document.styleSheets.length; s++) {
+      var rs; try { rs = document.styleSheets[s].cssRules; } catch (e) { continue; }
+      for (var r = 0; r < rs.length; r++) {
+        fn(rs[r]);
+        if (rs[r].cssRules) for (var n = 0; n < rs[r].cssRules.length; n++) fn(rs[r].cssRules[n]);
+      }
+    }
+  };
+  eachRule(function (r) {
+    if (r.type !== 6) return;
+    var m = /\bsize\s*:\s*([^;}]+)/i.exec(r.cssText || '');
+    if (!m) return;
+    if (/\b(letter|a[3-5]|legal|ledger)\b/i.test(m[1])) paperPage = true;
+    if (/\d+(?:\.\d+)?px\b/i.test(m[1])) pxPage = true;
+  });
+  var signals = { paperPage: paperPage, pxPage: pxPage };
+
+  var pxVal = function (v) {
+    var m = /^(\d+(?:\.\d+)?)px$/.exec(v || ''); return m ? +m[1] : 0;
+  };
+  var authoredPx = function (el, prop) {
+    if (pxVal(el.style[prop])) return true;
+    var attr = el.getAttribute(prop);
+    if (attr && /^\d+$/.test(attr)) return true;
+    var hit = false;
+    eachRule(function (r) {
+      if (hit || r.type !== 1 || !r.style) return;
+      try { if (el.matches(r.selectorText) && pxVal(r.style[prop])) hit = true; } catch (e) {}
+    });
+    return hit;
+  };
+
+  var el = document.body, rootPxW = false;
+  for (;;) {
+    var kids = [];
+    for (var c = 0; c < el.children.length; c++) {
+      var t = el.children[c].tagName;
+      if (t !== 'SCRIPT' && t !== 'STYLE' && t !== 'TEMPLATE') kids.push(el.children[c]);
+    }
+    if (kids.length !== 1 || !(kids[0] instanceof HTMLElement)) break;
+    if (STAMP) el.setAttribute('data-om-frame-wrap', '');
+    el = kids[0];
+    rootPxW = authoredPx(el, 'width');
+    if (rootPxW) break;
+  }
+  if (!rootPxW) rootPxW = authoredPx(el, 'width');
+
+  // @page{size:letter} alone is a flowing doc; with a px-width root it's a
+  // fixed sheet pretending to be paper — fall through and size to render.
+  if (paperPage && !rootPxW) {
+    return { kind: 'paper-doc', source: 'inferred', doc: doc, signals: signals,
+      frames: [{ left: 0, top: 0, width: doc.width, height: doc.height }],
+      authored: [{ width: false, height: false }] };
+  }
+
+  var sx = window.scrollX || 0, sy = window.scrollY || 0;
+  var rectOf = function (e) {
+    var r = e.getBoundingClientRect();
+    var oy; try { oy = getComputedStyle(e).overflowY; } catch (err) {}
+    var h = oy === 'visible' ? Math.max(r.height, e.scrollHeight || 0) : r.height;
+    return { left: r.left + sx, top: r.top + sy, width: r.width, height: h };
+  };
+
+  // Multi-frame: ≥2 visible non-fixed children, each with authored px width
+  // AND height, all within ±2px of each other. Off unless the page opts in
+  // via data-om-multi-frame on the stop element — guards against card grids
+  // and pricing tables that match the geometry but aren't separate canvases.
+  if (el.hasAttribute('data-om-multi-frame')) {
+    var cands = [];
+    for (var k = 0; k < el.children.length; k++) {
+      var ch = el.children[k];
+      var cs; try { cs = getComputedStyle(ch); } catch (e) { continue; }
+      if (cs.display === 'none' || cs.visibility === 'hidden' || cs.position === 'fixed') continue;
+      var rc = rectOf(ch);
+      if (rc.width < 2 || rc.height < 2) continue;
+      if (!authoredPx(ch, 'width') || !authoredPx(ch, 'height')) continue;
+      cands.push(rc);
+    }
+    if (cands.length >= 2) {
+      var w0 = cands[0].width, h0 = cands[0].height, ok = true;
+      for (var q = 1; q < cands.length; q++)
+        if (Math.abs(cands[q].width - w0) > 2 || Math.abs(cands[q].height - h0) > 2) ok = false;
+      if (ok) return { kind: 'multi-frame', source: 'inferred', doc: doc, signals: signals,
+        frames: cands, authored: cands.map(function(){return{width:true,height:true}}) };
+    }
+  }
+
+  if (STAMP) el.setAttribute('data-om-frame', '');
+  return { kind: 'single-canvas', source: 'inferred', doc: doc, signals: signals,
+    frames: [rectOf(el)],
+    authored: [{ width: rootPxW, height: authoredPx(el, 'height') }] };
+})(); } catch (e) {}
+  var frame = null;
+  if (__m && __m.kind === 'single-canvas') {
+    var f = __m.frames && __m.frames[0];
+    if (f && f.width >= 200 && f.height >= 200) {
+      frame = f;
+      var fst = document.createElement('style');
+      fst.textContent = '@media print{@page{size:' + Math.ceil(f.width) + 'px ' +
+        Math.ceil(f.height) + 'px;margin:0}' +
+        'html,body,[data-om-frame-wrap]{padding:0!important;margin:0!important;background:none!important}' +
+        '[data-om-frame]{margin:0!important}}';
+      document.body.appendChild(fst);
+    }
+  }
+  // Relax break-inside on oversized elements. An element taller than a
+  // printable page can't honor break-inside: avoid — browsers either overflow
+  // it or push it whole to the next page, leaving a blank gap, then break it
+  // anyway at an arbitrary point. After the final layout (content revealed,
+  // animations jumped), find elements taller than a page that still compute
+  // break-inside: avoid and reset them to auto, so the browser breaks them at
+  // their children's boundaries instead (children keep their own avoid). PAGE_PX
+  // is a conservative portrait estimate at 96 CSS px/in — Letter/A4 usable
+  // height minus our 0.5in margins — so only clearly-oversized elements are
+  // touched and under-page elements still stay whole. Skipped for decks (slides
+  // are sized to the page) and for fixed-size canvases (frame set, or an author
+  // px-based @page) — runs as before for flowing docs on letter/A4.
+  try {
+    if (!ds && !frame && !(__m && __m.signals && __m.signals.pxPage)) {
+      const PAGE_PX = 1024;
+      // Our print defaults add a real @page margin only when the source has
+      // no @page of its own; computed style can't tell us (it reports screen
+      // media), so read the injected rule directly.
+      const defaults = document.querySelector('style[data-omelette-print-defaults]');
+      const pageInset = /@page\s*\{[^}]*margin/.test(defaults ? defaults.textContent || '' : '');
+      const SEL = 'section,article,figure,table,pre,blockquote,[class~="card" i],[class~="page" i],[class~="sheet" i]';
+      for (const el of document.body.querySelectorAll(SEL)) {
+        if (el instanceof HTMLElement && el.offsetHeight > PAGE_PX) {
+          el.setAttribute('data-om-oversized', '');
+          // Fake-paged docs simulate sheets with over-tall break-after:page
+          // boxes; honoring the break spills half-blank pages and ends a
+          // colored box mid-sheet. Flow them, and (only when we own the page
+          // inset) drop the redundant padding/background via the rule below.
+          const cs = getComputedStyle(el);
+          if (cs.breakAfter === 'page' || cs.pageBreakAfter === 'always') {
+            el.setAttribute('data-om-fakepage', '');
+          }
+        }
+      }
+      const ost = document.createElement('style');
+      ost.textContent = '@media print{' +
+        '[data-om-oversized]{break-inside:auto !important;page-break-inside:auto !important}' +
+        '[data-om-fakepage]{break-after:auto !important;page-break-after:auto !important}' +
+        (pageInset ? '[data-om-fakepage]{padding:0 !important;background:none !important}' : '') +
+        '}';
+      document.head.appendChild(ost);
+    }
+  } catch (e) {}
+  // macOS Preview renders Skia-PDF Luminosity soft-masks as opaque grey boxes;
+  // swap the CSS that triggers them for Preview-safe forms.
+  try {
+    for (const el of document.body.querySelectorAll('*')) {
+      const cs = getComputedStyle(el);
+
+      if (cs.boxShadow !== 'none' && cs.filter === 'none') {
+        const outs = [], kept = [];
+        for (const s of cs.boxShadow.split(/,(?![^(]*[)])/)) {
+          const t = s.trim();
+          const m = t.match(/^(rgba?[(][^)]+[)]) (-?[0-9.]+px) (-?[0-9.]+px) ([0-9.]+px) -?[0-9.]+px$/);
+          if (m && parseFloat(m[4]) > 0) outs.push('drop-shadow(' + m[2] + ' ' + m[3] + ' ' + m[4] + ' ' + m[1] + ')');
+          else kept.push(t);
+        }
+        if (outs.length) {
+          el.style.setProperty('filter', outs.join(' '), 'important');
+          el.style.setProperty('box-shadow', kept.join(', ') || 'none', 'important');
+        }
+      }
+
+      const mask = cs.maskImage && cs.maskImage !== 'none' ? cs.maskImage : cs.webkitMaskImage;
+      if (mask && mask !== 'none' && cs.filter === 'none') el.style.setProperty('filter', 'opacity(1)', 'important');
+    }
+  } catch (e) {}
+  setTimeout(() => { try { window.print(); } catch (e) {} }, 200);
+})();
+</script>
+</body>
+</html>

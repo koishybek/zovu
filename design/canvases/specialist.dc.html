@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#EDEEF1;-webkit-font-smoothing:antialiased}
+  .zscroll::-webkit-scrollbar{width:0;height:0}.zscroll{scrollbar-width:none}
+  .zf{width:390px;height:844px;border-radius:44px;box-shadow:0 30px 70px -34px rgba(20,24,40,.34),0 0 0 1px rgba(20,24,40,.04);position:relative;overflow:hidden;display:flex;flex-direction:column;font-family:-apple-system,'SF Pro Display','SF Pro Text','Inter',system-ui,sans-serif;color:#141824}
+  .zhome{position:absolute;left:50%;transform:translateX(-50%);bottom:9px;width:134px;height:5px;border-radius:3px;background:#141824;opacity:.9}
+  .zhomew{position:absolute;left:50%;transform:translateX(-50%);bottom:9px;width:134px;height:5px;border-radius:3px;background:#fff;opacity:.95;z-index:6}
+  .zback{width:30px;height:30px;display:flex;align-items:center;justify-content:center;flex:none;margin-left:-4px}
+  .zcap{font:600 13px/1 system-ui;color:#3A3F4B;text-align:center;margin-top:16px}
+  .zcap span{color:#9AA0AD;font-weight:500}
+  .zbtn{height:54px;border-radius:15px;background:#4C6FFF;display:flex;align-items:center;justify-content:center;font:600 16px/1 system-ui;color:#fff}
+  .zbtn2{height:54px;border-radius:15px;background:#EEF1FF;display:flex;align-items:center;justify-content:center;font:600 16px/1 system-ui;color:#4C6FFF}
+  .zsh{box-shadow:0 1px 2px rgba(20,24,40,.04),0 6px 18px -10px rgba(20,24,40,.12)}
+  .zpill{font:600 12px/1 system-ui;padding:7px 12px;border-radius:999px;display:inline-flex;align-items:center;gap:5px}
+  .ztitle{font:700 18px/1 -apple-system,sans-serif;letter-spacing:-.3px}
+  .ztab{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+</style>
+</helmet>
+
+<div style="font-family:-apple-system,'SF Pro Display','SF Pro Text','Inter',system-ui,sans-serif;color:#141824;padding:52px 60px 80px">
+
+  <div style="font:800 34px/1 -apple-system,sans-serif;letter-spacing:-1px;color:#4C6FFF">Флоу специалиста</div>
+  <div style="font:500 14px/1.5 system-ui;color:#6B7280;max-width:740px;margin:10px 0 40px">Карта · лента · карточка заказа · отклик-шит · статусы откликов · баланс · пополнение · пейволл · профиль · диплом · чат. Без комиссии, адрес скрыт до принятия, история баланса — только пополнение/подписка. Таб-бар: Карта · Заказы · Отклики · Профиль.</div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:44px;align-items:flex-start">
+
+    <!-- 19 · Карта заказов -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#E6EAF1">
+        <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 58px,#DBE0E9 58px 60px),repeating-linear-gradient(90deg,transparent 0 58px,#DBE0E9 58px 60px),linear-gradient(135deg,#EDEFF3,#E3E7EE)"></div>
+        <div style="position:absolute;top:150px;left:-40px;width:230px;height:66px;background:#D6E6DB;transform:rotate(-16deg);border-radius:20px;opacity:.7"></div>
+        <div style="position:absolute;top:470px;right:-30px;width:200px;height:58px;background:#CFDDEC;transform:rotate(12deg);border-radius:20px;opacity:.7"></div>
+        <div style="position:relative;display:flex;justify-content:space-between;align-items:center;padding:15px 26px 4px;font:600 15px/1 -apple-system,sans-serif"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="position:relative;display:flex;justify-content:center;padding:4px 20px">
+          <div style="display:inline-flex;background:#fff;border-radius:12px;padding:4px;box-shadow:0 4px 14px -4px rgba(20,24,40,.2)">
+            <span style="font:600 13px/1 system-ui;color:#fff;background:#4C6FFF;padding:8px 16px;border-radius:9px">Карта</span>
+            <span style="font:600 13px/1 system-ui;color:#7A808E;padding:8px 16px">Список</span>
+          </div>
+        </div>
+        <!-- price pins -->
+        <div style="position:absolute;top:230px;left:70px;background:#4C6FFF;color:#fff;font:700 13px/1 -apple-system,sans-serif;padding:8px 12px;border-radius:14px 14px 14px 3px;box-shadow:0 8px 18px -6px rgba(76,111,255,.6)">5 000 ₸</div>
+        <div style="position:absolute;top:330px;right:76px;background:#141824;color:#fff;font:700 13px/1 -apple-system,sans-serif;padding:8px 12px;border-radius:14px 14px 14px 3px;box-shadow:0 8px 18px -6px rgba(20,24,40,.4)">7 000 ₸</div>
+        <div style="position:absolute;top:430px;left:96px;background:#141824;color:#fff;font:700 13px/1 -apple-system,sans-serif;padding:8px 12px;border-radius:14px 14px 14px 3px;box-shadow:0 8px 18px -6px rgba(20,24,40,.4)">3 000 ₸</div>
+        <div style="position:absolute;top:392px;left:180px;width:20px;height:20px;border-radius:999px;background:#4C6FFF;border:3px solid #fff;box-shadow:0 0 0 6px rgba(76,111,255,.18)"></div>
+        <!-- nearest order mini card -->
+        <div style="position:absolute;left:16px;right:16px;bottom:104px;background:#fff;border-radius:20px;padding:15px 16px;box-shadow:0 12px 30px -12px rgba(20,24,40,.28)">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:46px;height:46px;border-radius:13px;background:#EEF1FF;display:flex;align-items:center;justify-content:center;flex:none"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.7"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" stroke-linejoin="round"/></svg></div>
+            <div style="flex:1;min-width:0"><div style="font:600 15px/1.2 system-ui">Установить розетку</div><div style="font:500 12px/1.2 system-ui;color:#7A808E;margin-top:3px">Бостандыкский р-н · 800 м</div></div>
+            <div style="text-align:right"><div style="font:700 16px/1 -apple-system,sans-serif;white-space:nowrap">5 000 ₸</div></div>
+          </div>
+        </div>
+        <!-- tab bar -->
+        <div style="position:absolute;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);box-shadow:0 -1px 0 #ECEDF1;padding:9px 22px 26px;display:flex;justify-content:space-between">
+          <div class="ztab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.8"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z" stroke-linejoin="round"/><path d="M9 4v14M15 6v14"/></svg><span style="font:600 10px/1 system-ui;color:#4C6FFF">Карта</span></div>
+          <div class="ztab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9AA0AD" stroke-width="1.7"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 8h6M9 12h6M9 16h3" stroke-linecap="round"/></svg><span style="font:500 10px/1 system-ui;color:#9AA0AD">Заказы</span></div>
+          <div class="ztab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9AA0AD" stroke-width="1.7"><path d="M4 5h16v11H9l-4 3v-3H4V5Z" stroke-linejoin="round"/></svg><span style="font:500 10px/1 system-ui;color:#9AA0AD">Отклики</span></div>
+          <div class="ztab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9AA0AD" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" stroke-linecap="round"/></svg><span style="font:500 10px/1 system-ui;color:#9AA0AD">Профиль</span></div>
+        </div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">19 · Карта заказов</figcaption>
+    </figure>
+
+    <!-- 20 · Лента -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 26px 4px;font:600 15px/1 -apple-system,sans-serif"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:8px 20px 12px"><div class="ztitle">Лента заказов</div></div>
+        <div style="display:flex;gap:8px;padding:0 20px 12px">
+          <span class="zpill" style="background:#4C6FFF;color:#fff">Новые <span style="font:700 11px/1;background:rgba(255,255,255,.28);padding:2px 6px;border-radius:999px;margin-left:2px">4</span></span>
+          <span class="zpill" style="color:#7A808E;background:#F2F3F6">Рядом</span>
+          <span class="zpill" style="color:#7A808E;background:#F2F3F6">Все</span>
+        </div>
+        <div class="zscroll" style="flex:1;overflow-y:auto;padding:2px 20px 30px">
+          <div style="font:700 12px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:#9AA0AD;margin:8px 2px 12px">Новые · менее 1 минуты</div>
+          <div style="background:#fff;border-radius:20px;padding:15px 16px;margin-bottom:12px;box-shadow:0 0 0 1.5px #E1E7FF,0 6px 18px -10px rgba(20,24,40,.12)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px"><span class="zpill" style="color:#16A34A;background:#E7F6EC;padding:5px 9px">Новый</span><span style="font:600 12px/1 system-ui;color:#4C6FFF">{{ t1 }} сек назад</span></div>
+            <div style="font:600 16px/1.25 system-ui">Установить розетку</div>
+            <div style="font:500 13px/1.3 system-ui;color:#7A808E;margin-top:3px">Бостандыкский р-н</div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:11px"><span style="font:700 17px/1 -apple-system,sans-serif;white-space:nowrap">5 000 ₸</span><span style="font:600 13px/1 system-ui;color:#7A808E">800 м</span></div>
+          </div>
+          <div style="background:#fff;border-radius:20px;padding:15px 16px;margin-bottom:12px;box-shadow:0 0 0 1.5px #E1E7FF,0 6px 18px -10px rgba(20,24,40,.12)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px"><span class="zpill" style="color:#16A34A;background:#E7F6EC;padding:5px 9px">Новый</span><span style="font:600 12px/1 system-ui;color:#4C6FFF">{{ t2 }} сек назад</span></div>
+            <div style="font:600 16px/1.25 system-ui">Заменить люстру</div>
+            <div style="font:500 13px/1.3 system-ui;color:#7A808E;margin-top:3px">Медеуский р-н</div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:11px"><span style="font:700 17px/1 -apple-system,sans-serif;white-space:nowrap">7 000 ₸</span><span style="font:600 13px/1 system-ui;color:#7A808E">1,2 км</span></div>
+          </div>
+          <div style="font:700 12px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:#9AA0AD;margin:18px 2px 12px">Рядом · по расстоянию</div>
+          <div style="background:#fff;border-radius:20px;padding:15px 16px;margin-bottom:12px" class="zsh">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px"><span class="zpill" style="color:#4C6FFF;background:#EEF1FF;padding:5px 9px">Электрика</span><span style="font:500 12px/1 system-ui;color:#9AA0AD">16 мин назад</span></div>
+            <div style="font:600 16px/1.25 system-ui">Починить выключатель</div>
+            <div style="font:500 13px/1.3 system-ui;color:#7A808E;margin-top:3px">Бостандыкский р-н</div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:11px"><span style="font:700 17px/1 -apple-system,sans-serif;white-space:nowrap">3 000 ₸</span><span style="font:600 13px/1 system-ui;color:#7A808E">1,6 км</span></div>
+          </div>
+          <div style="background:#fff;border-radius:20px;padding:15px 16px;margin-bottom:12px" class="zsh">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px"><span class="zpill" style="color:#4C6FFF;background:#EEF1FF;padding:5px 9px">Сантехника</span><span style="font:500 12px/1 system-ui;color:#9AA0AD">22 мин назад</span></div>
+            <div style="font:600 16px/1.25 system-ui">Подключить варочную панель</div>
+            <div style="font:500 13px/1.3 system-ui;color:#7A808E;margin-top:3px">Ауэзовский р-н</div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:11px"><span style="font:700 17px/1 -apple-system,sans-serif;white-space:nowrap">8 500 ₸</span><span style="font:600 13px/1 system-ui;color:#7A808E">2,1 км</span></div>
+          </div>
+        </div>
+        <div style="position:absolute;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);box-shadow:0 -1px 0 #ECEDF1;padding:9px 22px 26px;display:flex;justify-content:space-between">
+          <div class="ztab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9AA0AD" stroke-width="1.7"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z" stroke-linejoin="round"/><path d="M9 4v14M15 6v14"/></svg><span style="font:500 10px/1 system-ui;color:#9AA0AD">Карта</span></div>
+          <div class="ztab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 8h6M9 12h6M9 16h3" stroke-linecap="round"/></svg><span style="font:600 10px/1 system-ui;color:#4C6FFF">Заказы</span></div>
+          <div class="ztab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9AA0AD" stroke-width="1.7"><path d="M4 5h16v11H9l-4 3v-3H4V5Z" stroke-linejoin="round"/></svg><span style="font:500 10px/1 system-ui;color:#9AA0AD">Отклики</span></div>
+          <div class="ztab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9AA0AD" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" stroke-linecap="round"/></svg><span style="font:500 10px/1 system-ui;color:#9AA0AD">Профиль</span></div>
+        </div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">20 · Лента заказов</figcaption>
+    </figure>
+
+    <!-- 21 · Карточка заказа -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 26px 4px;font:600 15px/1 -apple-system,sans-serif"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="padding:8px 24px 4px"><div class="zback"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#141824" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></div></div>
+        <div class="zscroll" style="flex:1;overflow-y:auto;padding:6px 24px 116px">
+          <span class="zpill" style="color:#4C6FFF;background:#EEF1FF;padding:6px 11px">Электрика</span>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-top:14px">
+            <div style="font:700 23px/1.15 -apple-system,sans-serif;letter-spacing:-.5px">Установить<br>розетку</div>
+            <div style="font:800 22px/1 -apple-system,sans-serif;white-space:nowrap;padding-top:2px">5 000 ₸</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:14px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7A808E" stroke-width="1.8"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.5"/></svg><span style="font:500 14px/1.3 system-ui;color:#3A3F4B">Бостандыкский р-н · 800 м</span></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:9px;background:#FBEFDD;border-radius:12px;padding:10px 12px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="1.9"><rect x="4" y="6" width="16" height="14" rx="3"/><path d="M8 6V4M16 6V4M4 11h16" stroke-linecap="round"/><circle cx="12" cy="15" r="1.4" fill="#B45309" stroke="none"/></svg><span style="font:500 12px/1.3 system-ui;color:#8A5209">Точный адрес откроется после принятия отклика</span></div>
+          <div style="height:180px;border-radius:18px;background:#F0F1F4;margin-top:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;position:relative"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#AAB0BC" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8" cy="10" r="1.8"/><path d="M21 16l-5-5-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font:600 12px/1 system-ui;color:#AAB0BC">Фото заказа · 1 из 2</span></div>
+          <div style="font:700 13px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:#9AA0AD;margin:20px 0 8px">Описание</div>
+          <div style="font:400 14px/1.5 system-ui;color:#3A3F4B">Нужно установить двойную розетку в гостиной. Проводка уже подведена, штробить не нужно.</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-top:1px solid #F0F1F4;margin-top:18px"><span style="font:500 14px/1 system-ui;color:#7A808E">Когда удобно</span><span style="font:600 14px/1 system-ui">Сегодня, после 18:00</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-top:1px solid #F0F1F4"><span style="font:500 14px/1 system-ui;color:#7A808E">Длительность</span><span style="font:600 14px/1 system-ui">До 1 часа</span></div>
+          <div style="display:flex;align-items:center;gap:11px;padding:14px 0;border-top:1px solid #F0F1F4"><div style="width:40px;height:40px;border-radius:999px;background:#EEF1FF;display:flex;align-items:center;justify-content:center;font:700 15px/1 -apple-system,sans-serif;color:#4C6FFF">А</div><div style="flex:1"><div style="font:600 14px/1.2 system-ui">Айгерим М.</div><div style="font:500 12px/1 system-ui;color:#9AA0AD;margin-top:2px">заказчик</div></div><span style="display:inline-flex;align-items:center;gap:3px;font:600 13px/1 system-ui"><svg width="14" height="14" viewBox="0 0 24 24" fill="#E8981F"><path d="m12 3 2.5 5.5 6 .5-4.5 4 1.4 6L12 16l-5.4 3 1.4-6-4.5-4 6-.5L12 3Z"/></svg>4.8</span></div>
+        </div>
+        <div style="position:absolute;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);box-shadow:0 -1px 0 #ECEDF1;padding:14px 24px 30px"><div class="zbtn">Откликнуться</div></div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">21 · Карточка заказа</figcaption>
+    </figure>
+
+    <!-- 22 · Отклик sheet -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div style="position:absolute;inset:0;padding:56px 24px 0;filter:blur(1px);opacity:.5"><div style="font:700 23px/1.15 -apple-system,sans-serif">Установить розетку</div><div style="height:150px;border-radius:18px;background:#EDEFF3;margin-top:16px"></div></div>
+        <div style="position:absolute;inset:0;background:rgba(20,24,40,.4)"></div>
+        <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:26px 26px 0 0;padding:10px 22px 30px;box-shadow:0 -20px 50px -20px rgba(20,24,40,.4)">
+          <div style="width:40px;height:5px;border-radius:3px;background:#E1E3E9;margin:2px auto 16px"></div>
+          <div style="font:700 20px/1 -apple-system,sans-serif;margin-bottom:16px">Ваш отклик</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;background:#F5F6F8;border-radius:14px;padding:13px 15px;margin-bottom:20px"><div><div style="font:600 14px/1.2 system-ui">Установить розетку</div><div style="font:500 12px/1.2 system-ui;color:#7A808E;margin-top:3px">Бостандыкский р-н · 800 м</div></div><div style="font:700 16px/1 -apple-system,sans-serif;color:#4C6FFF">5 000 ₸</div></div>
+          <div style="font:600 13px/1 system-ui;color:#7A808E;margin-bottom:10px">Ваша цена</div>
+          <div onClick="{{ setAccept }}" style="{{ acceptCardStyle }}"><div><div style="font:600 15px/1.2 system-ui">Принять цену заказчика</div><div style="font:500 12px/1.2 system-ui;color:#7A808E;margin-top:3px">Соглашаетесь на 5 000 ₸</div></div><div style="font:700 16px/1 -apple-system,sans-serif">5 000 ₸</div></div>
+          <div onClick="{{ setOwn }}" style="{{ ownCardStyle }}">
+            <div style="display:flex;justify-content:space-between;align-items:center"><div style="font:600 15px/1.2 system-ui">Предложить свою цену</div><div style="width:22px;height:22px;border-radius:999px;box-shadow:{{ ownRing }};display:flex;align-items:center;justify-content:center"><div style="{{ ownDot }}"></div></div></div>
+            <sc-if value="{{ isOwn }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:10px;margin-top:14px;background:#fff;border-radius:12px;box-shadow:inset 0 0 0 1px #E4E6EC;padding:0 14px;height:52px"><input value="{{ ownPrice }}" onInput="{{ setOwnPrice }}" style="flex:1;border:none;background:transparent;font:700 18px/1 -apple-system,sans-serif;color:#141824;outline:none;width:100%"><span style="font:700 18px/1 -apple-system,sans-serif;color:#9AA0AD">₸</span></div></sc-if>
+          </div>
+          <div style="font:600 13px/1 system-ui;color:#7A808E;margin:20px 0 10px">Комментарий <span style="color:#B9BEC9;font-weight:500">(необязательно)</span></div>
+          <div style="background:#fff;border-radius:12px;box-shadow:inset 0 0 0 1px #E4E6EC;padding:13px 14px;font:400 14px/1.4 system-ui;color:#B9BEC9;height:60px">Приеду сегодня после 18:00, всё сделаю за час</div>
+          <div style="font:400 12px/1.4 system-ui;color:#9AA0AD;text-align:center;margin:16px 0 12px">Клиент увидит вашу цену и примет решение</div>
+          <div class="zbtn">Отправить отклик</div>
+        </div>
+        <div class="zhomew"></div>
+      </div>
+      <figcaption class="zcap">22 · Отклик — bottom sheet <span>(без комиссии)</span></figcaption>
+    </figure>
+
+    <!-- 23 · Мои отклики (7 статусов) -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 26px 4px;font:600 15px/1 -apple-system,sans-serif"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="padding:8px 20px 12px"><div class="ztitle">Мои отклики</div></div>
+        <div class="zscroll" style="flex:1;overflow-y:auto;padding:2px 20px 96px">
+          <div style="background:#fff;border-radius:18px;padding:15px 16px;margin-bottom:11px" class="zsh"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px"><span style="font:600 15px/1.2 system-ui">Установить розетку</span><span class="zpill" style="background:#F0F1F4;color:#6B7280">Отклик отправлен</span></div><div style="display:flex;justify-content:space-between"><span style="font:500 12px/1 system-ui;color:#9AA0AD">Сегодня · ваша цена 5 000 ₸</span><span style="font:600 12px/1 system-ui;color:#9AA0AD">800 м</span></div></div>
+          <div style="background:#fff;border-radius:18px;padding:15px 16px;margin-bottom:11px" class="zsh"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px"><span style="font:600 15px/1.2 system-ui">Заменить автомат</span><span class="zpill" style="background:#EEF1FF;color:#4C6FFF">Принят</span></div><div style="display:flex;justify-content:space-between"><span style="font:500 12px/1 system-ui;color:#9AA0AD">Айгерим М. · 6 000 ₸</span><span style="font:600 12px/1 system-ui;color:#9AA0AD">1,3 км</span></div></div>
+          <div style="background:#fff;border-radius:18px;padding:15px 16px;margin-bottom:11px" class="zsh"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px"><span style="font:600 15px/1.2 system-ui">Повесить карниз</span><span class="zpill" style="background:#EEF1FF;color:#4C6FFF">Выполняется</span></div><div style="display:flex;justify-content:space-between"><span style="font:500 12px/1 system-ui;color:#9AA0AD">Ержан Т. · 4 000 ₸</span><span style="font:600 12px/1 system-ui;color:#9AA0AD">2,0 км</span></div></div>
+          <div style="background:#fff;border-radius:18px;padding:15px 16px;margin-bottom:11px" class="zsh"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px"><span style="font:600 15px/1.2 system-ui">Подключить плиту</span><span class="zpill" style="background:#FBEFDD;color:#B45309">Ожидает подтв.</span></div><div style="display:flex;justify-content:space-between"><span style="font:500 12px/1 system-ui;color:#9AA0AD">Алия К. · 8 500 ₸</span><span style="font:600 12px/1 system-ui;color:#9AA0AD">2,4 км</span></div></div>
+          <div style="background:#fff;border-radius:18px;padding:15px 16px;margin-bottom:11px" class="zsh"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px"><span style="font:600 15px/1.2 system-ui">Ремонт люстры</span><span class="zpill" style="background:#E7F6EC;color:#16A34A">Выполнен</span></div><div style="display:flex;justify-content:space-between"><span style="font:500 12px/1 system-ui;color:#9AA0AD">3 июл · Марат Ж. · 4 500 ₸</span><span style="display:inline-flex;align-items:center;gap:3px;font:600 12px/1 system-ui"><svg width="12" height="12" viewBox="0 0 24 24" fill="#E8981F"><path d="m12 3 2.5 5.5 6 .5-4.5 4 1.4 6L12 16l-5.4 3 1.4-6-4.5-4 6-.5L12 3Z"/></svg>5.0</span></div></div>
+          <div style="background:#fff;border-radius:18px;padding:15px 16px;margin-bottom:11px" class="zsh"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px"><span style="font:600 15px/1.2 system-ui">Установка ТВ</span><span class="zpill" style="background:#F0F1F4;color:#6B7280">Не выбран</span></div><div style="display:flex;justify-content:space-between"><span style="font:500 12px/1 system-ui;color:#9AA0AD">2 июл · выбран другой</span><span style="font:600 12px/1 system-ui;color:#9AA0AD">3,1 км</span></div></div>
+          <div style="background:#fff;border-radius:18px;padding:15px 16px;margin-bottom:11px" class="zsh"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px"><span style="font:600 15px/1.2 system-ui">Штробление стены</span><span class="zpill" style="background:#F0F1F4;color:#6B7280">Отменён</span></div><div style="display:flex;justify-content:space-between"><span style="font:500 12px/1 system-ui;color:#9AA0AD">30 июн · заказ отменён</span><span style="font:600 12px/1 system-ui;color:#9AA0AD">1,8 км</span></div></div>
+        </div>
+        <div style="position:absolute;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);box-shadow:0 -1px 0 #ECEDF1;padding:9px 22px 26px;display:flex;justify-content:space-between">
+          <div class="ztab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9AA0AD" stroke-width="1.7"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z" stroke-linejoin="round"/><path d="M9 4v14M15 6v14"/></svg><span style="font:500 10px/1 system-ui;color:#9AA0AD">Карта</span></div>
+          <div class="ztab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9AA0AD" stroke-width="1.7"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 8h6M9 12h6M9 16h3" stroke-linecap="round"/></svg><span style="font:500 10px/1 system-ui;color:#9AA0AD">Заказы</span></div>
+          <div class="ztab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.8"><path d="M4 5h16v11H9l-4 3v-3H4V5Z" stroke-linejoin="round"/></svg><span style="font:600 10px/1 system-ui;color:#4C6FFF">Отклики</span></div>
+          <div class="ztab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9AA0AD" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" stroke-linecap="round"/></svg><span style="font:500 10px/1 system-ui;color:#9AA0AD">Профиль</span></div>
+        </div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">23 · Мои отклики <span>(7 статусов)</span></figcaption>
+    </figure>
+
+    <!-- 24 · Баланс -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 26px 4px;font:600 15px/1 -apple-system,sans-serif"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:8px 24px 12px"><div style="position:absolute;left:24px" class="zback"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#141824" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></div><div class="ztitle">Баланс</div></div>
+        <div class="zscroll" style="flex:1;overflow-y:auto;padding:6px 20px 30px">
+          <div style="background:linear-gradient(150deg,#5B7BFF,#4C6FFF);border-radius:22px;padding:22px 22px 20px;box-shadow:0 18px 34px -16px rgba(76,111,255,.6)">
+            <div style="font:500 13px/1 system-ui;color:rgba(255,255,255,.78)">Текущий баланс</div>
+            <div style="font:800 40px/1 -apple-system,sans-serif;color:#fff;letter-spacing:-1px;margin-top:8px">2 400 ₸</div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:22px;padding-top:16px;border-top:1px solid rgba(255,255,255,.22)"><div><div style="font:500 11px/1 system-ui;color:rgba(255,255,255,.72)">Следующее списание</div><div style="font:600 14px/1 system-ui;color:#fff;margin-top:5px">6 июля 2026</div></div><div style="font:700 14px/1 system-ui;color:#fff;background:rgba(255,255,255,.18);padding:7px 12px;border-radius:999px">100 ₸ / день</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:14px 16px;margin-top:14px" class="zsh"><div style="width:9px;height:9px;border-radius:999px;background:#16A34A;box-shadow:0 0 0 4px #E7F6EC"></div><span style="font:600 14px/1 system-ui;flex:1">Подписка активна</span><span style="font:500 13px/1 system-ui;color:#7A808E">до 6 июля</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:24px 2px 12px"><span style="font:700 13px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:#9AA0AD">История операций</span><span style="font:600 13px/1 system-ui;color:#4C6FFF">Все</span></div>
+          <div style="background:#fff;border-radius:18px;overflow:hidden" class="zsh">
+            <div style="display:flex;align-items:center;gap:13px;padding:14px 16px"><div style="width:40px;height:40px;border-radius:12px;background:#F0F1F4;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M12 19l-5-5M12 19l5-5"/></svg></div><div style="flex:1"><div style="font:600 14px/1.2 system-ui">Списание за подписку</div><div style="font:500 12px/1 system-ui;color:#9AA0AD;margin-top:3px">5 июл, 03:00</div></div><div style="font:700 15px/1 -apple-system,sans-serif;color:#6B7280">−100 ₸</div></div>
+            <div style="height:1px;background:#F0F1F4;margin-left:69px"></div>
+            <div style="display:flex;align-items:center;gap:13px;padding:14px 16px"><div style="width:40px;height:40px;border-radius:12px;background:#E7F6EC;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M12 5l-5 5M12 5l5 5"/></svg></div><div style="flex:1"><div style="font:600 14px/1.2 system-ui">Пополнение баланса</div><div style="font:500 12px/1 system-ui;color:#9AA0AD;margin-top:3px">3 июл, 14:32 · Kaspi</div></div><div style="font:700 15px/1 -apple-system,sans-serif;color:#16A34A">+2 000 ₸</div></div>
+            <div style="height:1px;background:#F0F1F4;margin-left:69px"></div>
+            <div style="display:flex;align-items:center;gap:13px;padding:14px 16px"><div style="width:40px;height:40px;border-radius:12px;background:#F0F1F4;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M12 19l-5-5M12 19l5-5"/></svg></div><div style="flex:1"><div style="font:600 14px/1.2 system-ui">Списание за подписку</div><div style="font:500 12px/1 system-ui;color:#9AA0AD;margin-top:3px">4 июл, 03:00</div></div><div style="font:700 15px/1 -apple-system,sans-serif;color:#6B7280">−100 ₸</div></div>
+            <div style="height:1px;background:#F0F1F4;margin-left:69px"></div>
+            <div style="display:flex;align-items:center;gap:13px;padding:14px 16px"><div style="width:40px;height:40px;border-radius:12px;background:#E7F6EC;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M12 5l-5 5M12 5l5 5"/></svg></div><div style="flex:1"><div style="font:600 14px/1.2 system-ui">Пополнение баланса</div><div style="font:500 12px/1 system-ui;color:#9AA0AD;margin-top:3px">1 июл, 11:20 · Карта</div></div><div style="font:700 15px/1 -apple-system,sans-serif;color:#16A34A">+1 000 ₸</div></div>
+          </div>
+          <div class="zbtn2" style="margin-top:18px;height:52px">Пополнить баланс</div>
+        </div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">24 · Баланс <span>(100 ₸/день)</span></figcaption>
+    </figure>
+
+    <!-- 25 · Пополнение -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 26px 4px;font:600 15px/1 -apple-system,sans-serif"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:8px 24px 12px"><div style="position:absolute;left:24px" class="zback"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#141824" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></div><div class="ztitle">Пополнение</div></div>
+        <div style="flex:1;padding:16px 24px 0">
+          <div style="font:600 13px/1 system-ui;color:#7A808E;margin-bottom:10px">Сумма пополнения</div>
+          <div style="display:flex;align-items:center;background:#fff;border-radius:14px;box-shadow:inset 0 0 0 1px #E4E6EC;padding:0 16px;height:58px"><span style="font:700 22px/1 -apple-system,sans-serif;flex:1">2 000</span><span style="font:700 22px/1 -apple-system,sans-serif;color:#9AA0AD">₸</span></div>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <span style="flex:1;text-align:center;font:600 14px/1 system-ui;color:#7A808E;background:#F2F3F6;padding:11px 0;border-radius:12px">1 000</span>
+            <span style="flex:1;text-align:center;font:600 14px/1 system-ui;color:#4C6FFF;background:#EEF1FF;padding:11px 0;border-radius:12px;box-shadow:inset 0 0 0 1.5px #4C6FFF">2 000</span>
+            <span style="flex:1;text-align:center;font:600 14px/1 system-ui;color:#7A808E;background:#F2F3F6;padding:11px 0;border-radius:12px">5 000</span>
+            <span style="flex:1;text-align:center;font:600 14px/1 system-ui;color:#7A808E;background:#F2F3F6;padding:11px 0;border-radius:12px">10 000</span>
+          </div>
+          <div style="font:600 13px/1 system-ui;color:#7A808E;margin:26px 0 10px">Способ оплаты</div>
+          <div style="display:flex;align-items:center;gap:13px;background:#fff;border-radius:14px;box-shadow:inset 0 0 0 1.5px #4C6FFF;padding:14px 16px"><div style="width:40px;height:40px;border-radius:11px;background:#FF3B30;display:flex;align-items:center;justify-content:center;font:800 15px/1 -apple-system,sans-serif;color:#fff">K</div><span style="flex:1;font:600 15px/1 system-ui">Kaspi</span><div style="width:22px;height:22px;border-radius:999px;background:#4C6FFF;display:flex;align-items:center;justify-content:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11"/></svg></div></div>
+          <div style="display:flex;align-items:center;gap:13px;background:#fff;border-radius:14px;box-shadow:inset 0 0 0 1px #E4E6EC;padding:14px 16px;margin-top:12px"><div style="width:40px;height:40px;border-radius:11px;background:#F0F1F4;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18" stroke-linecap="round"/></svg></div><span style="flex:1;font:600 15px/1 system-ui">Банковская карта</span><div style="width:22px;height:22px;border-radius:999px;box-shadow:inset 0 0 0 1.5px #C3C8D2"></div></div>
+          <div style="font:400 12px/1.4 system-ui;color:#9AA0AD;text-align:center;margin-top:16px">Комиссия за пополнение не взимается</div>
+        </div>
+        <div style="padding:0 24px 44px"><div class="zbtn">Пополнить на 2 000 ₸</div></div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">25 · Пополнение</figcaption>
+    </figure>
+
+    <!-- 26 · Пейволл -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 26px 4px;font:600 15px/1 -apple-system,sans-serif"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 34px;text-align:center">
+          <div style="position:relative;width:130px;height:130px;display:flex;align-items:center;justify-content:center">
+            <div style="width:120px;height:120px;border-radius:999px;background:linear-gradient(160deg,#EEF1FF,#DDE4FB);display:flex;align-items:center;justify-content:center">
+              <svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.6"><path d="M3 8a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v1" stroke-linecap="round"/><path d="M3 8v9a2 2 0 0 0 2 2h13a1 1 0 0 0 1-1v-3" stroke-linecap="round"/><path d="M21 11v4h-4a2 2 0 0 1 0-4h4Z" stroke-linejoin="round"/></svg>
+            </div>
+            <div style="position:absolute;right:14px;bottom:14px;width:34px;height:34px;border-radius:999px;background:#E8981F;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 12px -4px rgba(232,152,31,.6)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M9 6v12M15 6v12"/></svg></div>
+          </div>
+          <div class="ztitle" style="font-size:23px;margin-top:26px">Подписка неактивна</div>
+          <div style="font:400 15px/1.55 system-ui;color:#7A808E;margin-top:12px">Баланс 0 ₸ — новые отклики недоступны. Пополните баланс, чтобы продолжить получать заказы.</div>
+          <div style="display:flex;align-items:center;gap:10px;background:#E7F6EC;border-radius:13px;padding:12px 14px;margin-top:20px;text-align:left"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="1.9" style="flex:none"><path d="m5 12 4 4 10-11" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font:500 13px/1.4 system-ui;color:#15803D">Уже отправленные отклики остаются видимыми заказчикам</span></div>
+        </div>
+        <div style="padding:0 24px 44px"><div class="zbtn">Пополнить баланс</div></div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">26 · Пейволл <span>(БП-03)</span></figcaption>
+    </figure>
+
+    <!-- 27 · Профиль -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#F5F6F8">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 26px 4px;font:600 15px/1 -apple-system,sans-serif"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 22px 10px"><div class="ztitle">Профиль</div><span style="font:600 14px/1 system-ui;color:#4C6FFF">Изменить</span></div>
+        <div class="zscroll" style="flex:1;overflow-y:auto;padding:4px 20px 96px">
+          <div style="background:#fff;border-radius:20px;padding:20px;text-align:center" class="zsh">
+            <div style="width:80px;height:80px;border-radius:999px;background:#EEF1FF;display:flex;align-items:center;justify-content:center;margin:0 auto;font:700 30px/1 -apple-system,sans-serif;color:#4C6FFF">Д</div>
+            <div style="font:800 20px/1 -apple-system,sans-serif;margin-top:14px;letter-spacing:-.3px">Данияр Сериков</div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px"><span style="display:inline-flex;align-items:center;gap:3px;font:600 14px/1 system-ui"><svg width="15" height="15" viewBox="0 0 24 24" fill="#E8981F"><path d="m12 3 2.5 5.5 6 .5-4.5 4 1.4 6L12 16l-5.4 3 1.4-6-4.5-4 6-.5L12 3Z"/></svg>4.9</span><span style="font:500 13px/1 system-ui;color:#9AA0AD">· 63 заказа</span></div>
+            <div style="display:inline-flex;align-items:center;gap:6px;font:600 12px/1 system-ui;color:#4C6FFF;background:#EEF1FF;padding:7px 13px;border-radius:999px;margin-top:12px">Дипломированный <svg width="14" height="14" viewBox="0 0 24 24" fill="#4C6FFF"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;background:#fff;border-radius:16px;padding:15px 16px;margin-top:12px" class="zsh"><div style="width:9px;height:9px;border-radius:999px;background:#16A34A;box-shadow:0 0 0 4px #E7F6EC"></div><div style="flex:1"><div style="font:600 14px/1.2 system-ui">Подписка активна</div><div style="font:500 12px/1 system-ui;color:#9AA0AD;margin-top:2px">Баланс 2 400 ₸ · до 6 июля</div></div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C3C8D2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+          <div style="background:#fff;border-radius:16px;margin-top:12px;overflow:hidden" class="zsh">
+            <div style="display:flex;align-items:center;gap:13px;padding:15px 16px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.7"><path d="M4 7l2-3h12l2 3M4 7h16M4 7v11a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V7" stroke-linejoin="round"/></svg><span style="flex:1;font:500 15px/1 system-ui">Категории</span><span style="font:500 13px/1 system-ui;color:#9AA0AD">Электрика +2</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C3C8D2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+            <div style="height:1px;background:#F0F1F4;margin-left:49px"></div>
+            <div style="display:flex;align-items:center;gap:13px;padding:15px 16px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.7"><path d="m12 3 2.5 5.5 6 .5-4.5 4 1.4 6L12 16l-5.4 3 1.4-6-4.5-4 6-.5L12 3Z" stroke-linejoin="round"/></svg><span style="flex:1;font:500 15px/1 system-ui">Отзывы</span><span style="font:500 13px/1 system-ui;color:#9AA0AD">58</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C3C8D2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+            <div style="height:1px;background:#F0F1F4;margin-left:49px"></div>
+            <div style="display:flex;align-items:center;gap:13px;padding:15px 16px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6" stroke-linecap="round"/></svg><span style="flex:1;font:500 15px/1 system-ui">О себе</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C3C8D2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+          </div>
+          <div style="background:#fff;border-radius:16px;margin-top:12px;overflow:hidden" class="zsh">
+            <div style="display:flex;align-items:center;gap:13px;padding:15px 16px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.7"><path d="M12 3a4 4 0 0 1 4 4v3l2 4H6l2-4V7a4 4 0 0 1 4-4Z" stroke-linejoin="round"/><path d="M10 18a2 2 0 0 0 4 0" stroke-linecap="round"/></svg><span style="flex:1;font:500 15px/1 system-ui">Поддержка</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C3C8D2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+            <div style="height:1px;background:#F0F1F4;margin-left:49px"></div>
+            <div style="display:flex;align-items:center;gap:13px;padding:15px 16px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.3 1a7 7 0 0 0-1.7-1l-.3-2.6h-4l-.3 2.6a7 7 0 0 0-1.7 1l-2.3-1-2 3.4L5 11a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 1.7 1l.3 2.6h4l.3-2.6a7 7 0 0 0 1.7-1l2.3 1 2-3.4-2-1.5a7 7 0 0 0 .1-1Z" stroke-linejoin="round"/></svg><span style="flex:1;font:500 15px/1 system-ui">Настройки</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C3C8D2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+          </div>
+        </div>
+        <div style="position:absolute;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);box-shadow:0 -1px 0 #ECEDF1;padding:9px 22px 26px;display:flex;justify-content:space-between">
+          <div class="ztab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9AA0AD" stroke-width="1.7"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z" stroke-linejoin="round"/><path d="M9 4v14M15 6v14"/></svg><span style="font:500 10px/1 system-ui;color:#9AA0AD">Карта</span></div>
+          <div class="ztab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9AA0AD" stroke-width="1.7"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 8h6M9 12h6M9 16h3" stroke-linecap="round"/></svg><span style="font:500 10px/1 system-ui;color:#9AA0AD">Заказы</span></div>
+          <div class="ztab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9AA0AD" stroke-width="1.7"><path d="M4 5h16v11H9l-4 3v-3H4V5Z" stroke-linejoin="round"/></svg><span style="font:500 10px/1 system-ui;color:#9AA0AD">Отклики</span></div>
+          <div class="ztab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" stroke-linecap="round"/></svg><span style="font:600 10px/1 system-ui;color:#4C6FFF">Профиль</span></div>
+        </div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">27 · Профиль <span>(без портфолио)</span></figcaption>
+    </figure>
+
+    <!-- 28 · Диплом / статус -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#fff">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 26px 4px;font:600 15px/1 -apple-system,sans-serif"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="display:flex;align-items:center;justify-content:center;position:relative;padding:8px 24px 12px"><div style="position:absolute;left:24px" class="zback"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#141824" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></div><div class="ztitle">Дипломированный статус</div></div>
+        <div style="flex:1;padding:16px 24px 0">
+          <div style="font:400 14px/1.5 system-ui;color:#7A808E">Подтвердите квалификацию — получите бейдж «Дипломированный ✓» и приоритет в подборе.</div>
+          <div style="display:flex;align-items:center;gap:12px;background:#FBEFDD;border-radius:14px;padding:14px 16px;margin-top:20px"><div style="width:42px;height:42px;border-radius:12px;background:#F6DEB4;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round"/></svg></div><div style="flex:1"><div style="font:600 14px/1.2 system-ui;color:#8A5209">Диплом на проверке</div><div style="font:500 12px/1.2 system-ui;color:#9A6212;margin-top:3px">Обычно занимает до 48 часов</div></div></div>
+          <div style="background:#fff;border-radius:14px;box-shadow:inset 0 0 0 1px #E4E6EC;padding:14px 16px;margin-top:14px;display:flex;align-items:center;gap:12px"><div style="width:42px;height:42px;border-radius:11px;background:#FDECEC;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="1.7"><path d="M8 4h8l3 3v13H5V4h3Z" stroke-linejoin="round"/><path d="M9 13l6 0M9 16h4" stroke-linecap="round"/></svg></div><div style="flex:1"><div style="font:600 14px/1.2 system-ui">Диплом_электрик.pdf</div><div style="font:500 12px/1 system-ui;color:#9AA0AD;margin-top:3px">1,8 МБ · загружен</div></div></div>
+          <div style="display:flex;align-items:center;gap:12px;border:1.5px dashed #C2CCFF;background:#F4F6FF;border-radius:14px;padding:15px 16px;margin-top:14px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.8"><path d="M12 3v12M12 3l-4 4M12 3l4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 15v4h14v-4"/></svg><div style="flex:1"><div style="font:600 14px/1.2 system-ui;color:#3C55C8">Заменить файл</div><div style="font:500 12px/1 system-ui;color:#8A90FF;margin-top:3px">JPG, PNG или PDF · до 10 МБ</div></div></div>
+        </div>
+        <div style="padding:0 24px 44px"><div class="zbtn2">Отменить проверку</div></div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">28 · Диплом / статус <span>(до 48 ч)</span></figcaption>
+    </figure>
+
+    <!-- 29 · Чат -->
+    <figure style="margin:0">
+      <div class="zf" style="background:#F5F6F8">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 26px 4px;font:600 15px/1 -apple-system,sans-serif"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#141824"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#141824" stroke-opacity=".35" stroke-width="1.2"/><rect x="3" y="3" width="16" height="6" rx="1.5" fill="#141824"/></svg></span></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:4px 20px 12px;background:#fff;box-shadow:0 1px 0 #ECEDF1">
+          <div class="zback"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#141824" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></div>
+          <div style="width:40px;height:40px;border-radius:999px;background:#EEF1FF;display:flex;align-items:center;justify-content:center;font:700 15px/1 -apple-system,sans-serif;color:#4C6FFF">А</div>
+          <div style="flex:1"><div style="font:600 15px/1.2 system-ui">Айгерим М.</div><div style="font:500 12px/1 system-ui;color:#9AA0AD;margin-top:2px">заказчик</div></div>
+          <span style="font:600 12px/1 system-ui;color:#DC2626">Пожаловаться</span>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:10px">
+          <div style="text-align:center;font:500 11px/1 system-ui;color:#9AA0AD;margin-bottom:4px">Сегодня</div>
+          <div style="align-self:flex-start;max-width:76%;background:#fff;border-radius:18px 18px 18px 5px;padding:11px 14px;font:400 14px/1.4 system-ui" class="zsh">Здравствуйте! Подскажете, во сколько сможете подъехать?</div>
+          <div style="align-self:flex-end;max-width:76%;background:#4C6FFF;color:#fff;border-radius:18px 18px 5px 18px;padding:11px 14px;font:400 14px/1.4 system-ui">Здравствуйте! Могу к 18:30, подойдёт?</div>
+          <div style="align-self:flex-start;max-width:76%;background:#fff;border-radius:18px 18px 18px 5px;padding:11px 14px;font:400 14px/1.4 system-ui" class="zsh">Да, отлично. Домофон 42</div>
+          <div style="align-self:flex-end;max-width:76%;background:#4C6FFF;color:#fff;border-radius:18px 18px 5px 18px;padding:11px 14px;font:400 14px/1.4 system-ui">Принял, буду вовремя</div>
+        </div>
+        <div style="padding:10px 20px 26px;background:#fff;box-shadow:0 -1px 0 #ECEDF1"><div style="display:flex;align-items:center;gap:10px;background:#F0F1F4;border-radius:999px;padding:4px 4px 4px 18px"><span style="flex:1;font:400 15px/1 system-ui;color:#9AA0AD">Сообщение…</span><div style="width:40px;height:40px;border-radius:999px;background:#4C6FFF;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7Z"/></svg></div></div></div>
+        <div class="zhome"></div>
+      </div>
+      <figcaption class="zcap">29 · Чат <span>(только текст)</span></figcaption>
+    </figure>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { respMode: 'accept', ownPrice: '5 000', t1: 12, t2: 41 };
+  componentDidMount(){
+    this._iv = setInterval(() => {
+      this.setState(s => ({ t1: s.t1 >= 59 ? 6 : s.t1 + 1, t2: s.t2 >= 59 ? 14 : s.t2 + 1 }));
+    }, 1000);
+  }
+  componentWillUnmount(){ clearInterval(this._iv); }
+  renderVals(){
+    const s = this.state;
+    const isAccept = s.respMode === 'accept';
+    const isOwn = s.respMode === 'own';
+    const base = 'display:flex;justify-content:space-between;align-items:center;border-radius:14px;padding:15px 16px;margin-bottom:12px;cursor:pointer;';
+    return {
+      t1: s.t1, t2: s.t2, isAccept, isOwn, ownPrice: s.ownPrice,
+      setAccept: () => this.setState({ respMode: 'accept' }),
+      setOwn: () => this.setState({ respMode: 'own' }),
+      setOwnPrice: (e) => this.setState({ ownPrice: e.target.value }),
+      acceptCardStyle: base + (isAccept ? 'background:#EEF1FF;box-shadow:inset 0 0 0 2px #4C6FFF;' : 'background:#F5F6F8;box-shadow:inset 0 0 0 1px #E4E6EC;'),
+      ownCardStyle: 'border-radius:14px;padding:15px 16px;cursor:pointer;display:block;' + (isOwn ? 'background:#EEF1FF;box-shadow:inset 0 0 0 2px #4C6FFF;' : 'background:#F5F6F8;box-shadow:inset 0 0 0 1px #E4E6EC;'),
+      ownRing: isOwn ? 'inset 0 0 0 6px #4C6FFF' : 'inset 0 0 0 1.5px #C3C8D2',
+      ownDot: isOwn ? 'width:8px;height:8px;border-radius:999px;background:#fff' : 'width:0;height:0',
+    };
+  }
+}
+</script>
+</body>
+</html>

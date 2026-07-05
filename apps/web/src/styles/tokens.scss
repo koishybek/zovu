@@ -1,0 +1,71 @@
+// Zovu design tokens как CSS-переменные (канон из design/standalone.html, ADR-006).
+// Зеркалит src/theme/tokens.ts. Полная спека — docs/06-design-system.md.
+
+:root {
+  // Акцент
+  --c-primary: #4c6fff;
+  --c-primary-soft: #eef1ff;
+  --c-primary-border-soft: #dde4fb;
+
+  // Текст
+  --c-ink: #141824;
+  --c-ink-strong: #16181d;
+  --c-ink-secondary: #6b7280;
+  --c-ink-muted: #9aa0ad;
+  --c-ink-muted-alt: #7a808e;
+  --c-placeholder: #787e8c;
+
+  // Поверхности и линии
+  --c-border: #e4e6ec;
+  --c-border-soft: #ecedf1;
+  --c-divider: #f0f1f4;
+  --c-surface: #f5f6f8;
+  --c-surface-alt: #f7f7f8;
+  --c-bg: #ffffff;
+
+  // Статусы
+  --c-success: #16a34a;
+  --c-success-soft: #e7f6ec;
+  --c-warning: #e8981f;
+  --c-warning-ink: #b45309;
+  --c-warning-soft: #fbefdd;
+  --c-danger: #e24545;
+  --c-danger-strong: #dc2626;
+  --c-danger-soft: #fdecec;
+
+  // Радиусы
+  --r-chip: 999px;
+  --r-cta: 14px;
+  --r-card: 16px;
+  --r-card-lg: 18px;
+  --r-input: 12px;
+  --r-sheet: 20px;
+  --r-sm: 8px;
+
+  // Отступы (4pt)
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-10: 40px;
+
+  // Размеры
+  --h-cta: 52px;
+  --h-input: 52px;
+  --screen-pad: 16px;
+
+  // Моушн
+  --m-fast: 160ms;
+  --m-base: 200ms;
+  --m-slow: 240ms;
+  --ease-out: cubic-bezier(0.19, 0.91, 0.38, 1);
+  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+
+  // Тень (единственная допустимая)
+  --shadow-card: 0 2px 8px rgba(15, 23, 42, 0.04);
+
+  --font: -apple-system, 'SF Pro Display', 'SF Pro Text', 'Inter', system-ui, sans-serif;
+}

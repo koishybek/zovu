@@ -1,0 +1,61 @@
+# Zovu — инфраструктура для dev/демо.
+# `docker compose up -d` поднимает postgres(+postgis) и minio.
+# API запускается на хосте: cd apps/api && npx prisma migrate dev && npm run start:dev
+# API-контейнер — под профилем `full` (docker compose --profile full up -d).
+# Нет Docker на машине? См. фоллбэки в docs/09-decisions.md (ADR-005).
+
+services:
+  postgres:
+    image: postgis/postgis:15-3.4
+    container_name: zovu-postgres
+    environment:
+      POSTGRES_DB: zovu
+      POSTGRES_USER: zovu
+      POSTGRES_PASSWORD: zovu_dev
+    ports:
+      - "5434:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zovu -d zovu"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    container_name: zovu-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: zovu
+      MINIO_ROOT_PASSWORD: zovu_dev_secret
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    profiles: ["full"]
+    build: ./apps/api
+    container_name: zovu-api
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://zovu:zovu_dev@postgres:5432/zovu
+      MINIO_ENDPOINT: http://minio:9000
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
+volumes:
+  pg_data:
+  minio_data:

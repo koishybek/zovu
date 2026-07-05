@@ -1,0 +1,16 @@
+/* =========================================================================
+   POLARIS DESIGN SYSTEM — global entry point
+   Consuming projects link THIS file only. It is an import manifest; all real
+   declarations live in the token files below. Order: webfonts → raw palette →
+   semantic color → type → spacing → shape → elevation → motion → base reset.
+   Based on Shopify Polaris (https://github.com/Shopify/polaris).
+   ========================================================================= */
+@import url('./tokens/fonts.css');
+@import url('./tokens/palette.css');
+@import url('./tokens/color.css');
+@import url('./tokens/typography.css');
+@import url('./tokens/spacing.css');
+@import url('./tokens/shape.css');
+@import url('./tokens/shadows.css');
+@import url('./tokens/motion.css');
+@import url('./tokens/base.css');

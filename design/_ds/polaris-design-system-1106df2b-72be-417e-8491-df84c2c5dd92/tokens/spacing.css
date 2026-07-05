@@ -1,0 +1,32 @@
+/* =========================================================================
+   SPACING
+   A single spacing ramp used for padding, margin, and gap. Named by value × 25
+   (e.g. 400 = 16px). The base unit is 4px (space-100). Plus a few component
+   aliases. From Shopify Polaris (polaris-tokens base space).
+   ========================================================================= */
+:root {
+  --p-space-0: 0px;
+  --p-space-025: 1px;
+  --p-space-050: 2px;
+  --p-space-100: 4px;
+  --p-space-150: 6px;
+  --p-space-200: 8px;
+  --p-space-300: 12px;
+  --p-space-400: 16px;
+  --p-space-500: 20px;
+  --p-space-600: 24px;
+  --p-space-800: 32px;
+  --p-space-1000: 40px;
+  --p-space-1200: 48px;
+  --p-space-1600: 64px;
+  --p-space-2000: 80px;
+  --p-space-2400: 96px;
+  --p-space-2800: 112px;
+  --p-space-3200: 128px;
+
+  /* Component aliases */
+  --p-space-button-group-gap: var(--p-space-200);
+  --p-space-card-gap: var(--p-space-400);
+  --p-space-card-padding: var(--p-space-400);
+  --p-space-table-cell-padding: var(--p-space-150);
+}

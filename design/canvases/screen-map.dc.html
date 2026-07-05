@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#EDEEF1;-webkit-font-smoothing:antialiased}
+  a{text-decoration:none;color:inherit}
+  .card{display:block;background:#fff;border-radius:20px;padding:22px;box-shadow:0 1px 2px rgba(20,24,40,.04),0 8px 24px -14px rgba(20,24,40,.16);transition:transform .12s ease,box-shadow .12s ease;cursor:pointer}
+  .card:hover{transform:translateY(-3px);box-shadow:0 6px 14px -6px rgba(20,24,40,.12),0 20px 40px -20px rgba(20,24,40,.28)}
+  .ic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none}
+  .tag{font:600 11px/1 system-ui;color:#4C6FFF;background:#EEF1FF;padding:5px 9px;border-radius:999px}
+</style>
+</helmet>
+
+<div style="font-family:-apple-system,'SF Pro Display','SF Pro Text','Inter',system-ui,sans-serif;color:#141824;padding:64px 60px 100px;max-width:1120px;margin:0 auto">
+
+  <div style="display:flex;align-items:flex-end;gap:16px">
+    <div style="font:800 46px/1 -apple-system,sans-serif;letter-spacing:-1.8px;color:#4C6FFF">Zovu</div>
+    <div style="font:600 16px/1.3 system-ui;color:#3A3F4B;padding-bottom:6px">Карта экранов · дизайн-проект</div>
+  </div>
+  <div style="font:500 15px/1.6 system-ui;color:#6B7280;max-width:680px;margin:14px 0 44px">Гео-маркетплейс бытовых услуг для Казахстана. 33 экрана, состояния, компонентная библиотека и кликабельные прототипы. Нажмите на карточку, чтобы открыть борд.</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+    <a class="card" href="Zovu - Онбординг.dc.html">
+      <div style="display:flex;align-items:center;gap:16px">
+        <div class="ic" style="background:#EEF1FF"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" stroke-linecap="round"/></svg></div>
+        <div style="flex:1"><div style="font:700 18px/1.2 -apple-system,sans-serif">Онбординг специалиста</div><div style="font:500 13px/1.4 system-ui;color:#7A808E;margin-top:4px">Welcome → номер → OTP → роль → анкета → верификация → успех</div></div>
+        <span class="tag">9</span>
+      </div>
+    </a>
+
+    <a class="card" href="Zovu - Заказчик.dc.html">
+      <div style="display:flex;align-items:center;gap:16px">
+        <div class="ic" style="background:#EEF1FF"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.8"><path d="M5 8h14l-1.5 11H6.5L5 8Z" stroke-linejoin="round"/><path d="M9 8V6a3 3 0 0 1 6 0v2" stroke-linecap="round"/></svg></div>
+        <div style="flex:1"><div style="font:700 18px/1.2 -apple-system,sans-serif">Флоу заказчика</div><div style="font:500 13px/1.4 system-ui;color:#7A808E;margin-top:4px">Создание → фильтры → отклики → чат → завершение → оценка → история</div></div>
+        <span class="tag">10</span>
+      </div>
+    </a>
+
+    <a class="card" href="Zovu - Специалист.dc.html">
+      <div style="display:flex;align-items:center;gap:16px">
+        <div class="ic" style="background:#EEF1FF"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.8"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" stroke-linejoin="round"/></svg></div>
+        <div style="flex:1"><div style="font:700 18px/1.2 -apple-system,sans-serif">Флоу специалиста</div><div style="font:500 13px/1.4 system-ui;color:#7A808E;margin-top:4px">Карта · лента · отклик · статусы · баланс · пейволл · профиль · диплом</div></div>
+        <span class="tag">11</span>
+      </div>
+    </a>
+
+    <a class="card" href="Zovu - Общие.dc.html">
+      <div style="display:flex;align-items:center;gap:16px">
+        <div class="ic" style="background:#EEF1FF"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.8"><path d="M12 3a4 4 0 0 1 4 4v3l2 4H6l2-4V7a4 4 0 0 1 4-4Z" stroke-linejoin="round"/><path d="M10 20a2 2 0 0 0 4 0" stroke-linecap="round"/></svg></div>
+        <div style="flex:1"><div style="font:700 18px/1.2 -apple-system,sans-serif">Общие экраны</div><div style="font:500 13px/1.4 system-ui;color:#7A808E;margin-top:4px">Уведомления · поддержка · отзывы · настройки + переключатель роли</div></div>
+        <span class="tag">4</span>
+      </div>
+    </a>
+
+    <a class="card" href="Zovu - Ключевые экраны.dc.html">
+      <div style="display:flex;align-items:center;gap:16px">
+        <div class="ic" style="background:#EEF1FF"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4C6FFF" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5" stroke-linecap="round"/></svg></div>
+        <div style="flex:1"><div style="font:700 18px/1.2 -apple-system,sans-serif">Ключевые экраны + токены</div><div style="font:500 13px/1.4 system-ui;color:#7A808E;margin-top:4px">Тема, статус-пиллы и 5 экранов согласования</div></div>
+        <span class="tag">5</span>
+      </div>
+    </a>
+
+    <a class="card" href="Zovu - Состояния.dc.html">
+      <div style="display:flex;align-items:center;gap:16px">
+        <div class="ic" style="background:#FBEFDD"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01" stroke-linecap="round"/></svg></div>
+        <div style="flex:1"><div style="font:700 18px/1.2 -apple-system,sans-serif">Состояния</div><div style="font:500 13px/1.4 system-ui;color:#7A808E;margin-top:4px">Пустые · загрузка · ошибки · GPS · блокировки · своя категория</div></div>
+        <span class="tag" style="color:#B45309;background:#FBEFDD">17</span>
+      </div>
+    </a>
+
+    <a class="card" href="Zovu - Компоненты.dc.html">
+      <div style="display:flex;align-items:center;gap:16px">
+        <div class="ic" style="background:#E7F6EC"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg></div>
+        <div style="flex:1"><div style="font:700 18px/1.2 -apple-system,sans-serif">Компонентная библиотека</div><div style="font:500 13px/1.4 system-ui;color:#7A808E;margin-top:4px">Кнопки · инпуты · чипы · пиллы · карточки · чат · звёзды · OTP</div></div>
+        <span class="tag" style="color:#16A34A;background:#E7F6EC">10</span>
+      </div>
+    </a>
+
+    <a class="card" href="Zovu - Прототип.dc.html">
+      <div style="display:flex;align-items:center;gap:16px">
+        <div class="ic" style="background:#4C6FFF"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"><path d="M7 4v16l13-8-13-8Z" stroke-linejoin="round"/></svg></div>
+        <div style="flex:1"><div style="font:700 18px/1.2 -apple-system,sans-serif">Кликабельные прототипы</div><div style="font:500 13px/1.4 system-ui;color:#7A808E;margin-top:4px">4 флоу: онбординг · заказчик · специалист · баланс</div></div>
+        <span class="tag" style="color:#fff;background:rgba(76,111,255,.25);background:#3B58D6">4 флоу</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:36px">
+    <div style="display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:999px;padding:9px 15px;box-shadow:0 1px 2px rgba(20,24,40,.05)"><div style="width:16px;height:16px;border-radius:5px;background:#4C6FFF"></div><span style="font:600 12px/1 system-ui;color:#3A3F4B">Акцент #4C6FFF</span></div>
+    <div style="display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:999px;padding:9px 15px;box-shadow:0 1px 2px rgba(20,24,40,.05)"><span style="font:600 12px/1 system-ui;color:#3A3F4B">SF Pro / Inter</span></div>
+    <div style="display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:999px;padding:9px 15px;box-shadow:0 1px 2px rgba(20,24,40,.05)"><span style="font:600 12px/1 system-ui;color:#3A3F4B">390 × 844 · light</span></div>
+    <div style="display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:999px;padding:9px 15px;box-shadow:0 1px 2px rgba(20,24,40,.05)"><span style="font:600 12px/1 system-ui;color:#3A3F4B">RU · KZ</span></div>
+    <div style="display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:999px;padding:9px 15px;box-shadow:0 1px 2px rgba(20,24,40,.05)"><span style="font:600 12px/1 system-ui;color:#3A3F4B">B2C · 2 роли</span></div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

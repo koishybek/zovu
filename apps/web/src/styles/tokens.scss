@@ -33,14 +33,17 @@
   --c-danger-strong: #dc2626;
   --c-danger-soft: #fdecec;
 
-  // Радиусы
+  // Радиусы (точные значения standalone)
   --r-chip: 999px;
-  --r-cta: 14px;
-  --r-card: 16px;
-  --r-card-lg: 18px;
-  --r-input: 12px;
-  --r-sheet: 20px;
+  --r-cta: 15px; // кнопка
+  --r-card: 18px; // карточка
+  --r-input: 13px; // инпут
+  --r-otp: 14px; // OTP-ячейка
+  --r-sheet: 22px; // bottom sheet (20–26)
   --r-sm: 8px;
+
+  // Тени карточек (мягкие, многослойные — как в standalone)
+  --shadow-soft: 0 1px 2px rgba(20, 24, 40, 0.04), 0 6px 18px -10px rgba(20, 24, 40, 0.12);
 
   // Отступы (4pt)
   --s-1: 4px;

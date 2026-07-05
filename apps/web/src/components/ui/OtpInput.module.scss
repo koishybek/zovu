@@ -1,0 +1,68 @@
+.row {
+  display: flex;
+  gap: var(--s-3);
+  justify-content: center;
+}
+
+.cell {
+  flex: 1;
+  max-width: 64px;
+  height: 64px;
+  border: none;
+  border-radius: var(--r-otp);
+  background: var(--c-bg);
+  box-shadow: inset 0 0 0 1.5px var(--c-border);
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--c-ink);
+  outline: none;
+  transition:
+    box-shadow var(--m-fast) var(--ease-out),
+    transform var(--m-fast) var(--ease-out);
+
+  &:focus {
+    box-shadow: inset 0 0 0 1.5px var(--c-primary);
+  }
+}
+
+.filled {
+  box-shadow: inset 0 0 0 1.5px var(--c-primary);
+  animation: bounce 200ms var(--ease-out);
+}
+
+.error {
+  box-shadow: inset 0 0 0 1.5px var(--c-danger);
+  background: var(--c-danger-soft);
+}
+
+@keyframes bounce {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.shake {
+  animation: shake 0.4s var(--ease-out);
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-6px);
+  }
+  40%,
+  80% {
+    transform: translateX(6px);
+  }
+}

@@ -1,0 +1,53 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(20, 24, 40, 0.4);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: fade var(--m-base) var(--ease-out);
+}
+
+.sheet {
+  width: 100%;
+  max-width: 440px;
+  background: var(--c-bg);
+  border-radius: var(--r-sheet) var(--r-sheet) 0 0;
+  padding: var(--s-2) var(--screen-pad) calc(var(--s-5) + env(safe-area-inset-bottom));
+  max-height: 88dvh;
+  overflow-y: auto;
+  animation: slideUp var(--m-slow) var(--ease-out);
+}
+
+.handle {
+  width: 40px;
+  height: 5px;
+  border-radius: 3px;
+  background: #e1e3e9;
+  margin: 2px auto var(--s-4);
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--c-ink);
+  margin-bottom: var(--s-4);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+}

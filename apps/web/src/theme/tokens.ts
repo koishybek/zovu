@@ -49,14 +49,14 @@ export const statusPill = {
   review: { bg: color.warningSoft, fg: color.warningInk }, // На рассмотрении
 } as const;
 
-/** Радиусы (px). Канон standalone: чипы 999, CTA 14, карточки 16–18, инпуты 12, шиты 20. */
+/** Радиусы (px). Точные значения standalone: чипы 999, CTA 15, карточки 18, инпуты 13, OTP 14, шиты 22. */
 export const radius = {
   chip: 999,
-  cta: 14,
-  card: 16,
-  cardLg: 18,
-  input: 12,
-  sheet: 20,
+  cta: 15,
+  card: 18,
+  input: 13,
+  otp: 14,
+  sheet: 22,
   sm: 8,
 } as const;
 

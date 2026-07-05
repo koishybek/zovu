@@ -1,0 +1,21 @@
+.price {
+  font-weight: 800;
+  color: var(--c-ink);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.lg {
+  font-size: 22px;
+  line-height: 26px;
+}
+.md {
+  font-size: 20px;
+  line-height: 24px;
+}
+.sm {
+  font-size: 16px;
+  line-height: 20px;
+}
+.muted {
+  color: var(--c-ink-secondary);
+}

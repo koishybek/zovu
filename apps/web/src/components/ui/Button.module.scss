@@ -1,0 +1,91 @@
+// Значения — точный канон standalone (.btn / .zbtn).
+.btn {
+  height: var(--h-cta);
+  border-radius: var(--r-cta);
+  font-size: 16px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  padding: 0 26px;
+  transition:
+    transform var(--m-fast) var(--ease-out),
+    background var(--m-fast) var(--ease-out),
+    opacity var(--m-fast) var(--ease-out);
+  user-select: none;
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+}
+
+.full {
+  width: 100%;
+}
+
+.icon {
+  display: inline-flex;
+}
+
+.primary {
+  background: var(--c-primary);
+  color: #fff;
+  &:active:not(:disabled) {
+    background: #3b58d6;
+  }
+  &:disabled {
+    background: #c6cdda;
+    color: #fff;
+  }
+}
+
+.secondary {
+  background: var(--c-primary-soft);
+  color: var(--c-primary);
+  &:active:not(:disabled) {
+    background: #e2e8ff;
+  }
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.ghost {
+  background: transparent;
+  color: var(--c-primary);
+  height: auto;
+  padding: var(--s-2) var(--s-2);
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.danger {
+  background: var(--c-bg);
+  color: var(--c-danger-strong);
+  box-shadow: inset 0 0 0 1px #f3c4c4;
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 999px;
+  animation: spin 0.7s linear infinite;
+}
+.secondary .spinner,
+.ghost .spinner {
+  border-color: rgba(76, 111, 255, 0.25);
+  border-top-color: var(--c-primary);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

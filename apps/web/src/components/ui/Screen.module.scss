@@ -1,0 +1,27 @@
+// Screen = контент экрана внутри DeviceFrame (рамку телефона даёт DeviceFrame).
+.frame {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--c-bg);
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  padding: var(--screen-pad);
+}
+.bleed {
+  padding: 0;
+}
+.scroll {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.footer {
+  padding: var(--s-3) var(--screen-pad) calc(var(--s-3) + env(safe-area-inset-bottom));
+  background: var(--c-bg);
+  border-top: 1px solid var(--c-divider);
+}

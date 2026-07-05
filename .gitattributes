@@ -1,0 +1,10 @@
+# Нормализуем переводы строк: в репо — LF, в рабочей копии — как в ОС.
+* text=auto eol=lf
+
+# Бинарники не трогаем
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.woff binary
+*.woff2 binary

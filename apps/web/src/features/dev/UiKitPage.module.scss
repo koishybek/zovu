@@ -1,0 +1,83 @@
+.section {
+  padding: var(--s-4) 0;
+  border-bottom: 1px solid var(--c-divider);
+}
+
+.h2 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: var(--s-3);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  align-items: center;
+}
+
+.rowBetween {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+
+.muted {
+  font-size: 14px;
+  color: var(--c-ink-secondary);
+}
+
+.pillDemo {
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--s-3);
+}
+.time {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-primary);
+}
+.cardTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--c-ink);
+}
+.cardAddr {
+  font-size: 13px;
+  color: var(--c-ink-muted-alt);
+  margin-top: 2px;
+}
+.cardBottom {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: var(--s-3);
+}
+.dist {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-ink-muted-alt);
+}
+.cardRow {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}

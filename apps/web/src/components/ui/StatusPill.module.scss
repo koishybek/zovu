@@ -1,0 +1,12 @@
+// Канон standalone (.pill): font 600 12px, padding 7px 12px, r999.
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  border-radius: var(--r-chip);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}

@@ -1,0 +1,27 @@
+.track {
+  width: 51px;
+  height: 31px;
+  border-radius: 999px;
+  background: var(--c-border);
+  padding: 2px;
+  transition: background var(--m-base) var(--ease-out);
+  flex-shrink: 0;
+}
+
+.on {
+  background: var(--c-primary);
+}
+
+.knob {
+  display: block;
+  width: 27px;
+  height: 27px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.2);
+  transition: transform var(--m-base) var(--ease-out);
+}
+
+.on .knob {
+  transform: translateX(20px);
+}

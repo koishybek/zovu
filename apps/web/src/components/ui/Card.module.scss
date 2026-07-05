@@ -1,0 +1,23 @@
+// Канон standalone: карточка на мягкой тени, БЕЗ 1px-бордера, радиус 18.
+.card {
+  background: var(--c-surface, #fff);
+  border-radius: var(--r-card);
+  padding: 15px 16px;
+  box-shadow: var(--shadow-soft);
+}
+
+.pressable {
+  transition: transform var(--m-fast) var(--ease-out);
+  cursor: pointer;
+  &:active {
+    transform: scale(0.985);
+  }
+}
+
+// Новая/непрочитанная карточка — синее кольцо (standalone).
+.selected {
+  box-shadow:
+    0 0 0 1.5px var(--c-primary),
+    var(--shadow-soft);
+  background: var(--c-primary-soft);
+}

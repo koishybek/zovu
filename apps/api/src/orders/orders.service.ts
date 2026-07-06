@@ -112,6 +112,20 @@ export class OrdersService {
     return this.serialize(order);
   }
 
+  /**
+   * Отмена (ЗВ-07). До принятия отклика — свободно заказчиком.
+   * После принятия — только через поддержку/спор (MVP-упрощение: взаимная отмена
+   * реализуется как спор-тикет ЗВ-06, см. support-модуль).
+   */
+  async cancel(userId: string, orderId: string) {
+    const order = await this.prisma.order.findUnique({ where: { id: orderId } });
+    if (!order) throw new NotFoundException('order_not_found');
+    if (order.clientId !== userId) throw new ForbiddenException('not_your_order');
+    if (order.status !== 'active') throw new BadRequestException('cancel_after_accept_via_support');
+    await this.prisma.order.update({ where: { id: orderId }, data: { status: 'cancelled' } });
+    return { status: 'cancelled' };
+  }
+
   /** Свайп влево (S-11): скрыть заказ у специалиста. */
   async hide(userId: string, orderId: string) {
     const profile = await this.prisma.specialistProfile.findUnique({ where: { userId } });

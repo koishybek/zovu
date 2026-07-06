@@ -1,0 +1,34 @@
+.cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin: var(--s-4) 0;
+}
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--s-2);
+}
+.cat {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-ink);
+}
+.msg {
+  font-size: 14px;
+  color: var(--c-ink-secondary);
+}
+.agentReply {
+  margin-top: var(--s-3);
+  padding: var(--s-3);
+  border-radius: 12px;
+  background: var(--c-primary-soft);
+  font-size: 14px;
+  color: var(--c-primary);
+}

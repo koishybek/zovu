@@ -48,6 +48,12 @@ export class OrdersController {
     return this.orders.hide(u.sub, id);
   }
 
+  @Post(':id/cancel')
+  @ApiOperation({ summary: 'Отмена заказа (ЗВ-07: до принятия свободно)' })
+  cancel(@CurrentUser() u: AccessPayload, @Param('id') id: string) {
+    return this.orders.cancel(u.sub, id);
+  }
+
   @Post(':id/bids')
   @ApiOperation({ summary: 'S-13: откликнуться на заказ' })
   createBid(@CurrentUser() u: AccessPayload, @Param('id') id: string, @Body() dto: CreateBidDto) {

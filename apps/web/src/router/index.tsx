@@ -28,6 +28,9 @@ import { ChatScreen } from '../features/deal/ChatScreen';
 import { ActiveOrderScreen } from '../features/deal/ActiveOrderScreen';
 import { ReviewScreen } from '../features/deal/ReviewScreen';
 import { NotificationsScreen } from '../features/deal/NotificationsScreen';
+import { SupportScreen } from '../features/support/SupportScreen';
+import { SettingsScreen } from '../features/settings/SettingsScreen';
+import { RoleSwitchScreen } from '../features/settings/RoleSwitchScreen';
 import { routes, SPECIALIST_TABS, CLIENT_TABS } from './routes';
 
 // M1: экраны — заглушки (ScreenStub), реализация в M3–M7. Пути — канон docs/05-screens.md.
@@ -97,13 +100,12 @@ export const router = createBrowserRouter([
 
       // Общие (S-30…S-35)
       { path: routes.chat(), element: <RequireAuth><ChatScreen /></RequireAuth> },
-      { path: routes.support, element: stub('S-31', 'Поддержка', 'M7') },
-      { path: routes.supportNew, element: stub('S-31', 'Новое обращение', 'M7') },
-      { path: routes.supportTicket(), element: stub('S-31', 'Тикет поддержки', 'M7') },
+      { path: routes.support, element: <RequireAuth><SupportScreen /></RequireAuth> },
+      { path: routes.supportTicket(), element: <RequireAuth><SupportScreen /></RequireAuth> },
       { path: routes.notifications, element: <RequireAuth><NotificationsScreen /></RequireAuth> },
       { path: routes.reviews(), element: stub('S-33', 'Отзывы', 'M8') },
-      { path: routes.roleSwitch, element: stub('S-34', 'Роль', 'M7') },
-      { path: routes.settings, element: stub('S-35', 'Настройки', 'M7') },
+      { path: routes.roleSwitch, element: <RequireAuth><RoleSwitchScreen /></RequireAuth> },
+      { path: routes.settings, element: <RequireAuth><SettingsScreen /></RequireAuth> },
 
       // Dev — витрина UI-кита (реальный экран)
       { path: routes.uikit, element: <UiKitPage /> },

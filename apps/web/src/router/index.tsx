@@ -28,6 +28,7 @@ import { ChatScreen } from '../features/deal/ChatScreen';
 import { ActiveOrderScreen } from '../features/deal/ActiveOrderScreen';
 import { ReviewScreen } from '../features/deal/ReviewScreen';
 import { NotificationsScreen } from '../features/deal/NotificationsScreen';
+import { ReviewsListScreen } from '../features/deal/ReviewsListScreen';
 import { SupportScreen } from '../features/support/SupportScreen';
 import { SettingsScreen } from '../features/settings/SettingsScreen';
 import { RoleSwitchScreen } from '../features/settings/RoleSwitchScreen';
@@ -103,7 +104,7 @@ export const router = createBrowserRouter([
       { path: routes.support, element: <RequireAuth><SupportScreen /></RequireAuth> },
       { path: routes.supportTicket(), element: <RequireAuth><SupportScreen /></RequireAuth> },
       { path: routes.notifications, element: <RequireAuth><NotificationsScreen /></RequireAuth> },
-      { path: routes.reviews(), element: stub('S-33', 'Отзывы', 'M8') },
+      { path: routes.reviews(), element: <RequireAuth><ReviewsListScreen /></RequireAuth> },
       { path: routes.roleSwitch, element: <RequireAuth><RoleSwitchScreen /></RequireAuth> },
       { path: routes.settings, element: <RequireAuth><SettingsScreen /></RequireAuth> },
 

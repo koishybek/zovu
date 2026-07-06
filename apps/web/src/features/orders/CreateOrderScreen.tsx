@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, Button, TextField, TextArea, BottomSheet, Icon } from '../../components/ui';
+import { Screen, AppBar, Button, TextField, TextArea, BottomSheet, Icon, Switch, Slider, Chip } from '../../components/ui';
 import { fetchCategories } from '../auth/api';
-import { createOrder } from './api';
+import { createOrder, type OrderFilters } from './api';
 import { useGeo, ALMATY_FALLBACK } from '../../lib/useGeo';
 import { routes } from '../../router/routes';
+import { formatDistanceKm } from '../../lib/format';
 import styles from './CreateOrder.module.scss';
 
 /** S-20 Создание заказа: категория, описание, бюджет, адрес, гео. */
@@ -25,6 +26,10 @@ export function CreateOrderScreen() {
   const [address, setAddress] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // S-21 фильтры подбора (Ф-02…Ф-05)
+  const [filterSheet, setFilterSheet] = useState(false);
+  const [filters, setFilters] = useState<OrderFilters>({});
+
   const valid = catId && title.trim().length >= 3 && desc.trim() && Number(budget) > 0 && address.trim().length >= 2;
 
   async function submit() {
@@ -40,6 +45,7 @@ export function CreateOrderScreen() {
         address: address.trim(),
         lat: pos.lat,
         lng: pos.lng,
+        filters: Object.keys(filters).length ? filters : undefined,
       });
       navigate(routes.clientOrderBids(order.id), { replace: true });
     } finally {
@@ -49,7 +55,11 @@ export function CreateOrderScreen() {
 
   return (
     <Screen footer={<Button onClick={submit} loading={loading} disabled={!valid}>{t('client.publish')}</Button>}>
-      <AppBar showBack largeTitle={t('client.createOrder')} />
+      <AppBar
+        showBack
+        largeTitle={t('client.createOrder')}
+        trailing={<button onClick={() => setFilterSheet(true)} aria-label={t('client.filters')}><Icon name="filter" size={22} color="var(--c-primary)" /></button>}
+      />
       <div className={styles.form}>
         <button className={styles.selector} onClick={() => setCatSheet(true)}>
           <span className={catId ? styles.selVal : styles.selPh}>{catName || 'Категория *'}</span>
@@ -80,6 +90,28 @@ export function CreateOrderScreen() {
             {catId === c.id && <Icon name="check" size={20} color="var(--c-primary)" />}
           </button>
         ))}
+      </BottomSheet>
+
+      {/* S-21 Фильтры подбора (Ф-02…Ф-05) */}
+      <BottomSheet open={filterSheet} onClose={() => setFilterSheet(false)} title={t('client.filters')}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span>{t('client.certifiedOnly')}</span>
+          <Switch checked={!!filters.certifiedOnly} onChange={(v) => setFilters((f) => ({ ...f, certifiedOnly: v || undefined }))} />
+        </div>
+        <Slider label={t('client.minRating')} value={filters.minRating ?? 1} min={1} max={5} step={0.5} onChange={(v) => setFilters((f) => ({ ...f, minRating: v > 1 ? v : undefined }))} formatValue={(v) => `${v.toFixed(1)}★`} />
+        <div>
+          <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 8 }}>{t('client.experience')}</div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {[5, 20, 50].map((n) => (
+              <Chip key={n} selected={filters.minOrders === n} onClick={() => setFilters((f) => ({ ...f, minOrders: f.minOrders === n ? undefined : n }))}>≥ {n}</Chip>
+            ))}
+          </div>
+        </div>
+        <Slider label={t('client.distance')} value={filters.maxDistanceKm ?? 50} min={1} max={50} onChange={(v) => setFilters((f) => ({ ...f, maxDistanceKm: v < 50 ? v : undefined }))} formatValue={(v) => formatDistanceKm(v)} />
+        <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+          <Button variant="secondary" onClick={() => setFilters({})}>{t('client.reset')}</Button>
+          <Button onClick={() => setFilterSheet(false)}>{t('common.done')}</Button>
+        </div>
       </BottomSheet>
     </Screen>
   );

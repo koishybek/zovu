@@ -36,7 +36,10 @@ export function FeedScreen() {
 
   return (
     <Screen>
-      <AppBar title={t('specialist.feedTitle')} trailing={<Icon name="bell" size={24} />} />
+      <AppBar
+        title={t('specialist.feedTitle')}
+        trailing={<button onClick={() => navigate(routes.notifications)} aria-label={t('notifications.title')}><Icon name="bell" size={24} /></button>}
+      />
       <div className={styles.seg}>
         <SegmentedControl<View>
           segments={[

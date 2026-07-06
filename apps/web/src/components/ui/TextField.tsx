@@ -4,12 +4,14 @@ import styles from './TextField.module.scss';
 interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'prefix'> {
   label?: string;
   prefix?: ReactNode;
+  leadingIcon?: ReactNode;
+  trailing?: ReactNode;
   error?: string;
   required?: boolean;
 }
 
-/** Инпут: высота 52, радиус 12, border 1px, фокус — primary-border. Опц. префикс (+7). */
-export function TextField({ label, prefix, error, required, className, ...rest }: TextFieldProps) {
+/** Инпут: высота 52, радиус 13, inset-border, фокус — primary. Опц. префикс (+7) / иконка слева. */
+export function TextField({ label, prefix, leadingIcon, trailing, error, required, className, ...rest }: TextFieldProps) {
   return (
     <label className={styles.wrap}>
       {label && (
@@ -19,8 +21,10 @@ export function TextField({ label, prefix, error, required, className, ...rest }
         </span>
       )}
       <div className={[styles.field, error ? styles.errorField : ''].join(' ')}>
+        {leadingIcon && <span className={styles.leading}>{leadingIcon}</span>}
         {prefix && <span className={styles.prefix}>{prefix}</span>}
         <input className={[styles.input, className ?? ''].join(' ')} {...rest} />
+        {trailing && <span className={styles.leading}>{trailing}</span>}
       </div>
       {error && <span className={styles.error}>{error}</span>}
     </label>

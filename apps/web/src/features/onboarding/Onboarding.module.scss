@@ -16,6 +16,69 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--s-2);
+  margin-top: var(--s-3);
+}
+
+.selector {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  height: var(--h-input);
+  padding: 0 15px;
+  border-radius: var(--r-input);
+  box-shadow: inset 0 0 0 1px var(--c-border);
+  background: var(--c-bg);
+  width: 100%;
+}
+.selVal {
+  flex: 1;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--c-ink);
+}
+.selPh {
+  flex: 1;
+  text-align: left;
+  font-size: 16px;
+  color: #b9bec9;
+}
+
+.linkBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-primary);
+}
+
+.diploma {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  height: var(--h-cta);
+  border-radius: var(--r-cta);
+  border: 1.5px dashed var(--c-primary-border-soft);
+  background: var(--c-primary-soft);
+  color: var(--c-primary);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.catRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--s-4) var(--s-2);
+  font-size: 16px;
+  color: var(--c-ink);
+  border-bottom: 1px solid var(--c-divider);
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 .uploads {

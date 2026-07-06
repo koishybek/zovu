@@ -1,0 +1,48 @@
+.bar {
+  height: 44px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px 0 26px;
+  color: var(--c-ink);
+  background: var(--c-bg);
+  user-select: none;
+}
+
+.time {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+
+.icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.battery {
+  width: 24px;
+  height: 12px;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px rgba(20, 24, 40, 0.35);
+  padding: 2px;
+  position: relative;
+}
+.battery::after {
+  content: '';
+  position: absolute;
+  right: -2.5px;
+  top: 3.5px;
+  width: 1.5px;
+  height: 5px;
+  border-radius: 0 1px 1px 0;
+  background: rgba(20, 24, 40, 0.35);
+}
+.batteryFill {
+  width: 100%;
+  height: 100%;
+  border-radius: 1.5px;
+  background: var(--c-ink);
+}

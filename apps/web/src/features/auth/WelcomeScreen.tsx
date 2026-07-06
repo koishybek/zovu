@@ -12,8 +12,7 @@ export function WelcomeScreen() {
   return (
     <Screen footer={<Button onClick={() => navigate(routes.phone)}>{t('auth.start')}</Button>}>
       <div className={styles.hero}>
-        <div className={styles.logo}>Z</div>
-        <h1 className={styles.name}>Zovu</h1>
+        <div className={styles.wordmark}>Zovu</div>
         <p className={styles.slogan}>{t('auth.welcomeSlogan')}</p>
       </div>
     </Screen>

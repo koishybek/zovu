@@ -1,0 +1,69 @@
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--c-ink);
+  text-align: center;
+  margin: var(--s-6) 0 var(--s-6);
+  line-height: 1.3;
+}
+
+.toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-3);
+}
+
+.opt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-5) var(--s-3);
+  border-radius: var(--r-card);
+  background: var(--c-surface);
+  box-shadow: inset 0 0 0 1px var(--c-border);
+  color: var(--c-ink);
+  font-size: 15px;
+  font-weight: 600;
+  transition:
+    background var(--m-fast) var(--ease-out),
+    box-shadow var(--m-fast) var(--ease-out),
+    color var(--m-fast) var(--ease-out);
+}
+.optIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: var(--c-bg);
+  display: grid;
+  place-items: center;
+  color: var(--c-ink-secondary);
+}
+.optOn {
+  background: var(--c-primary);
+  color: #fff;
+  box-shadow: none;
+}
+.optOn .optIcon {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.settingsRow {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin-top: var(--s-6);
+  font-size: 16px;
+  font-weight: 500;
+  span {
+    flex: 1;
+  }
+}
+
+.hint {
+  text-align: center;
+  font-size: 13px;
+  color: var(--c-ink-secondary);
+  margin-top: var(--s-4);
+}

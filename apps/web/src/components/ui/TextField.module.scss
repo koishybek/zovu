@@ -44,6 +44,12 @@
   font-weight: 600;
 }
 
+.leading {
+  display: inline-flex;
+  color: #a2a8b4;
+  flex-shrink: 0;
+}
+
 .input {
   flex: 1;
   min-width: 0;

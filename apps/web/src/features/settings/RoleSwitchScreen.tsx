@@ -1,12 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, Card, Icon, RadioRow } from '../../components/ui';
+import { Screen, AppBar, Card, Icon } from '../../components/ui';
 import { switchRole } from '../auth/api';
 import { useAuthStore } from '../../store/auth';
 import { routes } from '../../router/routes';
-import styles from '../settings/Settings.module.scss';
+import styles from './Role.module.scss';
 
-/** S-34 Роль: переключение/активация роли (Р-01…Р-05). */
+/** S-34 Роль: сегмент-переключатель «Я заказчик / Я специалист» (Р-01…Р-05). */
 export function RoleSwitchScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ export function RoleSwitchScreen() {
   async function pick(role: 'client' | 'specialist') {
     if (!user) return;
     if (role === 'specialist' && !user.is_specialist) {
-      navigate(routes.spProfileForm); // активация: доанкетирование + верификация
+      navigate(routes.spProfileForm);
       return;
     }
     const updated = await switchRole(role);
@@ -23,19 +23,31 @@ export function RoleSwitchScreen() {
     navigate(role === 'specialist' ? routes.spOrders : routes.clientOrders, { replace: true });
   }
 
+  const active = user?.active_role;
+
   return (
     <Screen>
-      <AppBar showBack largeTitle={t('role.whoOnPlatform')} />
-      <Card className={styles.card} style={{ display: 'flex', flexDirection: 'column', gap: 8, padding: 8, marginTop: 16 }}>
-        <RadioRow checked={user?.active_role === 'client'} onChange={() => pick('client')}>{t('role.iAmClient')}</RadioRow>
-        <RadioRow checked={user?.active_role === 'specialist'} onChange={() => pick('specialist')}>
+      <AppBar showBack title={t('role.roleSettings').split(' ')[0]} />
+      <h1 className={styles.title}>{t('role.whoOnPlatform')}</h1>
+
+      <div className={styles.toggle}>
+        <button className={[styles.opt, active === 'client' ? styles.optOn : ''].join(' ')} onClick={() => pick('client')}>
+          <div className={styles.optIcon}><Icon name="profile" size={26} /></div>
+          {t('role.iAmClient')}
+        </button>
+        <button className={[styles.opt, active === 'specialist' ? styles.optOn : ''].join(' ')} onClick={() => pick('specialist')}>
+          <div className={styles.optIcon}><Icon name="bids" size={24} /></div>
           {t('role.iAmSpecialist')}
-          {!user?.is_specialist && <Icon name="plus" size={16} color="var(--c-primary)" />}
-        </RadioRow>
+        </button>
+      </div>
+
+      <Card pressable className={styles.settingsRow} onClick={() => navigate(routes.settings)}>
+        <Icon name="settings" size={22} color="var(--c-ink-secondary)" />
+        <span>{t('role.roleSettings')}</span>
+        <Icon name="chevronRight" size={20} color="var(--c-ink-muted)" />
       </Card>
-      <p className={styles.lang} style={{ marginTop: 16, textAlign: 'left', color: 'var(--c-ink-secondary)', fontSize: 13 }}>
-        {t('role.canChangeAnytime')}
-      </p>
+
+      <p className={styles.hint}>{t('role.canChangeAnytime')}</p>
     </Screen>
   );
 }

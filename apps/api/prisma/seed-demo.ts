@@ -1,9 +1,12 @@
-import { PrismaClient } from '@prisma/client';
-import * as argon2 from 'argon2';
+import { PrismaClient, type Order } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 // Демо-сцена Алматы (ZOVU_PROMPT.md §10, M8). Идемпотентно по телефону/title.
+// Наполняет ОБЕ стороны: у заказчика — заказы + отклики + активная сделка + чат;
+// у специалиста (Асхат) — принятый отклик, активный заказ и чат. OTP всегда 1111.
+
+const COMMISSION_PCT = 5; // ADR-001
 
 const SPECIALISTS = [
   { phone: '+77010000001', name: 'Асхат Нурланов', cat: 'Электрика', rating: 4.9, orders: 63, diploma: true, balance: 3200 },
@@ -29,13 +32,12 @@ async function main(): Promise<void> {
   const clientPhone = '+77000000000';
   const client = await prisma.user.upsert({
     where: { phone: clientPhone },
-    create: { phone: clientPhone, name: 'Динара (демо-заказчик)', isClient: true },
-    update: { isClient: true },
+    create: { phone: clientPhone, name: 'Динара Сатпаева', isClient: true },
+    update: { isClient: true, name: 'Динара Сатпаева' },
   });
 
-  // Специалисты
-  const codeHash = await argon2.hash('1111');
-  void codeHash;
+  // Специалисты (+ карта телефон → profileId для откликов)
+  const profileByPhone = new Map<string, string>();
   for (const s of SPECIALISTS) {
     const user = await prisma.user.upsert({
       where: { phone: s.phone },
@@ -43,7 +45,7 @@ async function main(): Promise<void> {
       update: { name: s.name, isSpecialist: true },
     });
     const cId = catId(s.cat)!;
-    await prisma.specialistProfile.upsert({
+    const profile = await prisma.specialistProfile.upsert({
       where: { userId: user.id },
       create: {
         userId: user.id,
@@ -58,34 +60,110 @@ async function main(): Promise<void> {
       },
       update: { rating: s.rating, completedOrdersCount: s.orders, balance: s.balance, subscriptionActive: true },
     });
-    const profile = await prisma.specialistProfile.findUnique({ where: { userId: user.id } });
     await prisma.specialistCategory.upsert({
-      where: { specialistId_categoryId: { specialistId: profile!.id, categoryId: cId } },
-      create: { specialistId: profile!.id, categoryId: cId },
+      where: { specialistId_categoryId: { specialistId: profile.id, categoryId: cId } },
+      create: { specialistId: profile.id, categoryId: cId },
+      update: {},
+    });
+    profileByPhone.set(s.phone, profile.id);
+  }
+
+  // Заказы (свежие, чтобы попадали в «Новые»)
+  const orderRecords: Order[] = [];
+  for (const o of ORDERS) {
+    let order = await prisma.order.findFirst({ where: { clientId: client.id, title: o.title } });
+    if (!order) {
+      order = await prisma.order.create({
+        data: {
+          clientId: client.id,
+          categoryId: catId(o.cat)!,
+          title: o.title,
+          description: o.description,
+          budget: o.budget,
+          address: o.address,
+          lat: o.lat,
+          lng: o.lng,
+          status: 'active',
+        },
+      });
+    }
+    orderRecords.push(order);
+  }
+
+  // Отклики на первый заказ («Установить розетку») от трёх электриков.
+  const firstOrder = orderRecords[0];
+  const BIDDERS = [
+    { phone: '+77010000001', price: 5000, accept: true }, // Асхат — примем
+    { phone: '+77010000002', price: 5500, accept: false }, // Ержан
+    { phone: '+77010000004', price: 4800, accept: false }, // Марат
+  ];
+  for (const b of BIDDERS) {
+    const specialistId = profileByPhone.get(b.phone)!;
+    await prisma.bid.upsert({
+      where: { orderId_specialistId: { orderId: firstOrder.id, specialistId } },
+      create: {
+        orderId: firstOrder.id,
+        specialistId,
+        price: b.price,
+        commission: Math.round((b.price * COMMISSION_PCT) / 100),
+      },
       update: {},
     });
   }
 
-  // Заказы (свежие, чтобы попадали в «Новые»)
-  for (const o of ORDERS) {
-    const exists = await prisma.order.findFirst({ where: { clientId: client.id, title: o.title } });
-    if (exists) continue;
-    await prisma.order.create({
-      data: {
-        clientId: client.id,
-        categoryId: catId(o.cat)!,
-        title: o.title,
-        description: o.description,
-        budget: o.budget,
-        address: o.address,
-        lat: o.lat,
-        lng: o.lng,
-        status: 'active',
-      },
+  // Принятие отклика Асхата → активный заказ + каскад + чат + сообщения (идемпотентно).
+  if (firstOrder.status === 'active') {
+    const acceptedSpecId = profileByPhone.get('+77010000001')!;
+    const acceptedBid = await prisma.bid.findUnique({
+      where: { orderId_specialistId: { orderId: firstOrder.id, specialistId: acceptedSpecId } },
     });
+    if (acceptedBid) {
+      await prisma.bid.update({ where: { id: acceptedBid.id }, data: { status: 'accepted' } });
+      await prisma.bid.updateMany({
+        where: { orderId: firstOrder.id, id: { not: acceptedBid.id } },
+        data: { status: 'not_selected' },
+      });
+      await prisma.order.update({
+        where: { id: firstOrder.id },
+        data: { status: 'in_progress', acceptedBidId: acceptedBid.id },
+      });
+      // Списание комиссии с баланса Асхата (ADR-001).
+      const acceptedProfile = await prisma.specialistProfile.findUnique({ where: { id: acceptedSpecId } });
+      if (acceptedProfile) {
+        const newBalance = acceptedProfile.balance - acceptedBid.commission;
+        await prisma.specialistProfile.update({ where: { id: acceptedSpecId }, data: { balance: newBalance } });
+        await prisma.transaction.create({
+          data: {
+            userId: acceptedProfile.userId,
+            type: 'commission',
+            amount: -acceptedBid.commission,
+            balanceAfter: newBalance,
+            meta: { orderId: firstOrder.id },
+          },
+        });
+      }
+      // Чат по заказу + пара сообщений.
+      const chat = await prisma.chat.upsert({
+        where: { orderId: firstOrder.id },
+        create: { orderId: firstOrder.id },
+        update: {},
+      });
+      const msgCount = await prisma.message.count({ where: { chatId: chat.id } });
+      if (msgCount === 0) {
+        const acceptedUser = await prisma.user.findFirst({ where: { phone: '+77010000001' } });
+        await prisma.message.create({
+          data: { chatId: chat.id, senderId: acceptedUser!.id, text: 'Здравствуйте! Готов подъехать сегодня после 17:00.' },
+        });
+        await prisma.message.create({
+          data: { chatId: chat.id, senderId: client.id, text: 'Отлично, буду дома. Адрес — Абая 150.' },
+        });
+      }
+    }
   }
 
-  console.log(`Demo seeded: ${SPECIALISTS.length} specialists, ${ORDERS.length} orders (Almaty). Demo phones use OTP 1111.`);
+  console.log(
+    `Demo seeded: ${SPECIALISTS.length} specialists, ${ORDERS.length} orders, bids on «${firstOrder.title}» (1 accepted → chat). OTP 1111.`,
+  );
 }
 
 main()

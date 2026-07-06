@@ -1,0 +1,65 @@
+// Полноэкранная карта (таб): AppBar сверху, карта заполняет остаток.
+.screen {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--c-bg);
+}
+
+.head {
+  padding: 0 var(--screen-pad);
+  flex-shrink: 0;
+}
+
+.mapArea {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--screen-pad) var(--s-3);
+  position: relative;
+}
+
+// Плавающая карточка выбранного заказа (карта заказчика).
+.card {
+  position: absolute;
+  left: var(--screen-pad);
+  right: var(--screen-pad);
+  bottom: var(--s-3);
+  z-index: 500;
+  animation: rise var(--m-normal) var(--ease-out);
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.cardLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-primary);
+}
+.cardTitle {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--c-ink);
+  margin-top: 2px;
+}
+.cardMeta {
+  font-size: 13px;
+  color: var(--c-ink-muted-alt);
+  margin-top: var(--s-2);
+}
+.cardRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin-top: var(--s-3);
+}

@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Screen, AppBar, SegmentedControl, Card, StatusPill, Price, EmptyState, Icon } from '../../components/ui';
 import { OrderDeck } from './OrderDeck';
+import { OrdersMap } from './OrdersMap';
 import { RespondSheet } from './RespondSheet';
 import { fetchFeed, hideOrder, type FeedOrder } from './api';
 import { formatDistanceKm } from '../../lib/format';
@@ -65,7 +66,7 @@ export function FeedScreen() {
       ) : view === 'list' ? (
         <OrderList orders={orders} onOpen={(o) => navigate(routes.spOrder(o.id))} />
       ) : (
-        <EmptyState icon="map" title="Карта" hint="Заказы на карте (OSM) — в M8-polish. Пока используйте колоду и список." />
+        <OrdersMap orders={orders} onOpen={(o) => navigate(routes.spOrder(o.id))} />
       )}
 
       <RespondSheet

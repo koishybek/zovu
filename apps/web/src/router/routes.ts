@@ -2,6 +2,8 @@
 // Функции-билдеры для параметризованных путей.
 
 export const routes = {
+  home: '/', // корневой редирект по роли (RootRedirect)
+
   // Онбординг и auth (S-01…S-08)
   welcome: '/auth/welcome', // S-01
   phone: '/auth/phone', // S-02
@@ -37,6 +39,7 @@ export const routes = {
   clientOrderReview: (id: string | number = ':id') => `/client/orders/${id}/review`, // S-27
   clientBids: '/client/bids', // таб «Отклики»
   clientChats: '/client/chats', // таб «Чаты»
+  clientProfile: '/client/profile', // таб «Профиль» заказчика
 
   // Общие (S-30…S-35)
   chat: (id: string | number = ':id') => `/chat/${id}`, // S-30
@@ -64,5 +67,5 @@ export const CLIENT_TABS = [
   { key: 'myOrders', path: routes.clientOrders, icon: 'orders' },
   { key: 'myBids', path: routes.clientBids, icon: 'bids' },
   { key: 'chats', path: routes.clientChats, icon: 'chat' },
-  { key: 'profile', path: routes.spProfile, icon: 'profile' },
+  { key: 'profile', path: routes.clientProfile, icon: 'profile' },
 ] as const;

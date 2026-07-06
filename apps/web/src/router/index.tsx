@@ -15,6 +15,11 @@ import { VerificationScreen } from '../features/onboarding/VerificationScreen';
 import { PendingScreen } from '../features/onboarding/PendingScreen';
 import { SuccessScreen } from '../features/onboarding/SuccessScreen';
 import { FeedScreen } from '../features/orders/FeedScreen';
+import { SpecialistMapScreen } from '../features/orders/SpecialistMapScreen';
+import { ClientMapScreen } from '../features/orders/ClientMapScreen';
+import { ClientProfileScreen } from '../features/client/ClientProfileScreen';
+import { ClientBidsScreen } from '../features/client/ClientBidsScreen';
+import { ClientChatsScreen } from '../features/client/ClientChatsScreen';
 import { OrderDetailScreen } from '../features/orders/OrderDetailScreen';
 import { MyBidsScreen } from '../features/orders/MyBidsScreen';
 import { CreateOrderScreen } from '../features/orders/CreateOrderScreen';
@@ -65,7 +70,7 @@ export const router = createBrowserRouter([
           </RequireAuth>
         ),
         children: [
-          { path: routes.spMap, element: stub('S-10', 'Карта специалиста', 'M8') },
+          { path: routes.spMap, element: <SpecialistMapScreen /> },
           { path: routes.spOrders, element: <FeedScreen /> },
           { path: routes.spBids, element: <MyBidsScreen /> },
           { path: routes.spProfile, element: <ProfileScreen /> },
@@ -86,14 +91,15 @@ export const router = createBrowserRouter([
         ),
         children: [
           { path: routes.clientOrders, element: <MyOrdersScreen /> },
-          { path: routes.clientBids, element: <MyOrdersScreen /> },
-          { path: routes.clientChats, element: stub('—', 'Чаты', 'M6') },
+          { path: routes.clientBids, element: <ClientBidsScreen /> },
+          { path: routes.clientChats, element: <ClientChatsScreen /> },
+          { path: routes.clientProfile, element: <ClientProfileScreen /> },
         ],
       },
       // Заказчик — полноэкранные
       { path: routes.clientOrderNew, element: <RequireAuth><CreateOrderScreen /></RequireAuth> },
       { path: routes.clientOrderNewFilters, element: stub('S-21', 'Фильтры подбора', 'M8') },
-      { path: routes.clientMap, element: stub('S-22', 'Карта заказчика', 'M8') },
+      { path: routes.clientMap, element: <RequireAuth><ClientMapScreen /></RequireAuth> },
       { path: routes.clientOrderBids(), element: <RequireAuth><OrderBidsScreen /></RequireAuth> },
       { path: routes.clientBid(), element: <RequireAuth><OrderBidsScreen /></RequireAuth> },
       { path: routes.clientOrder(), element: <RequireAuth><ActiveOrderScreen /></RequireAuth> },

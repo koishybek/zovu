@@ -153,6 +153,8 @@ export const kk: Resources = {
     distance: 'Қашықтық',
     showNSpecialists: '{{count}} маманды көрсету',
     yourOrder: 'Сіздің тапсырысыңыз',
+    becomeSpecialist: 'Маман болу',
+    ordersPlaced: 'Орналастырылған тапсырыстар: {{count}}',
     bidsReceived: '{{count}} үн қату алынды',
     bidDetails: 'Үн қату мәліметтері',
     proposal: 'Ұсыныс',
@@ -169,6 +171,27 @@ export const kk: Resources = {
     reviewHelps: 'Пікіріңіз басқа пайдаланушыларға көмектеседі',
     comment: 'Пікір',
     leaveReview: 'Пікір қалдыру',
+  },
+
+  map: {
+    specialistTitle: 'Маңайдағы тапсырыстар',
+    clientTitle: 'Картадағы тапсырыстар',
+    open: 'Ашу',
+    emptyTitle: 'Маңайда тапсырыс жоқ',
+    emptyHint: 'Әзірге сіздің санаттарыңызда жақын маңда белсенді тапсырыс жоқ',
+    clientEmptyTitle: 'Картада тапсырыс жоқ',
+    clientEmptyHint: 'Тапсырыс жасаңыз — ол картада көрінеді',
+  },
+
+  clientBids: {
+    emptyTitle: 'Әзірге үн қату жоқ',
+    emptyHint: 'Мамандар тапсырыстарыңызға үн қатқанда, олар осында көрінеді',
+  },
+
+  clientChats: {
+    emptyTitle: 'Әзірге чат жоқ',
+    emptyHint: 'Маман үн қатуын қабылдағанда чат автоматты түрде ашылады',
+    noMessages: 'Хабарлама жоқ',
   },
 
   chat: {

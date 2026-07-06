@@ -18,6 +18,15 @@ export async function verifyOtp(phone: string, code: string): Promise<VerifyResu
   return data;
 }
 
+/**
+ * Dev-only быстрый вход демо-персонами (OTP всегда 1111). Используется только
+ * на Welcome при `import.meta.env.DEV`, чтобы одним касанием попасть в обе роли.
+ */
+export async function devLogin(phone: string): Promise<VerifyResult> {
+  await requestOtp(phone);
+  return verifyOtp(phone, '1111');
+}
+
 export async function fetchMe(): Promise<SessionUser & { specialist_profile: unknown }> {
   const { data } = await api.get('/me');
   return data;

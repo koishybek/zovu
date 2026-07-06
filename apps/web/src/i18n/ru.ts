@@ -173,6 +173,9 @@ export const ru = {
     showNSpecialists: 'Показать {{count}} специалистов',
     // S-22 карта
     yourOrder: 'Ваш заказ',
+    // Профиль заказчика
+    becomeSpecialist: 'Стать специалистом',
+    ordersPlaced: 'Размещено заказов: {{count}}',
     // S-23 отклики
     bidsReceived: 'Получено {{count}} откликов',
     // S-24 деталь
@@ -194,6 +197,27 @@ export const ru = {
     reviewHelps: 'Ваш отзыв поможет другим пользователям',
     comment: 'Комментарий',
     leaveReview: 'Оставить отзыв',
+  },
+
+  map: {
+    specialistTitle: 'Заказы рядом',
+    clientTitle: 'Заказы на карте',
+    open: 'Открыть',
+    emptyTitle: 'Заказов рядом нет',
+    emptyHint: 'Пока в ваших категориях нет активных заказов поблизости',
+    clientEmptyTitle: 'Заказов на карте нет',
+    clientEmptyHint: 'Создайте заказ — он появится на карте',
+  },
+
+  clientBids: {
+    emptyTitle: 'Откликов пока нет',
+    emptyHint: 'Когда специалисты откликнутся на ваши заказы, они появятся здесь',
+  },
+
+  clientChats: {
+    emptyTitle: 'Чатов пока нет',
+    emptyHint: 'Чат откроется автоматически, когда вы примете отклик специалиста',
+    noMessages: 'Нет сообщений',
   },
 
   chat: {

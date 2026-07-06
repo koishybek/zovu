@@ -1,0 +1,52 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-1);
+  padding: var(--s-4) 0 var(--s-6);
+}
+.name {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--c-ink);
+  margin-top: var(--s-2);
+}
+.phone {
+  font-size: 14px;
+  color: var(--c-ink-secondary);
+}
+.stat {
+  margin-top: var(--s-2);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-primary);
+  background: var(--c-primary-soft);
+  padding: 6px 14px;
+  border-radius: 999px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.rowIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--c-primary-soft);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.rowLabel {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--c-ink);
+}

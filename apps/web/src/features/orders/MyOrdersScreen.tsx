@@ -25,7 +25,14 @@ export function MyOrdersScreen() {
 
   return (
     <Screen footer={<Button onClick={() => navigate(routes.clientOrderNew)} leadingIcon={<Icon name="plus" size={20} color="#fff" />}>{t('client.createOrder')}</Button>}>
-      <AppBar largeTitle={t('tabbar.myOrders')} />
+      <AppBar
+        largeTitle={t('tabbar.myOrders')}
+        trailing={
+          <button onClick={() => navigate(routes.clientMap)} aria-label={t('map.clientTitle')}>
+            <Icon name="map" size={24} />
+          </button>
+        }
+      />
       {isLoading ? (
         <div className={styles.center}>{t('common.loading')}</div>
       ) : orders.length === 0 ? (

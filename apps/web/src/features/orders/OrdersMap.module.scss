@@ -1,0 +1,55 @@
+.wrap {
+  position: relative;
+  flex: 1;
+  min-height: 55vh; // гарантирует высоту и в scroll-контексте (сегмент ленты)
+  display: flex;
+  flex-direction: column;
+}
+
+// Плавающая мини-карточка выбранного заказа над картой.
+.card {
+  position: absolute;
+  left: var(--s-3);
+  right: var(--s-3);
+  bottom: var(--s-3);
+  z-index: 500;
+  animation: rise var(--m-normal) var(--ease-out);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cat {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-primary);
+}
+.title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--c-ink);
+  margin-top: 2px;
+}
+.meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--c-ink-muted-alt);
+  margin-top: var(--s-2);
+}
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin-top: var(--s-3);
+}

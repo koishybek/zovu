@@ -1,0 +1,39 @@
+.center {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  color: var(--c-ink-muted);
+}
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding-bottom: var(--s-4);
+}
+.rowTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--s-2);
+}
+.rowTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--c-ink);
+}
+.rowAddr {
+  font-size: 13px;
+  color: var(--c-ink-muted-alt);
+  margin-top: 2px;
+}
+.rowBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--s-3);
+}
+.received {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-primary);
+}

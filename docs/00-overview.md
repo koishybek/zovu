@@ -95,6 +95,7 @@ zovu/
 | [08-integrations.md](08-integrations.md) | Интерфейсы SmsProvider / PaymentProvider / PushProvider / Storage / Moderator / Maps + dev-моки и прод-заглушки. |
 | [09-decisions.md](09-decisions.md) | ADR-лог: № / дата / контекст / решение / последствия (ADR-001 комиссия, ADR-002 бонус-категория, ADR-003 Tinder/Duolingo-слой…). |
 | [10-status.md](10-status.md) | Прогресс по майлстоунам M0–M8, что дальше, известные долги. |
+| [11-ux-roadmap.md](11-ux-roadmap.md) | UX-роадмап после M8: 5 спринтов до готовности к тест-юзерам (бенчмарк 13 приложений, без платежей). |
 | [glossary.md](glossary.md) | Термины: заказ, отклик, подписка, каскад, автозакрытие, колода, streak… |
 
 ## Правила ведения вики (действуют всю разработку)

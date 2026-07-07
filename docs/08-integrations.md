@@ -227,7 +227,7 @@ export interface Storage {
 }
 ```
 
-Валидации файлов (живут в сервисах, не в адаптере): дипломы и документы верификации — jpg/png/pdf ≤ 10 МБ, проверка и на клиенте, и на сервере (ДС-*); фото заказа — до 5 штук, сжимаются на клиенте перед загрузкой (НФ-08).
+Валидации файлов (живут в сервисах, не в адаптере): дипломы и документы верификации — jpg/png/pdf ≤ 10 МБ, проверка и на клиенте, и на сервере (ДС-*); фото заказа — до 5 штук, сжимаются на клиенте перед загрузкой (НФ-08) через Canvas в `apps/web/src/lib/image.ts` (`compressImage` — ресайз до 1280px по большей стороне, JPEG q≈0.82, без внешних зависимостей). Загрузка — `POST /v1/uploads/image` (JWT, multipart-поле `file`, ≤ 8 МБ, jpg/png/webp → `{key}` в бакете `public`; `apps/api/src/uploads/`).
 
 Соглашение по ключам (фиксируется здесь, детали моделей — [03-data-model.md](03-data-model.md)):
 
@@ -247,8 +247,10 @@ export interface Storage {
 
 Для машин без Docker (см. [09-decisions.md](09-decisions.md), ADR-005):
 
-- Файлы кладутся в локальную ФС: `<LOCAL_STORAGE_DIR>/<bucket>/<key>` (по умолчанию `.storage/`, каталог в `.gitignore`).
-- Тот же интерфейс `Storage`; `getSignedUrl` возвращает URL API-роута, который отдаёт файл с теми же правилами доступа (private — только с правами админа). Точный роут фиксируется в [04-api.md](04-api.md) при реализации M3 — TODO(M3).
+- Файлы кладутся в локальную ФС: `<LOCAL_STORAGE_DIR>/<bucket>/<name>` (по умолчанию `.storage/`, каталог в `.gitignore`). Провайдер (`apps/api/src/integrations/dev/local-storage.provider.ts`) при старте создаёт подпапки `public/` и `private/`; `put(buffer, ext, privateBucket?)` кладёт файл под сгенерированным именем `<hex>.<ext>` и возвращает `key` вида `public/<hex>.jpg`.
+- **Публичная раздача:** `GET /v1/files/public/:name` (`apps/api/src/uploads/files.controller.ts`) отдаёт файл **только из бакета `public`** (фото заказов) — **без авторизации**. Защита: имя матчится `^[a-z0-9]+\.(jpg|jpeg|png|webp)$` (guard от path-traversal), заголовки `X-Content-Type-Options: nosniff` и `Cache-Control: public, max-age=31536000, immutable`, обработчик TOCTOU (файл исчез между проверкой и открытием потока → 404, процесс не падает).
+- **Приватный бакет** (`private/` — селфи, селфи с документом, дипломы, НФ-09) через этот роут **недоступен**: роут читает исключительно `public/`. Доступ к приватным файлам — только через админ-контур (НФ-09).
+- Web-клиент строит ссылку через `fileUrl(key)` (`apps/web/src/lib/image.ts`) → `/v1/files/<key>` (dev-прокси Vite `/v1` → API).
 
 ### Прод-заглушка `S3Storage`
 

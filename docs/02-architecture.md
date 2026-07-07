@@ -40,6 +40,7 @@ flowchart LR
         rest["REST /v1<br/>class-validator, Swagger"]
         ws["Socket.IO gateway<br/>namespace /chat"]
         cron["Кроны @nestjs/schedule<br/>00:00 Almaty — подписки Б-03…Б-05, ADR-002<br/>каждые 10 мин — автозакрытия ЗВ-03/ЗВ-04 + пуш Ф-08<br/>каждую минуту — протухшие OTP"]
+        uploads["UploadsModule<br/>POST /v1/uploads/image — JWT, multipart<br/>GET /v1/files/public/:name — БЕЗ auth"]
         prov["Провайдеры за интерфейсами<br/>Sms / Payment / Push / Storage / Moderator"]
     end
 
@@ -48,16 +49,21 @@ flowchart LR
 
     web -->|"REST /v1 — axios, Bearer JWT"| rest
     web <-->|"WS /chat — socket.io-client"| ws
+    web -->|"фото заказа: upload JWT / раздача public"| uploads
     admin -->|"REST admin/* — статический ADMIN_TOKEN"| rest
     rest --> pg
     ws --> pg
     cron --> pg
+    uploads --> minio
     prov --> minio
 ```
 
 - **web ↔ api**: REST `/v1` (JSON snake_case, Bearer JWT) + WebSocket namespace `/chat` (события `message:new`, `message:read`, `chat:closed` — см. [04-api.md](04-api.md)).
 - **api ↔ PostgreSQL**: Prisma; гео-запросы PostGIS `ST_DWithin` / `ST_Distance`, точка заказа — PostGIS point + GiST-индекс ([03-data-model.md](03-data-model.md)).
 - **api ↔ MinIO**: фото заказов — публичный бакет; селфи-верификация и дипломы — приватный бакет, доступ только админ-эндпоинтам (НФ-09, ДС-*).
+- **Загрузка/раздача фото заказа — `UploadsModule`** (`apps/api/src/uploads/`, зарегистрирован в `app.module.ts`), два контроллера:
+  - `UploadsController` — `POST /v1/uploads/image` (JWT, multipart, поле `file`; multer `limits.fileSize` 8 МБ + защита от OOM-DoS; MIME `jpg`/`png`/`webp`) → кладёт в **публичный** бакет через `Storage`-адаптер и возвращает `{ key }`.
+  - `FilesController` — `GET /v1/files/public/:name` (**без авторизации**): отдаёт файл только из public-бакета, имя ограничено `^[a-z0-9]+\.(jpg|jpeg|png|webp)$` (защита от path-traversal), заголовки `X-Content-Type-Options: nosniff` и `Cache-Control: immutable`. Приватный бакет (селфи/дипломы, НФ-09) через этот роут **недоступен**. Клиент жмёт фото перед загрузкой (`apps/web/src/lib/image.ts`, НФ-08).
 - **admin ↔ api**: только `admin/*`-эндпоинты по статическому токену; действия админа пишутся в аудит-лог (НФ-13).
 - **Кроны — внутри api** (`@nestjs/schedule`), отдельного воркера нет: ежедневное списание подписки в 00:00 Asia/Almaty (Б-03…Б-05, пропуск до `subscriptionFreeUntil` — ADR-002), автозакрытия 24 ч (ЗВ-03/ЗВ-04), push «Смягчите фильтры» через 10 минут без откликов (Ф-08), очистка протухших OTP (НФ-05).
 

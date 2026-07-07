@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, Avatar, Rating, DiplomaBadge, Card, Icon, Button } from '../../components/ui';
+import { Screen, AppBar, Avatar, Rating, DiplomaBadge, VerifiedBadge, NewSpecialistBadge, Card, Icon, Button } from '../../components/ui';
 import { fetchMe } from '../auth/api';
 import { useAuthStore } from '../../store/auth';
 import { routes } from '../../router/routes';
@@ -11,6 +11,7 @@ interface SpecProfile {
   rating: number;
   completedOrdersCount: number;
   diplomaStatus: string;
+  verificationStatus: string;
   subscriptionActive: boolean;
   streakDays: number;
   about: string | null;
@@ -32,12 +33,17 @@ export function ProfileScreen() {
       <div className={styles.header}>
         <Avatar name={me?.name ?? ''} size={88} />
         <div className={styles.name}>{me?.name}</div>
-        <div className={styles.stats}>
-          <Rating value={Math.round(p?.rating ?? 0)} size={16} readOnly />
-          <span>{p?.rating?.toFixed(1) ?? '0.0'}</span>
-          <span>· {t('specialist.ordersCount', { count: p?.completedOrdersCount ?? 0 })}</span>
-        </div>
+        {p && p.completedOrdersCount > 0 && p.rating > 0 ? (
+          <div className={styles.stats}>
+            <Rating value={Math.round(p.rating)} size={16} readOnly />
+            <span>{p.rating.toFixed(1)}</span>
+            <span>· {t('specialist.ordersCount', { count: p.completedOrdersCount })}</span>
+          </div>
+        ) : (
+          <NewSpecialistBadge label={t('trust.newSpecialist')} />
+        )}
         <div className={styles.badges}>
+          {p?.verificationStatus === 'approved' && <VerifiedBadge label={t('trust.verified')} />}
           {p?.diplomaStatus === 'approved' && <DiplomaBadge label={t('specialist.diplomaBadge')} />}
           {p && p.streakDays > 0 && <span className={styles.streak}>🔥 {p.streakDays}</span>}
           {p && !p.subscriptionActive && <span className={styles.inactive}>{t('specialist.subscriptionInactive')}</span>}

@@ -36,7 +36,12 @@ export function MyOrdersScreen() {
       {isLoading ? (
         <div className={styles.center}>{t('common.loading')}</div>
       ) : orders.length === 0 ? (
-        <EmptyState icon="orders" title="Заказов пока нет" hint="Создайте первый заказ — специалисты рядом откликнутся" />
+        <EmptyState
+          icon="orders"
+          title={t('client.emptyOrdersTitle')}
+          hint={t('client.emptyOrdersHint')}
+          action={<Button fullWidth={false} onClick={() => navigate(routes.clientOrderNew)}>{t('client.createFirstOrder')}</Button>}
+        />
       ) : (
         <div className={styles.list}>
           {orders.map((o) => (

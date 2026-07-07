@@ -93,9 +93,9 @@ async function main(): Promise<void> {
   // Отклики на первый заказ («Установить розетку») от трёх электриков.
   const firstOrder = orderRecords[0];
   const BIDDERS = [
-    { phone: '+77010000001', price: 5000, accept: true }, // Асхат — примем
-    { phone: '+77010000002', price: 5500, accept: false }, // Ержан
-    { phone: '+77010000004', price: 4800, accept: false }, // Марат
+    { phone: '+77010000001', price: 5000, accept: true, availability: 'today', hasMaterials: true, comment: 'Готов подъехать сегодня, розетки и подрозетник свои.' }, // Асхат
+    { phone: '+77010000002', price: 5500, accept: false, availability: 'tomorrow', hasMaterials: false, comment: 'Сделаю аккуратно, материалы за ваш счёт.' }, // Ержан
+    { phone: '+77010000004', price: 4800, accept: false, availability: 'this_week', hasMaterials: true, comment: null as string | null }, // Марат
   ];
   for (const b of BIDDERS) {
     const specialistId = profileByPhone.get(b.phone)!;
@@ -106,8 +106,40 @@ async function main(): Promise<void> {
         specialistId,
         price: b.price,
         commission: Math.round((b.price * COMMISSION_PCT) / 100),
+        availability: b.availability,
+        hasMaterials: b.hasMaterials,
+        comment: b.comment,
       },
-      update: {},
+      update: {
+        availability: b.availability,
+        hasMaterials: b.hasMaterials,
+        comment: b.comment,
+      },
+    });
+  }
+
+  // Живые pending-отклики на второй заказ («Заменить люстру») — чтобы S-23 показывал
+  // выбор из нескольких «богатых» карточек (структурированный отклик, №8).
+  const secondOrder = orderRecords[1];
+  const PENDING = [
+    { phone: '+77010000002', price: 7000, availability: 'today', hasMaterials: true, comment: 'Повешу сегодня вечером, крепёж свой.' }, // Ержан
+    { phone: '+77010000006', price: 6500, availability: 'tomorrow', hasMaterials: false, comment: 'Опыт с люстрами большой, сделаю завтра утром.' }, // Айбек
+    { phone: '+77010000004', price: 8000, availability: 'this_week', hasMaterials: true, comment: null as string | null }, // Марат
+  ];
+  for (const b of PENDING) {
+    const specialistId = profileByPhone.get(b.phone)!;
+    await prisma.bid.upsert({
+      where: { orderId_specialistId: { orderId: secondOrder.id, specialistId } },
+      create: {
+        orderId: secondOrder.id,
+        specialistId,
+        price: b.price,
+        commission: Math.round((b.price * COMMISSION_PCT) / 100),
+        availability: b.availability,
+        hasMaterials: b.hasMaterials,
+        comment: b.comment,
+      },
+      update: { availability: b.availability, hasMaterials: b.hasMaterials, comment: b.comment },
     });
   }
 

@@ -12,6 +12,21 @@ export function DiplomaBadge({ label }: { label: string }) {
   );
 }
 
+/** Бейдж «Личность подтверждена» (В-06): щит + success-тон. Сигнал доверия для заказчика. */
+export function VerifiedBadge({ label }: { label: string }) {
+  return (
+    <span className={styles.verified}>
+      <Icon name="shield" size={14} strokeWidth={2.5} />
+      {label}
+    </span>
+  );
+}
+
+/** Нейтральный бейдж «Новый специалист» — вместо фейковой 0.0/5.0 без истории. */
+export function NewSpecialistBadge({ label }: { label: string }) {
+  return <span className={styles.newbie}>{label}</span>;
+}
+
 /** Числовой бейдж непрочитанных (на колокольчике). */
 export function CountBadge({ count, children }: { count: number; children?: ReactNode }) {
   return (

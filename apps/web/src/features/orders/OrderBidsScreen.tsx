@@ -2,11 +2,20 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, Card, Avatar, Rating, Price, DiplomaBadge, Button, BidStatusPill, EmptyState } from '../../components/ui';
+import {
+  Screen, AppBar, Card, Avatar, Rating, Price, DiplomaBadge, VerifiedBadge, NewSpecialistBadge,
+  Button, BidStatusPill, SkeletonBidCard, Icon,
+} from '../../components/ui';
 import type { BidStatus } from '../../components/ui';
 import { fetchOrderBids, acceptBid, declineBid, type OrderBid } from './api';
 import { routes } from '../../router/routes';
 import styles from './OrderBids.module.scss';
+
+const AVAIL_LABEL: Record<string, string> = {
+  today: 'bidExtra.readyToday',
+  tomorrow: 'bidExtra.readyTomorrow',
+  this_week: 'bidExtra.readyThisWeek',
+};
 
 /** S-23/S-24: отклики на заказ + принятие (каскад) / отклонение. */
 export function OrderBidsScreen() {
@@ -16,7 +25,7 @@ export function OrderBidsScreen() {
   const qc = useQueryClient();
   const [busy, setBusy] = useState<string | null>(null);
 
-  const { data: bids = [], isLoading } = useQuery({
+  const { data: bids = [] } = useQuery({
     queryKey: ['order-bids', id],
     queryFn: () => fetchOrderBids(id),
     refetchInterval: 5000,
@@ -48,39 +57,90 @@ export function OrderBidsScreen() {
   return (
     <Screen>
       <AppBar showBack largeTitle={t('client.bidsReceived', { count: active.length })} />
-      {isLoading ? (
-        <div className={styles.center}>{t('common.loading')}</div>
-      ) : active.length === 0 ? (
-        <EmptyState icon="bids" title="Пока нет откликов" hint="Специалисты рядом скоро откликнутся" />
+      {active.length === 0 ? (
+        <MatchingState />
       ) : (
         <div className={styles.list}>
           {active.map((b) => (
-            <Card key={b.id} className={styles.card}>
-              <div className={styles.top}>
-                <Avatar name={b.specialist.name ?? ''} size={48} />
-                <div className={styles.info}>
-                  <div className={styles.name}>{b.specialist.name}</div>
-                  <div className={styles.meta}>
-                    <Rating value={Math.round(b.specialist.rating)} size={14} readOnly />
-                    <span>· {b.specialist.completed_orders} {t('specialist.reviews').toLowerCase()}</span>
-                  </div>
-                  {b.specialist.diploma && <DiplomaBadge label={t('specialist.diplomaBadge')} />}
-                </div>
-                <div className={styles.price}>
-                  <Price amount={b.price} size="md" />
-                  <BidStatusPill status={b.status as BidStatus} label={t((b.status === 'pending' ? 'status.waiting' : 'status.accepted') as never)} />
-                </div>
-              </div>
-              {b.status === 'pending' && (
-                <div className={styles.actions}>
-                  <Button variant="secondary" fullWidth loading={busy === b.id} onClick={() => decline(b)}>{t('client.decline')}</Button>
-                  <Button fullWidth loading={busy === b.id} onClick={() => accept(b)}>{t('client.accept')}</Button>
-                </div>
-              )}
-            </Card>
+            <BidCard key={b.id} bid={b} busy={busy === b.id} onAccept={() => accept(b)} onDecline={() => decline(b)} />
           ))}
         </div>
       )}
     </Screen>
+  );
+}
+
+/** Экран ожидания откликов (пост-публикация): анимация поиска + скелетоны. */
+function MatchingState() {
+  const { t } = useTranslation();
+  return (
+    <div className={styles.matching}>
+      <div className={styles.pulse}>
+        <Icon name="search" size={30} color="var(--c-primary)" />
+      </div>
+      <div className={styles.matchTitle}>{t('matching.title')}</div>
+      <div className={styles.matchHint}>{t('matching.hint')}</div>
+      <div className={styles.counter}>{t('matching.counterZero')}</div>
+      <div className={styles.skeletons}>
+        <SkeletonBidCard />
+        <SkeletonBidCard />
+      </div>
+    </div>
+  );
+}
+
+/** Карточка отклика: фото, честный рейтинг/«Новый специалист», бейджи доверия, статус. */
+function BidCard({ bid: b, busy, onAccept, onDecline }: { bid: OrderBid; busy: boolean; onAccept: () => void; onDecline: () => void }) {
+  const { t } = useTranslation();
+  const s = b.specialist;
+  // Честный гейт: рейтинг и число заказов независимы — показываем звёзды только при
+  // реальном рейтинге (rating > 0 ⟺ есть опубликованные отзывы), иначе «Новый специалист».
+  const hasHistory = s.completed_orders > 0 && s.rating > 0;
+  return (
+    <Card className={styles.card}>
+      <div className={styles.top}>
+        <Avatar name={s.name ?? ''} size={48} />
+        <div className={styles.info}>
+          <div className={styles.name}>{s.name}</div>
+          {hasHistory ? (
+            <div className={styles.meta}>
+              <Rating value={Math.round(s.rating)} size={14} readOnly />
+              <span>{s.rating.toFixed(1)}</span>
+              <span>· {t('specialist.ordersCount', { count: s.completed_orders })}</span>
+            </div>
+          ) : (
+            <NewSpecialistBadge label={t('trust.newSpecialist')} />
+          )}
+          <div className={styles.badges}>
+            <VerifiedBadge label={t('trust.verified')} />
+            {s.diploma && <DiplomaBadge label={t('specialist.diplomaBadge')} />}
+          </div>
+        </div>
+        <div className={styles.price}>
+          <Price amount={b.price} size="md" />
+          <BidStatusPill
+            status={b.status as BidStatus}
+            label={b.status === 'accepted' ? t('bidStatus.accepted') : t('bidStatus.awaitingDecision')}
+          />
+        </div>
+      </div>
+      {(b.availability || b.has_materials || b.comment) && (
+        <div className={styles.extra}>
+          <div className={styles.tags}>
+            {b.availability && AVAIL_LABEL[b.availability] && (
+              <span className={styles.tag}>{t(AVAIL_LABEL[b.availability] as never)}</span>
+            )}
+            {b.has_materials && <span className={styles.tag}>{t('bidExtra.withMaterials')}</span>}
+          </div>
+          {b.comment && <div className={styles.comment}>{b.comment}</div>}
+        </div>
+      )}
+      {b.status === 'pending' && (
+        <div className={styles.actions}>
+          <Button variant="secondary" fullWidth loading={busy} onClick={onDecline}>{t('client.decline')}</Button>
+          <Button fullWidth loading={busy} onClick={onAccept}>{t('client.accept')}</Button>
+        </div>
+      )}
+    </Card>
   );
 }

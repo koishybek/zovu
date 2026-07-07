@@ -2,6 +2,28 @@
   padding: var(--s-2) 0 var(--s-3);
 }
 
+.availRow {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-2) 0;
+}
+.availLabel {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--c-ink);
+}
+.availDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--c-ink-muted);
+}
+.availDot.on {
+  background: var(--c-success);
+}
+
 .center {
   flex: 1;
   display: grid;

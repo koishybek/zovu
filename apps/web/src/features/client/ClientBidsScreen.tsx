@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, Card, Price, OrderStatusPill, EmptyState } from '../../components/ui';
+import { Screen, AppBar, Card, Price, OrderStatusPill, EmptyState, Button } from '../../components/ui';
 import type { OrderStatus } from '../../components/ui';
 import { fetchMyOrders, type Order } from '../orders/api';
 import { routes } from '../../router/routes';
@@ -37,7 +37,12 @@ export function ClientBidsScreen() {
       {isLoading ? (
         <div className={styles.center}>{t('common.loading')}</div>
       ) : withBids.length === 0 ? (
-        <EmptyState icon="bids" title={t('clientBids.emptyTitle')} hint={t('clientBids.emptyHint')} />
+        <EmptyState
+          icon="bids"
+          title={t('clientBids.emptyTitle')}
+          hint={t('clientBids.emptyHint')}
+          action={<Button fullWidth={false} onClick={() => navigate(routes.clientOrderNew)}>{t('client.createFirstOrder')}</Button>}
+        />
       ) : (
         <div className={styles.list}>
           {withBids.map((o) => {

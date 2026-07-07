@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -7,30 +7,72 @@ import { fetchCategories } from '../auth/api';
 import { createOrder, type OrderFilters } from './api';
 import { useGeo, ALMATY_FALLBACK } from '../../lib/useGeo';
 import { routes } from '../../router/routes';
-import { formatDistanceKm } from '../../lib/format';
+import { formatDistanceKm, formatTenge } from '../../lib/format';
 import styles from './CreateOrder.module.scss';
 
-/** S-20 Создание заказа: категория, описание, бюджет, адрес, гео. */
+// Ориентировочный бюджет по категории (₸) — якорь против «пустого поля». Редактируемо.
+const SUGGESTED_BUDGET: Record<string, number> = {
+  Электрика: 5000,
+  Сантехника: 6000,
+  Уборка: 8000,
+  Ремонт: 15000,
+  'Сборка мебели': 7000,
+  'Бытовая техника': 6000,
+  Отделка: 20000,
+  Грузоперевозки: 10000,
+  'Клининг после ремонта': 15000,
+  'Компьютерная помощь': 5000,
+  Красота: 8000,
+  Репетиторство: 4000,
+};
+
+const DRAFT_KEY = 'zovu.orderDraft';
+interface OrderDraft {
+  catId?: string;
+  catName?: string;
+  title?: string;
+  desc?: string;
+  budget?: string;
+  address?: string;
+  filters?: OrderFilters;
+}
+function loadDraft(): OrderDraft {
+  try {
+    return JSON.parse(localStorage.getItem(DRAFT_KEY) ?? '{}') as OrderDraft;
+  } catch {
+    return {};
+  }
+}
+
+/** S-20 Создание заказа: категория, описание, бюджет, адрес, гео. Черновик переживает выход. */
 export function CreateOrderScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const geo = useGeo();
   const { data: categories = [] } = useQuery({ queryKey: ['categories'], queryFn: fetchCategories });
 
-  const [catId, setCatId] = useState('');
-  const [catName, setCatName] = useState('');
+  const [draft] = useState(loadDraft);
+  const [catId, setCatId] = useState(draft.catId ?? '');
+  const [catName, setCatName] = useState(draft.catName ?? '');
   const [catSheet, setCatSheet] = useState(false);
-  const [title, setTitle] = useState('');
-  const [desc, setDesc] = useState('');
-  const [budget, setBudget] = useState('');
-  const [address, setAddress] = useState('');
+  const [title, setTitle] = useState(draft.title ?? '');
+  const [desc, setDesc] = useState(draft.desc ?? '');
+  const [budget, setBudget] = useState(draft.budget ?? '');
+  const [address, setAddress] = useState(draft.address ?? '');
   const [loading, setLoading] = useState(false);
 
   // S-21 фильтры подбора (Ф-02…Ф-05)
   const [filterSheet, setFilterSheet] = useState(false);
-  const [filters, setFilters] = useState<OrderFilters>({});
+  const [filters, setFilters] = useState<OrderFilters>(draft.filters ?? {});
 
-  const valid = catId && title.trim().length >= 3 && desc.trim() && Number(budget) > 0 && address.trim().length >= 2;
+  // Черновик заказа: переживает случайный выход/навигацию (очищается после публикации).
+  useEffect(() => {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify({ catId, catName, title, desc, budget, address, filters }));
+  }, [catId, catName, title, desc, budget, address, filters]);
+
+  const suggested = SUGGESTED_BUDGET[catName] ?? 5000;
+  const budgetNum = Number(budget);
+  const valid = catId && title.trim().length >= 3 && desc.trim() && budgetNum > 0 && address.trim().length >= 2;
 
   async function submit() {
     if (!valid || loading) return;
@@ -47,6 +89,7 @@ export function CreateOrderScreen() {
         lng: pos.lng,
         filters: Object.keys(filters).length ? filters : undefined,
       });
+      localStorage.removeItem(DRAFT_KEY);
       navigate(routes.clientOrderBids(order.id), { replace: true });
     } finally {
       setLoading(false);
@@ -67,7 +110,16 @@ export function CreateOrderScreen() {
         </button>
         <TextField label={t('client.whatToDo')} required value={title} placeholder="Установить розетку" onChange={(e) => setTitle(e.target.value)} />
         <TextArea label={t('specialist.description')} maxLength={2000} value={desc} placeholder="Опишите задачу…" onChange={(e) => setDesc(e.target.value)} />
-        <TextField label={t('client.budget')} required inputMode="numeric" value={budget} placeholder="5000" onChange={(e) => setBudget(e.target.value.replace(/\D/g, '').slice(0, 8))} />
+        <div>
+          <TextField label={t('client.budget')} required inputMode="numeric" value={budget} placeholder={String(suggested)} onChange={(e) => setBudget(e.target.value.replace(/\D/g, '').slice(0, 8))} />
+          <div className={styles.budgetHints}>
+            {catId && <span>{t('client.suggestedBudget', { amount: formatTenge(suggested) })}</span>}
+            <span>{t('client.budgetHint')}</span>
+            {catId && budgetNum > 0 && budgetNum < suggested * 0.5 && (
+              <span className={styles.budgetWarn}>{t('client.budgetLow')}</span>
+            )}
+          </div>
+        </div>
         <TextField label={t('client.address')} required value={address} placeholder="ул. Абая, 150" onChange={(e) => setAddress(e.target.value)} />
         <div className={styles.geoNote}>
           <Icon name="pin" size={16} color="var(--c-primary)" />
@@ -83,6 +135,7 @@ export function CreateOrderScreen() {
             onClick={() => {
               setCatId(c.id);
               setCatName(c.name);
+              if (!budget) setBudget(String(SUGGESTED_BUDGET[c.name] ?? 5000));
               setCatSheet(false);
             }}
           >

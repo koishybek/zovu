@@ -1,16 +1,22 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { BottomSheet, Button, RadioRow, TextField, Price } from '../../components/ui';
+import { BottomSheet, Button, RadioRow, TextField, TextArea, Chip, Switch, Price } from '../../components/ui';
 import { commission, payout, formatTenge } from '../../lib/format';
-import { createBid } from './api';
+import { createBid, type BidAvailability } from './api';
 import { apiError } from '../../api/client';
 import { routes } from '../../router/routes';
 import type { FeedOrder, Order } from './api';
 
 const COMMISSION_PCT = 5; // ADR-001, для предпросмотра; сервер пересчитывает авторитетно
 
-/** S-13 Отклик: «Принять цену» / «Предложить свою» + комиссия и «Вы получите». */
+const AVAILABILITY: { value: BidAvailability; key: 'avToday' | 'avTomorrow' | 'avThisWeek' }[] = [
+  { value: 'today', key: 'avToday' },
+  { value: 'tomorrow', key: 'avTomorrow' },
+  { value: 'this_week', key: 'avThisWeek' },
+];
+
+/** S-13 Отклик: цена + структурированные поля (когда готов / материалы / питч) + «Вы получите». */
 export function RespondSheet({
   order,
   open,
@@ -26,6 +32,9 @@ export function RespondSheet({
   const navigate = useNavigate();
   const [mode, setMode] = useState<'accept' | 'own'>('accept');
   const [own, setOwn] = useState('');
+  const [availability, setAvailability] = useState<BidAvailability | undefined>('today');
+  const [hasMaterials, setHasMaterials] = useState(false);
+  const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -37,7 +46,7 @@ export function RespondSheet({
     setLoading(true);
     setError('');
     try {
-      await createBid(order.id, price);
+      await createBid(order.id, { price, availability, hasMaterials, comment: comment.trim() || undefined });
       onDone();
     } catch (e) {
       const code = apiError(e);
@@ -71,7 +80,7 @@ export function RespondSheet({
           inputMode="numeric"
           autoFocus
           value={own}
-          placeholder="Ваша цена"
+          placeholder={t('specialist.yourPrice')}
           onChange={(e) => setOwn(e.target.value.replace(/\D/g, '').slice(0, 8))}
         />
       )}
@@ -81,6 +90,26 @@ export function RespondSheet({
         <Row label={t('specialist.youGet')} value={formatTenge(payout(price, COMMISSION_PCT))} strong />
       </div>
 
+      {/* Структурированный отклик: сравнимость на S-23 */}
+      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--c-ink)' }}>{t('specialist.whenReady')}</div>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        {AVAILABILITY.map((a) => (
+          <Chip key={a.value} selected={availability === a.value} onClick={() => setAvailability(a.value)}>
+            {t(`specialist.${a.key}` as const)}
+          </Chip>
+        ))}
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+        <span style={{ fontSize: 14 }}>{t('specialist.hasMaterialsLabel')}</span>
+        <Switch checked={hasMaterials} onChange={setHasMaterials} />
+      </div>
+
+      <TextArea maxLength={200} value={comment} placeholder={t('specialist.pitchPlaceholder')} onChange={(e) => setComment(e.target.value)} />
+
+      {mode === 'own' && price > order.budget * 1.2 && (
+        <div style={{ fontSize: 12, color: 'var(--c-warning-ink)', fontWeight: 600 }}>{t('specialist.priceHighWarning')}</div>
+      )}
       {error && <div style={{ color: 'var(--c-danger)', fontSize: 13 }}>{error}</div>}
       <div style={{ fontSize: 12, color: 'var(--c-ink-muted)' }}>{t('specialist.clientWillDecide')}</div>
       <Button onClick={submit} loading={loading} disabled={price <= 0}>

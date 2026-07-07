@@ -1828,6 +1828,23 @@
           "price": {
             "type": "number",
             "description": "Цена специалиста (предзаполнена бюджетом заказа)"
+          },
+          "availability": {
+            "type": "string",
+            "description": "Когда готов приступить",
+            "enum": [
+              "today",
+              "tomorrow",
+              "this_week"
+            ]
+          },
+          "hasMaterials": {
+            "type": "boolean",
+            "description": "Есть материалы/инструмент"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Короткий комментарий/питч (≤200)"
           }
         },
         "required": [

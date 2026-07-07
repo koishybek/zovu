@@ -203,6 +203,11 @@ model Bid {
   price        Int
   commission   Int               @default(0) // ADR-001, списывается при accept
   status       BidStatus         @default(pending)
+  // Структурированный отклик (S-13): когда готов приступить / есть материалы / короткий питч.
+  // Делают отклики сравнимыми на S-23.
+  availability String?           // today | tomorrow | this_week
+  hasMaterials Boolean?
+  comment      String?
   createdAt    DateTime          @default(now())
 
   @@unique([orderId, specialistId])

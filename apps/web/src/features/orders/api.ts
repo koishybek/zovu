@@ -30,10 +30,15 @@ export interface FeedOrder extends Order {
   is_new: boolean;
 }
 
+export type BidAvailability = 'today' | 'tomorrow' | 'this_week';
+
 export interface OrderBid {
   id: string;
   price: number;
   status: string;
+  availability: BidAvailability | null;
+  has_materials: boolean | null;
+  comment: string | null;
   specialist: {
     id: string;
     name: string | null;
@@ -42,6 +47,13 @@ export interface OrderBid {
     diploma: boolean;
     about: string | null;
   };
+}
+
+export interface BidInput {
+  price: number;
+  availability?: BidAvailability;
+  hasMaterials?: boolean;
+  comment?: string;
 }
 
 export interface MyBid {
@@ -88,8 +100,13 @@ export async function hideOrder(id: string): Promise<void> {
   await api.post(`/orders/${id}/hide`);
 }
 
-export async function createBid(orderId: string, price: number): Promise<MyBid> {
-  const { data } = await api.post(`/orders/${orderId}/bids`, { price });
+export async function createBid(orderId: string, input: BidInput): Promise<MyBid> {
+  const { data } = await api.post(`/orders/${orderId}/bids`, {
+    price: input.price,
+    availability: input.availability,
+    hasMaterials: input.hasMaterials,
+    comment: input.comment,
+  });
   return data;
 }
 

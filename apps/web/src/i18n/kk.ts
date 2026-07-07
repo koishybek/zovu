@@ -46,6 +46,34 @@ export const kk: Resources = {
     awaitingConfirmation: 'Растауды күтуде',
   },
 
+  bidStatus: {
+    sent: 'Сіз үн қаттыңыз',
+    accepted: 'Қабылданды',
+    notSelected: 'Таңдалмады',
+    declined: 'Қабылданбады',
+    awaitingDecision: 'Шешімді күтуде',
+  },
+
+  trust: {
+    verified: 'Жеке басы расталған',
+    newSpecialist: 'Жаңа маман',
+  },
+
+  bidExtra: {
+    readyToday: 'Бүгін дайын',
+    readyTomorrow: 'Ертең дайын',
+    readyThisWeek: 'Осы аптада дайын',
+    withMaterials: 'Өз материалдарымен',
+  },
+
+  matching: {
+    title: 'Маңайдан мамандарды іздеудеміз…',
+    hint: 'Әдетте алғашқы үн қатулар 5–10 минутта келеді',
+    counterZero: 'Әзірге үн қату жоқ',
+    counter: 'Үн қатқаны: {{count}}',
+    relaxFilters: 'Сүзгілерді жеңілдету',
+  },
+
   auth: {
     welcomeSlogan: 'Жақын жердегі мамандарды табамыз',
     start: 'Бастау',
@@ -111,6 +139,20 @@ export const kk: Resources = {
     acceptPrice: 'Бағаны қабылдау',
     proposeOwn: 'Өз бағамды ұсыну',
     clientWillDecide: 'Клиент сіздің бағаңызды көріп, шешім қабылдайды.',
+    priceHighWarning: 'Баға бюджеттен әлдеқайда жоғары — сирек қабылданады',
+    whenReady: 'Қашан кірісе аласыз',
+    avToday: 'Бүгін',
+    avTomorrow: 'Ертең',
+    avThisWeek: 'Осы аптада',
+    hasMaterialsLabel: 'Материал мен құрал бар',
+    pitchPlaceholder: 'Өзіңіз немесе шарттар туралы бірер сөз (міндетті емес)',
+    availableToggle: 'Тапсырыс қабылдаймын',
+    offlineTitle: 'Сіз офлайнсыз',
+    offlineHint: 'Жаңа тапсырыстар жасырылған. Көру үшін қабылдауды қосыңыз.',
+    goOnline: 'Қабылдауды қосу',
+    viewOrders: 'Тапсырыстарды көру',
+    emptyBidsTitle: 'Әзірге үн қату жоқ',
+    emptyBidsHint: 'Тапсырысты оңға сырғытыңыз немесе «Үн қату» басыңыз — үн қату осында көрінеді.',
     currentBalance: 'Ағымдағы баланс',
     nextCharge: 'Келесі есептен шығару',
     subscriptionActive: 'Жазылым белсенді',
@@ -155,6 +197,12 @@ export const kk: Resources = {
     yourOrder: 'Сіздің тапсырысыңыз',
     becomeSpecialist: 'Маман болу',
     ordersPlaced: 'Орналастырылған тапсырыстар: {{count}}',
+    budgetHint: 'Шамамен баға — нақтысын үн қатуларда талқылаңыз',
+    budgetLow: 'Тым төмен баға — үн қату аз болады',
+    suggestedBudget: 'Бұл санатта әдетте: {{amount}}',
+    emptyOrdersTitle: 'Әзірге тапсырыс жоқ',
+    emptyOrdersHint: 'Алғашқы тапсырысты жасаңыз — маңайдағы мамандар үн қатады. Бірін таңдасаңыз, қалғандары автоматты түрде бас тартады.',
+    createFirstOrder: 'Тапсырыс жасау',
     bidsReceived: '{{count}} үн қату алынды',
     bidDetails: 'Үн қату мәліметтері',
     proposal: 'Ұсыныс',

@@ -12,6 +12,33 @@
   line-height: 1;
 }
 
+// «Личность подтверждена» — success-тон (щит), отличается от primary-диплома.
+.verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border-radius: var(--r-chip);
+  background: var(--c-success-soft);
+  color: var(--c-success);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+// «Новый специалист» — нейтральный, честный (без фейкового рейтинга).
+.newbie {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: var(--r-chip);
+  background: var(--c-divider);
+  color: var(--c-ink-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
 .countWrap {
   position: relative;
   display: inline-flex;

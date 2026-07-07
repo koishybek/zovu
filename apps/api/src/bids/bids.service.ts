@@ -8,6 +8,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { PUSH_PROVIDER, type PushProvider } from '../integrations/tokens';
+import type { CreateBidDto } from './dto';
 
 @Injectable()
 export class BidsService {
@@ -22,7 +23,8 @@ export class BidsService {
   }
 
   /** S-13: специалист откликается. Требует верификацию (В-06). Комиссия считается заранее для показа. */
-  async create(userId: string, orderId: string, price: number) {
+  async create(userId: string, orderId: string, dto: CreateBidDto) {
+    const { price, availability, hasMaterials, comment } = dto;
     const profile = await this.prisma.specialistProfile.findUnique({ where: { userId } });
     if (!profile) throw new BadRequestException('specialist_profile_required');
     if (profile.verificationStatus !== 'approved') throw new ForbiddenException('not_verified'); // В-06
@@ -38,11 +40,16 @@ export class BidsService {
     if (!canBid) throw new ForbiddenException('subscription_inactive');
 
     const commission = Math.round((price * this.commissionPct()) / 100);
+    const structured = {
+      availability: availability ?? null,
+      hasMaterials: hasMaterials ?? null,
+      comment: comment?.trim() || null,
+    };
 
     const bid = await this.prisma.bid.upsert({
       where: { orderId_specialistId: { orderId, specialistId: profile.id } },
-      create: { orderId, specialistId: profile.id, price, commission, status: 'pending' },
-      update: { price, commission, status: 'pending' },
+      create: { orderId, specialistId: profile.id, price, commission, status: 'pending', ...structured },
+      update: { price, commission, status: 'pending', ...structured },
     });
 
     // Стрик: день с ≥1 откликом (§10 бизнес-правил).
@@ -171,6 +178,9 @@ export class BidsService {
       id: b.id,
       price: b.price,
       status: b.status,
+      availability: b.availability,
+      has_materials: b.hasMaterials,
+      comment: b.comment,
       specialist: {
         id: b.specialist.id,
         name: b.specialist.user.name,
@@ -207,6 +217,9 @@ export class BidsService {
     price: number;
     commission: number;
     status: string;
+    availability?: string | null;
+    hasMaterials?: boolean | null;
+    comment?: string | null;
   }) {
     return {
       id: b.id,
@@ -215,6 +228,9 @@ export class BidsService {
       commission: b.commission,
       payout: b.price - b.commission,
       status: b.status,
+      availability: b.availability ?? null,
+      has_materials: b.hasMaterials ?? null,
+      comment: b.comment ?? null,
     };
   }
 }

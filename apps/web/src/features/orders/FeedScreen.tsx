@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, SegmentedControl, Card, StatusPill, Price, EmptyState, Icon } from '../../components/ui';
+import { Screen, AppBar, SegmentedControl, Card, StatusPill, Price, EmptyState, Icon, Switch, Button } from '../../components/ui';
 import { OrderDeck } from './OrderDeck';
 import { OrdersMap } from './OrdersMap';
 import { RespondSheet } from './RespondSheet';
@@ -10,6 +10,7 @@ import { fetchFeed, hideOrder, type FeedOrder } from './api';
 import { formatDistanceKm } from '../../lib/format';
 import { routes } from '../../router/routes';
 import { ALMATY_FALLBACK, useGeo } from '../../lib/useGeo';
+import { usePrefsStore } from '../../store/prefs';
 import styles from './FeedScreen.module.scss';
 
 type View = 'deck' | 'list' | 'map';
@@ -20,6 +21,7 @@ export function FeedScreen() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const geo = useGeo();
+  const { available, setAvailable } = usePrefsStore();
   const [view, setView] = useState<View>('deck');
   const [respond, setRespond] = useState<FeedOrder | null>(null);
 
@@ -28,6 +30,7 @@ export function FeedScreen() {
     queryKey: ['feed'],
     queryFn: () => fetchFeed(pos.lat, pos.lng),
     refetchInterval: 15000,
+    enabled: available,
   });
 
   async function onHide(o: FeedOrder) {
@@ -41,32 +44,50 @@ export function FeedScreen() {
         title={t('specialist.feedTitle')}
         trailing={<button onClick={() => navigate(routes.notifications)} aria-label={t('notifications.title')}><Icon name="bell" size={24} /></button>}
       />
-      <div className={styles.seg}>
-        <SegmentedControl<View>
-          segments={[
-            { value: 'deck', label: t('specialist.viewDeck') },
-            { value: 'list', label: t('specialist.viewList') },
-            { value: 'map', label: t('specialist.viewMap') },
-          ]}
-          value={view}
-          onChange={setView}
-        />
+
+      <div className={styles.availRow}>
+        <span className={[styles.availDot, available ? styles.on : ''].join(' ')} />
+        <span className={styles.availLabel}>{t('specialist.availableToggle')}</span>
+        <Switch checked={available} onChange={setAvailable} />
       </div>
 
-      {isLoading ? (
-        <div className={styles.center}>{t('common.loading')}</div>
-      ) : view === 'deck' ? (
-        <OrderDeck
-          orders={orders}
-          onRespond={setRespond}
-          onHide={onHide}
-          onOpen={(o) => navigate(routes.spOrder(o.id))}
-          onEmptyAction={() => setView('map')}
+      {!available ? (
+        <EmptyState
+          icon="orders"
+          title={t('specialist.offlineTitle')}
+          hint={t('specialist.offlineHint')}
+          action={<Button fullWidth={false} onClick={() => setAvailable(true)}>{t('specialist.goOnline')}</Button>}
         />
-      ) : view === 'list' ? (
-        <OrderList orders={orders} onOpen={(o) => navigate(routes.spOrder(o.id))} />
       ) : (
-        <OrdersMap orders={orders} onOpen={(o) => navigate(routes.spOrder(o.id))} />
+        <>
+          <div className={styles.seg}>
+            <SegmentedControl<View>
+              segments={[
+                { value: 'deck', label: t('specialist.viewDeck') },
+                { value: 'list', label: t('specialist.viewList') },
+                { value: 'map', label: t('specialist.viewMap') },
+              ]}
+              value={view}
+              onChange={setView}
+            />
+          </div>
+
+          {isLoading ? (
+            <div className={styles.center}>{t('common.loading')}</div>
+          ) : view === 'deck' ? (
+            <OrderDeck
+              orders={orders}
+              onRespond={setRespond}
+              onHide={onHide}
+              onOpen={(o) => navigate(routes.spOrder(o.id))}
+              onEmptyAction={() => setView('map')}
+            />
+          ) : view === 'list' ? (
+            <OrderList orders={orders} onOpen={(o) => navigate(routes.spOrder(o.id))} />
+          ) : (
+            <OrdersMap orders={orders} onOpen={(o) => navigate(routes.spOrder(o.id))} />
+          )}
+        </>
       )}
 
       <RespondSheet

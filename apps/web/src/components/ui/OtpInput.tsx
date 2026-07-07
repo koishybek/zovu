@@ -26,12 +26,23 @@ export function OtpInput({ length = 4, value, onChange, error, autoFocus }: OtpI
   }, [error]);
 
   function setDigit(i: number, digit: string) {
-    const clean = digit.replace(/\D/g, '').slice(-1);
+    const clean = digit.replace(/\D/g, '');
+    // SMS-автозаполнение / вставка ЦЕЛОГО кода — распределяем по ячейкам.
+    // Только полный код (иначе правка одной ячейки затирала бы соседние).
+    if (clean.length >= length) {
+      const joined = clean.slice(0, length);
+      onChange(joined);
+      haptic.light();
+      refs.current[length - 1]?.focus();
+      return;
+    }
+    // Обычный ввод/правка — берём последнюю введённую цифру в эту ячейку.
+    const d = clean.slice(-1);
     const next = value.split('');
-    next[i] = clean;
+    next[i] = d;
     const joined = next.join('').slice(0, length);
     onChange(joined);
-    if (clean) {
+    if (d) {
       haptic.light();
       refs.current[i + 1]?.focus();
     }
@@ -60,7 +71,8 @@ export function OtpInput({ length = 4, value, onChange, error, autoFocus }: OtpI
           }}
           className={[styles.cell, value[i] ? styles.filled : '', error ? styles.error : ''].join(' ')}
           inputMode="numeric"
-          maxLength={1}
+          autoComplete={i === 0 ? 'one-time-code' : 'off'}
+          maxLength={i === 0 ? length : 1}
           placeholder="–"
           value={value[i] ?? ''}
           onChange={(e) => setDigit(i, e.target.value)}

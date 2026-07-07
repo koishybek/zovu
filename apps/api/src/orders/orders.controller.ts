@@ -57,7 +57,7 @@ export class OrdersController {
   @Post(':id/bids')
   @ApiOperation({ summary: 'S-13: откликнуться на заказ' })
   createBid(@CurrentUser() u: AccessPayload, @Param('id') id: string, @Body() dto: CreateBidDto) {
-    return this.bids.create(u.sub, id, dto.price);
+    return this.bids.create(u.sub, id, dto);
   }
 
   @Get(':id/bids')

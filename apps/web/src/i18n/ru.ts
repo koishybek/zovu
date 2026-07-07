@@ -36,6 +36,7 @@ export const ru = {
 
   status: {
     new: 'Новый',
+    active: 'Активный',
     waiting: 'Ожидание ответа',
     accepted: 'Принят',
     notSelected: 'Не выбран',
@@ -206,6 +207,10 @@ export const ru = {
     portfolio: 'Портфолио',
     reviews: 'Отзывы',
     ordersCount: '{{count}} заказов',
+    ordersCount_one: '{{count}} заказ',
+    ordersCount_few: '{{count}} заказа',
+    ordersCount_many: '{{count}} заказов',
+    ordersCount_other: '{{count}} заказов',
     addCategory: 'Добавить',
     streak: '🔥 {{count}}',
   },
@@ -241,8 +246,12 @@ export const ru = {
     emptyOrdersTitle: 'Заказов пока нет',
     emptyOrdersHint: 'Создайте первый заказ — специалисты рядом откликнутся. Примете одного, остальные отклонятся автоматически.',
     createFirstOrder: 'Создать заказ',
-    // S-23 отклики
+    // S-23 отклики — русская плюрализация (1 отклик / 2 отклика / 5 откликов)
     bidsReceived: 'Получено {{count}} откликов',
+    bidsReceived_one: 'Получено {{count}} отклик',
+    bidsReceived_few: 'Получено {{count}} отклика',
+    bidsReceived_many: 'Получено {{count}} откликов',
+    bidsReceived_other: 'Получено {{count}} откликов',
     // S-24 деталь
     bidDetails: 'Детали отклика',
     proposal: 'Предложение',

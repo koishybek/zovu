@@ -8,7 +8,7 @@ import { routes } from '../../router/routes';
 import styles from './ClientBids.module.scss';
 
 const STATUS_LABEL: Record<string, string> = {
-  active: 'status.new',
+  active: 'status.active',
   in_progress: 'status.inProgress',
   awaiting_confirmation: 'status.awaitingConfirmation',
   completed: 'status.done',

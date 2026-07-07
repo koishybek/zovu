@@ -265,8 +265,34 @@ async function main(): Promise<void> {
     }
   }
 
+  // Завершённый заказ (для демо стадий S-26 «Завершение» и S-27 «Оценка»): Тимур
+  // выполнил «Подключить варочную панель». Так «Мои заказы» показывают весь цикл.
+  const doneOrder = orderRecords.find((o) => o.title === 'Подключить варочную панель');
+  if (doneOrder && doneOrder.status === 'active') {
+    const timurId = profileByPhone.get('+77010000005')!; // Бытовая техника
+    const bid = await prisma.bid.upsert({
+      where: { orderId_specialistId: { orderId: doneOrder.id, specialistId: timurId } },
+      create: {
+        orderId: doneOrder.id,
+        specialistId: timurId,
+        price: doneOrder.budget,
+        commission: Math.round((doneOrder.budget * COMMISSION_PCT) / 100),
+        status: 'accepted',
+        availability: 'today',
+        hasMaterials: true,
+        comment: 'Подключил, проверил автомат — всё работает.',
+      },
+      update: { status: 'accepted' },
+    });
+    await prisma.order.update({
+      where: { id: doneOrder.id },
+      data: { status: 'completed', acceptedBidId: bid.id, completedAt: new Date() },
+    });
+    await prisma.chat.upsert({ where: { orderId: doneOrder.id }, create: { orderId: doneOrder.id, closedAt: new Date() }, update: {} });
+  }
+
   console.log(
-    `Demo seeded: ${SPECIALISTS.length} specialists, ${ORDERS.length} orders, bids on «${firstOrder.title}» (1 accepted → chat). OTP 1111.`,
+    `Demo seeded: ${SPECIALISTS.length} specialists, ${ORDERS.length} orders, bids on «${firstOrder.title}» (1 accepted → chat) + 1 completed. OTP 1111.`,
   );
 }
 

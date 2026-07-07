@@ -4,10 +4,11 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Screen, AppBar, Button, TextField, TextArea, BottomSheet, Icon, Switch, Slider, Chip } from '../../components/ui';
 import { fetchCategories } from '../auth/api';
-import { createOrder, type OrderFilters } from './api';
+import { createOrder, uploadOrderPhoto, type OrderFilters } from './api';
 import { useGeo, ALMATY_FALLBACK } from '../../lib/useGeo';
 import { routes } from '../../router/routes';
 import { formatDistanceKm, formatTenge } from '../../lib/format';
+import { fileUrl } from '../../lib/image';
 import styles from './CreateOrder.module.scss';
 
 // Ориентировочный бюджет по категории (₸) — якорь против «пустого поля». Редактируемо.
@@ -35,7 +36,9 @@ interface OrderDraft {
   budget?: string;
   address?: string;
   filters?: OrderFilters;
+  photos?: string[];
 }
+const MAX_PHOTOS = 5;
 function loadDraft(): OrderDraft {
   try {
     return JSON.parse(localStorage.getItem(DRAFT_KEY) ?? '{}') as OrderDraft;
@@ -59,6 +62,9 @@ export function CreateOrderScreen() {
   const [desc, setDesc] = useState(draft.desc ?? '');
   const [budget, setBudget] = useState(draft.budget ?? '');
   const [address, setAddress] = useState(draft.address ?? '');
+  const [photos, setPhotos] = useState<string[]>(draft.photos ?? []);
+  const [uploading, setUploading] = useState(false);
+  const [photoError, setPhotoError] = useState('');
   const [loading, setLoading] = useState(false);
 
   // S-21 фильтры подбора (Ф-02…Ф-05)
@@ -67,8 +73,29 @@ export function CreateOrderScreen() {
 
   // Черновик заказа: переживает случайный выход/навигацию (очищается после публикации).
   useEffect(() => {
-    localStorage.setItem(DRAFT_KEY, JSON.stringify({ catId, catName, title, desc, budget, address, filters }));
-  }, [catId, catName, title, desc, budget, address, filters]);
+    localStorage.setItem(DRAFT_KEY, JSON.stringify({ catId, catName, title, desc, budget, address, filters, photos }));
+  }, [catId, catName, title, desc, budget, address, filters, photos]);
+
+  async function onPickPhotos(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? []).slice(0, MAX_PHOTOS - photos.length);
+    e.target.value = ''; // разрешить повторный выбор того же файла
+    if (!files.length) return;
+    setUploading(true);
+    setPhotoError('');
+    try {
+      for (const f of files) {
+        // Пофайловый catch: одно битое/большое фото не должно ронять остальные.
+        try {
+          const key = await uploadOrderPhoto(f);
+          setPhotos((p) => (p.length >= MAX_PHOTOS ? p : [...p, key]));
+        } catch {
+          setPhotoError(t('client.photoUploadError'));
+        }
+      }
+    } finally {
+      setUploading(false);
+    }
+  }
 
   const suggested = SUGGESTED_BUDGET[catName] ?? 5000;
   const budgetNum = Number(budget);
@@ -83,6 +110,7 @@ export function CreateOrderScreen() {
         categoryId: catId,
         title: title.trim(),
         description: desc.trim(),
+        photos: photos.length ? photos : undefined,
         budget: Number(budget),
         address: address.trim(),
         lat: pos.lat,
@@ -110,6 +138,28 @@ export function CreateOrderScreen() {
         </button>
         <TextField label={t('client.whatToDo')} required value={title} placeholder="Установить розетку" onChange={(e) => setTitle(e.target.value)} />
         <TextArea label={t('specialist.description')} maxLength={2000} value={desc} placeholder="Опишите задачу…" onChange={(e) => setDesc(e.target.value)} />
+
+        <div>
+          <div className={styles.fieldLabel}>{t('client.photosUpTo5')}</div>
+          <div className={styles.photoGrid}>
+            {photos.map((key) => (
+              <div key={key} className={styles.photoThumb}>
+                <img src={fileUrl(key)} alt="" />
+                <button type="button" className={styles.photoRemove} onClick={() => setPhotos((p) => p.filter((k) => k !== key))} aria-label={t('common.close')}>
+                  <Icon name="close" size={13} color="#fff" strokeWidth={2.5} />
+                </button>
+              </div>
+            ))}
+            {photos.length < MAX_PHOTOS && (
+              <label className={styles.photoAdd}>
+                <input type="file" accept="image/*" multiple className={styles.hidden} onChange={onPickPhotos} />
+                {uploading ? <span className={styles.photoSpin} /> : <Icon name="camera" size={24} color="var(--c-primary)" />}
+              </label>
+            )}
+          </div>
+          {photoError && <div className={styles.budgetWarn} style={{ marginTop: 6 }}>{photoError}</div>}
+        </div>
+
         <div>
           <TextField label={t('client.budget')} required inputMode="numeric" value={budget} placeholder={String(suggested)} onChange={(e) => setBudget(e.target.value.replace(/\D/g, '').slice(0, 8))} />
           <div className={styles.budgetHints}>

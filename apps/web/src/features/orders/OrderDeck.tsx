@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StatusPill, Price, Icon, Button, EmptyState } from '../../components/ui';
 import { formatDistanceKm } from '../../lib/format';
+import { fileUrl } from '../../lib/image';
 import { haptic } from '../../lib/haptics';
 import type { FeedOrder } from './api';
 import styles from './OrderDeck.module.scss';
@@ -149,7 +150,11 @@ function DeckCardBody({ order }: { order: FeedOrder }) {
   return (
     <div className={styles.body}>
       <div className={styles.photo}>
-        <Icon name="orders" size={40} color="var(--c-primary)" />
+        {order.photos.length > 0 ? (
+          <img src={fileUrl(order.photos[0])} alt="" className={styles.photoImg} />
+        ) : (
+          <Icon name="orders" size={40} color="var(--c-primary)" />
+        )}
         {order.is_new && (
           <div className={styles.newPill}>
             <StatusPill kind="new" label={t('status.new')} />

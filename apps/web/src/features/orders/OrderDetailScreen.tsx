@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, Button, Price, Icon } from '../../components/ui';
+import { Screen, AppBar, Button, Price, Icon, SkeletonDetail } from '../../components/ui';
 import { RespondSheet } from './RespondSheet';
 import { fetchOrder } from './api';
+import { fileUrl } from '../../lib/image';
 import styles from './OrderDetail.module.scss';
 
 /** S-12 Карточка заказа (специалист) + CTA «Откликнуться» (S-13). */
@@ -18,7 +19,7 @@ export function OrderDetailScreen() {
     return (
       <Screen>
         <AppBar showBack />
-        <div style={{ flex: 1, display: 'grid', placeItems: 'center', color: 'var(--c-ink-muted)' }}>{t('common.loading')}</div>
+        <SkeletonDetail />
       </Screen>
     );
   }
@@ -26,9 +27,17 @@ export function OrderDetailScreen() {
   return (
     <Screen footer={<Button onClick={() => setRespond(true)}>{t('specialist.respond')}</Button>}>
       <AppBar showBack />
-      <div className={styles.photo}>
-        <Icon name="orders" size={48} color="var(--c-primary)" />
-      </div>
+      {order.photos.length > 0 ? (
+        <div className={styles.gallery}>
+          {order.photos.map((k) => (
+            <img key={k} src={fileUrl(k)} alt="" className={styles.galleryImg} />
+          ))}
+        </div>
+      ) : (
+        <div className={styles.photo}>
+          <Icon name="orders" size={48} color="var(--c-primary)" />
+        </div>
+      )}
       <span className={styles.chip}>{order.category_name}</span>
       <div className={styles.title}>{order.title}</div>
       <Price amount={order.budget} size="lg" />

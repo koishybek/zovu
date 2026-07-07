@@ -1620,6 +1620,50 @@
           "support"
         ]
       }
+    },
+    "/v1/uploads/image": {
+      "post": {
+        "operationId": "UploadsController_image",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Загрузка изображения (фото заказа) → публичный ключ",
+        "tags": [
+          "uploads"
+        ]
+      }
+    },
+    "/v1/files/public/{name}": {
+      "get": {
+        "operationId": "FilesController_serve",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Отдать публичный файл по имени (только bucket public)",
+        "tags": [
+          "files"
+        ]
+      }
     }
   },
   "info": {

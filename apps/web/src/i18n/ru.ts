@@ -237,6 +237,7 @@ export const ru = {
     budgetLow: 'Слишком низкая цена — меньше откликов',
     suggestedBudget: 'Обычно в этой категории: {{amount}}',
     // Empty-states
+    photoUploadError: 'Не удалось загрузить фото — попробуйте другое',
     emptyOrdersTitle: 'Заказов пока нет',
     emptyOrdersHint: 'Создайте первый заказ — специалисты рядом откликнутся. Примете одного, остальные отклонятся автоматически.',
     createFirstOrder: 'Создать заказ',

@@ -1,4 +1,14 @@
 import { api } from '../../api/client';
+import { compressImage } from '../../lib/image';
+
+/** Сжать и загрузить фото → вернуть публичный ключ хранилища. */
+export async function uploadOrderPhoto(file: File): Promise<string> {
+  const blob = await compressImage(file);
+  const form = new FormData();
+  form.append('file', blob, 'photo.jpg');
+  const { data } = await api.post('/uploads/image', form);
+  return data.key as string;
+}
 
 export interface OrderFilters {
   certifiedOnly?: boolean;

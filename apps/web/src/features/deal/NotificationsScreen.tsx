@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, EmptyState, Icon } from '../../components/ui';
+import { Screen, AppBar, EmptyState, Icon, SkeletonList } from '../../components/ui';
 import { fetchNotifications, markNotificationsRead, type Notif } from './api';
 import styles from './Notifications.module.scss';
 
@@ -23,7 +23,7 @@ export function NotificationsScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const { data: notifs = [] } = useQuery({ queryKey: ['notifications'], queryFn: fetchNotifications });
+  const { data: notifs = [], isLoading, refetch } = useQuery({ queryKey: ['notifications'], queryFn: fetchNotifications });
 
   useEffect(() => {
     void markNotificationsRead().then(() => qc.invalidateQueries({ queryKey: ['notifications'] }));
@@ -31,9 +31,11 @@ export function NotificationsScreen() {
   }, []);
 
   return (
-    <Screen>
+    <Screen onRefresh={() => refetch()}>
       <AppBar showBack largeTitle={t('notifications.title')} />
-      {notifs.length === 0 ? (
+      {isLoading ? (
+        <SkeletonList count={5} />
+      ) : notifs.length === 0 ? (
         <EmptyState icon="bell" title={t('common.emptyDefault')} />
       ) : (
         <div className={styles.list}>

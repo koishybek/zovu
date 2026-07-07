@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, Card, Price, OrderStatusPill, EmptyState, Button } from '../../components/ui';
+import { Screen, AppBar, Card, Price, OrderStatusPill, EmptyState, Button, SkeletonList } from '../../components/ui';
 import type { OrderStatus } from '../../components/ui';
 import { fetchMyOrders, type Order } from '../orders/api';
 import { routes } from '../../router/routes';
@@ -21,7 +21,7 @@ const STATUS_LABEL: Record<string, string> = {
 export function ClientBidsScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { data: orders = [], isLoading } = useQuery({
+  const { data: orders = [], isLoading, refetch } = useQuery({
     queryKey: ['my-orders'],
     queryFn: fetchMyOrders,
     refetchInterval: 8000,
@@ -32,10 +32,10 @@ export function ClientBidsScreen() {
   );
 
   return (
-    <Screen>
+    <Screen onRefresh={() => refetch()}>
       <AppBar largeTitle={t('tabbar.myBids')} />
       {isLoading ? (
-        <div className={styles.center}>{t('common.loading')}</div>
+        <SkeletonList />
       ) : withBids.length === 0 ? (
         <EmptyState
           icon="bids"

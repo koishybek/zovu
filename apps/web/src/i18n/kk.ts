@@ -66,6 +66,14 @@ export const kk: Resources = {
     withMaterials: 'Өз материалдарымен',
   },
 
+  timeline: {
+    published: 'Жарияланды',
+    chosen: 'Маман таңдалды',
+    inProgress: 'Орындалуда',
+    completed: 'Орындалды',
+    reviewed: 'Бағаланды',
+  },
+
   matching: {
     title: 'Маңайдан мамандарды іздеудеміз…',
     hint: 'Әдетте алғашқы үн қатулар 5–10 минутта келеді',

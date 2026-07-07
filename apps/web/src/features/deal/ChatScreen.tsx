@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, Icon, Button } from '../../components/ui';
+import { Screen, AppBar, Icon, Button, SkeletonChat } from '../../components/ui';
 import { fetchChats, fetchMessages, confirmOrder, type ChatMessage } from './api';
 import { useChatSocket } from './useChatSocket';
 import { useAuthStore } from '../../store/auth';
@@ -82,6 +82,7 @@ export function ChatScreen() {
       )}
 
       <div className={styles.messages}>
+        {!history && chatId && <SkeletonChat />}
         {messages.map((m) => {
           const mine = m.sender_id === myId;
           return (

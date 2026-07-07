@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, Card, Price, OrderStatusPill, EmptyState, Button, Icon } from '../../components/ui';
+import { Screen, AppBar, Card, Price, OrderStatusPill, EmptyState, Button, Icon, SkeletonList } from '../../components/ui';
 import { fetchMyOrders, type Order } from './api';
 import type { OrderStatus } from '../../components/ui';
 import { routes } from '../../router/routes';
@@ -21,10 +21,10 @@ const STATUS_LABEL: Record<string, string> = {
 export function MyOrdersScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { data: orders = [], isLoading } = useQuery({ queryKey: ['my-orders'], queryFn: fetchMyOrders, refetchInterval: 8000 });
+  const { data: orders = [], isLoading, refetch } = useQuery({ queryKey: ['my-orders'], queryFn: fetchMyOrders, refetchInterval: 8000 });
 
   return (
-    <Screen footer={<Button onClick={() => navigate(routes.clientOrderNew)} leadingIcon={<Icon name="plus" size={20} color="#fff" />}>{t('client.createOrder')}</Button>}>
+    <Screen onRefresh={() => refetch()} footer={<Button onClick={() => navigate(routes.clientOrderNew)} leadingIcon={<Icon name="plus" size={20} color="#fff" />}>{t('client.createOrder')}</Button>}>
       <AppBar
         largeTitle={t('tabbar.myOrders')}
         trailing={
@@ -34,7 +34,7 @@ export function MyOrdersScreen() {
         }
       />
       {isLoading ? (
-        <div className={styles.center}>{t('common.loading')}</div>
+        <SkeletonList />
       ) : orders.length === 0 ? (
         <EmptyState
           icon="orders"

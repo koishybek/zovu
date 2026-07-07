@@ -30,9 +30,59 @@
   color: var(--c-ink-secondary);
   margin-top: 2px;
 }
+// Карточка исполнителя (после принятия отклика)
+.performer {
+  margin-top: var(--s-5);
+  padding: var(--s-4);
+  border-radius: var(--r-card);
+  background: var(--c-surface);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.perfTop {
+  display: flex;
+  gap: var(--s-3);
+  align-items: center;
+}
+.perfInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.perfName {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--c-ink);
+}
+.perfMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--c-ink-secondary);
+}
+.perfBadge {
+  margin-top: 2px;
+}
+.chatCta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  height: 44px;
+  border-radius: var(--r-cta);
+  background: var(--c-primary);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
 .rows {
   display: flex;
   flex-direction: column;
+  margin-top: var(--s-5);
 }
 .row {
   display: flex;

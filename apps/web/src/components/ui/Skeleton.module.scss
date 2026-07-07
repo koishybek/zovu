@@ -38,3 +38,40 @@
   flex-direction: column;
   gap: 8px;
 }
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.listCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: var(--s-4);
+  border-radius: var(--r-card);
+  background: var(--c-bg);
+  box-shadow: inset 0 0 0 1px var(--c-divider);
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  padding-top: var(--s-3);
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-4) 0;
+}
+.chatLeft {
+  display: flex;
+  justify-content: flex-start;
+}
+.chatRight {
+  display: flex;
+  justify-content: flex-end;
+}

@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, Button, Price, Icon } from '../../components/ui';
-import { fetchOrder } from '../orders/api';
+import { Screen, AppBar, Button, Price, Icon, StatusTimeline, SkeletonDetail, Avatar, Rating, VerifiedBadge } from '../../components/ui';
+import { fetchOrder, fetchOrderBids, type OrderBid } from '../orders/api';
 import { completeOrder } from './api';
 import { routes } from '../../router/routes';
 import styles from './ActiveOrder.module.scss';
 
-/** S-25/S-26: активный заказ заказчика — статус-баннер + «Завершить» / «Оставить отзыв». */
+/** S-25/S-26: активный заказ заказчика — таймлайн + исполнитель + «Завершить» / «Оставить отзыв». */
 export function ActiveOrderScreen() {
   const { t } = useTranslation();
   const { id = '' } = useParams();
@@ -16,9 +16,16 @@ export function ActiveOrderScreen() {
   const qc = useQueryClient();
   const [loading, setLoading] = useState(false);
   const { data: order } = useQuery({ queryKey: ['order', id], queryFn: () => fetchOrder(id), refetchInterval: 5000 });
+  const { data: bids = [] } = useQuery({ queryKey: ['order-bids', id], queryFn: () => fetchOrderBids(id) });
+  const performer = bids.find((b) => b.status === 'accepted');
 
   if (!order) {
-    return <Screen><AppBar showBack /><div className={styles.center}>{t('common.loading')}</div></Screen>;
+    return (
+      <Screen>
+        <AppBar showBack />
+        <SkeletonDetail />
+      </Screen>
+    );
   }
 
   const banner = BANNERS[order.status];
@@ -52,16 +59,44 @@ export function ActiveOrderScreen() {
           </div>
         </div>
       )}
+
+      <StatusTimeline status={order.status} />
+
+      {performer && <PerformerCard bid={performer} onChat={() => navigate(routes.chat(id))} />}
+
       <div className={styles.rows}>
         <Row label={t('client.budget')} value={<Price amount={order.budget} size="sm" />} />
         <Row label={t('client.address')} value={order.address} />
-        <button className={styles.chatBtn} onClick={() => navigate(routes.chat(id))}>
-          <Icon name="chat" size={20} color="var(--c-primary)" />
-          {t('chat.title')}
-          <Icon name="chevronRight" size={18} color="var(--c-ink-muted)" />
-        </button>
       </div>
     </Screen>
+  );
+}
+
+/** Карточка исполнителя после принятия: фото, рейтинг, бейдж + быстрый вход в чат. */
+function PerformerCard({ bid, onChat }: { bid: OrderBid; onChat: () => void }) {
+  const { t } = useTranslation();
+  const s = bid.specialist;
+  const hasHistory = s.completed_orders > 0 && s.rating > 0;
+  return (
+    <div className={styles.performer}>
+      <div className={styles.perfTop}>
+        <Avatar name={s.name ?? ''} size={52} />
+        <div className={styles.perfInfo}>
+          <div className={styles.perfName}>{s.name}</div>
+          {hasHistory && (
+            <div className={styles.perfMeta}>
+              <Rating value={Math.round(s.rating)} size={13} readOnly />
+              <span>{s.rating.toFixed(1)} · {t('specialist.ordersCount', { count: s.completed_orders })}</span>
+            </div>
+          )}
+          <div className={styles.perfBadge}><VerifiedBadge label={t('trust.verified')} /></div>
+        </div>
+      </div>
+      <button className={styles.chatCta} onClick={onChat}>
+        <Icon name="chat" size={20} color="#fff" />
+        {t('chat.title')}
+      </button>
+    </div>
   );
 }
 

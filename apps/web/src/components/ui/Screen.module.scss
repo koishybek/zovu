@@ -18,6 +18,37 @@
 .scroll {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  position: relative;
+}
+
+// Pull-to-refresh индикатор
+.ptr {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  pointer-events: none;
+}
+.spinner {
+  display: block;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: 2.5px solid var(--c-border);
+  border-top-color: var(--c-primary);
+}
+.spinning {
+  animation: ptrspin 0.7s linear infinite;
+}
+@keyframes ptrspin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate {
+  transition: transform var(--m-normal) var(--ease-out);
 }
 
 .footer {

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, SegmentedControl, Card, StatusPill, Price, EmptyState, Icon, Switch, Button } from '../../components/ui';
+import { Screen, AppBar, SegmentedControl, Card, StatusPill, Price, EmptyState, Icon, Switch, Button, SkeletonList } from '../../components/ui';
 import { OrderDeck } from './OrderDeck';
 import { OrdersMap } from './OrdersMap';
 import { RespondSheet } from './RespondSheet';
@@ -73,7 +73,7 @@ export function FeedScreen() {
           </div>
 
           {isLoading ? (
-            <div className={styles.center}>{t('common.loading')}</div>
+            <SkeletonList />
           ) : view === 'deck' ? (
             <OrderDeck
               orders={orders}

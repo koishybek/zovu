@@ -14,6 +14,30 @@
   font-weight: 600;
   color: var(--c-primary);
 }
+.tagTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-ink);
+  margin-bottom: var(--s-2);
+}
+.badHint {
+  font-size: 13px;
+  color: var(--c-ink-secondary);
+  margin-bottom: var(--s-3);
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-bottom: var(--s-5);
+}
+.supportLink {
+  display: block;
+  margin-top: var(--s-3);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-primary);
+}
 .error {
   color: var(--c-danger);
   font-size: 13px;

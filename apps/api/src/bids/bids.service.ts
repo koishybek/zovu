@@ -10,6 +10,24 @@ import { PrismaService } from '../prisma/prisma.service';
 import { PUSH_PROVIDER, type PushProvider } from '../integrations/tokens';
 import type { CreateBidDto } from './dto';
 
+/**
+ * Скрывает телефоны / ссылки / мессенджеры в тексте отклика — анти-спам, сделки остаются
+ * на платформе (специалисты не уводят клиента в обход). Возвращает null для пустого текста.
+ */
+function maskContacts(text?: string | null): string | null {
+  const v = text?.trim();
+  if (!v) return null;
+  const masked = v
+    // Телефоны: маскируем длинную числовую последовательность только если в ней ≥10 цифр
+    // (реальный номер), чтобы не трогать годы/диапазоны/измерения («2015-2020», «200 300»).
+    .replace(/\+?\d[\d\s().-]{6,}\d/g, (m) => (m.replace(/\D/g, '').length >= 10 ? '•••' : m))
+    .replace(/\b(?:https?:\/\/|www\.)\S+/gi, '•••') // ссылки
+    .replace(/@[a-zа-я0-9_]{3,}/gi, '•••') // @ники
+    .replace(/\b(?:whats?app|вотсап|ватсап|telegram|телеграм|тг|viber|вайбер|instagram|инста|инстаграм)\b/gi, '•••')
+    .trim();
+  return masked || null;
+}
+
 @Injectable()
 export class BidsService {
   constructor(
@@ -43,7 +61,7 @@ export class BidsService {
     const structured = {
       availability: availability ?? null,
       hasMaterials: hasMaterials ?? null,
-      comment: comment?.trim() || null,
+      comment: maskContacts(comment), // скрываем телефоны/ссылки (анти-спам, на платформе)
     };
 
     const bid = await this.prisma.bid.upsert({

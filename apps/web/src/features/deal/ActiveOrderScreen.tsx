@@ -5,8 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { Screen, AppBar, Button, Price, Icon, StatusTimeline, SkeletonDetail, Avatar, Rating, VerifiedBadge } from '../../components/ui';
 import { fetchOrder, fetchOrderBids, type OrderBid } from '../orders/api';
 import { completeOrder } from './api';
+import { SafetySheet } from './SafetySheet';
 import { routes } from '../../router/routes';
 import styles from './ActiveOrder.module.scss';
+
+const LIVE_STATUSES = ['in_progress', 'awaiting_confirmation'];
 
 /** S-25/S-26: активный заказ заказчика — таймлайн + исполнитель + «Завершить» / «Оставить отзыв». */
 export function ActiveOrderScreen() {
@@ -15,6 +18,7 @@ export function ActiveOrderScreen() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [loading, setLoading] = useState(false);
+  const [safety, setSafety] = useState(false);
   const { data: order } = useQuery({ queryKey: ['order', id], queryFn: () => fetchOrder(id), refetchInterval: 5000 });
   const { data: bids = [] } = useQuery({ queryKey: ['order-bids', id], queryFn: () => fetchOrderBids(id) });
   const performer = bids.find((b) => b.status === 'accepted');
@@ -47,9 +51,21 @@ export function ActiveOrderScreen() {
       <Button onClick={() => navigate(routes.clientOrderReview(id))}>{t('client.leaveReview')}</Button>
     ) : undefined;
 
+  const showShield = LIVE_STATUSES.includes(order.status);
+
   return (
     <Screen footer={footer}>
-      <AppBar showBack largeTitle={order.title} />
+      <AppBar
+        showBack
+        largeTitle={order.title}
+        trailing={
+          showShield ? (
+            <button onClick={() => setSafety(true)} aria-label={t('safety.shield')}>
+              <Icon name="shield" size={22} color="var(--c-primary)" />
+            </button>
+          ) : undefined
+        }
+      />
       {banner && (
         <div className={[styles.banner, styles[banner.tone]].join(' ')}>
           <Icon name={banner.icon} size={22} color={banner.iconColor} />
@@ -68,6 +84,13 @@ export function ActiveOrderScreen() {
         <Row label={t('client.budget')} value={<Price amount={order.budget} size="sm" />} />
         <Row label={t('client.address')} value={order.address} />
       </div>
+
+      <SafetySheet
+        open={safety}
+        onClose={() => setSafety(false)}
+        order={{ id, title: order.title, address: order.address }}
+        performerName={performer?.specialist.name}
+      />
     </Screen>
   );
 }

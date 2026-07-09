@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, Card, Icon, SegmentedControl } from '../../components/ui';
+import { Screen, AppBar, Card, Icon, SegmentedControl, Switch } from '../../components/ui';
 import { setLang, getLang, type Lang } from '../../i18n';
 import { updateMe } from '../auth/api';
 import { useAuthStore } from '../../store/auth';
+import { usePrefsStore } from '../../store/prefs';
+import { requestGeo } from '../permissions/actions';
 import { routes } from '../../router/routes';
 import styles from './Settings.module.scss';
 
@@ -12,6 +14,8 @@ export function SettingsScreen() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { user, setUser, logout } = useAuthStore();
+  const geoGranted = usePrefsStore((s) => s.perms.geoGranted);
+  const setPerms = usePrefsStore((s) => s.setPerms);
 
   function changeLang(lang: Lang) {
     setLang(lang);
@@ -53,6 +57,13 @@ export function SettingsScreen() {
           <Icon name="chevronRight" size={20} color="var(--c-ink-muted)" />
         </Card>
       ))}
+
+      {/* Точка повторного включения гео (после «Позже» в primer). */}
+      <Card className={styles.row}>
+        <Icon name="pin" size={20} color="var(--c-ink-secondary)" />
+        <span className={styles.rowLabel}>{t('settings.geolocation')}</span>
+        <Switch checked={geoGranted} onChange={(v) => (v ? requestGeo(setPerms) : setPerms({ geoGranted: false }))} />
+      </Card>
 
       <button className={styles.logout} onClick={() => { logout(); navigate(routes.welcome, { replace: true }); }}>
         {t('settings.logout')}

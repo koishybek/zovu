@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Screen, AppBar, Button, ProgressBar, Icon } from '../../components/ui';
 import { submitVerification } from './api';
+import { PermissionPrimer } from '../permissions/PermissionPrimer';
+import { usePrefsStore } from '../../store/prefs';
 import { routes } from '../../router/routes';
 import styles from './Onboarding.module.scss';
 
@@ -13,6 +15,11 @@ export function VerificationScreen() {
   const [selfie, setSelfie] = useState<File | null>(null);
   const [doc, setDoc] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  // Primer камеры — «зачем» до открытия камеры (один раз).
+  const cameraAsked = usePrefsStore((s) => s.perms.cameraAsked);
+  const setPerms = usePrefsStore((s) => s.setPerms);
+  const [camPrimer, setCamPrimer] = useState(!cameraAsked);
+  const closeCam = () => { setCamPrimer(false); setPerms({ cameraAsked: true }); };
 
   async function submit() {
     if (!selfie || !doc || loading) return;
@@ -52,6 +59,16 @@ export function VerificationScreen() {
           hint={t('onboarding.selfieWithDocHint')}
         />
       </div>
+
+      <PermissionPrimer
+        open={camPrimer}
+        icon="camera"
+        title={t('perm.cameraTitle')}
+        body={t('perm.cameraBody')}
+        onAllow={closeCam}
+        onLater={closeCam}
+        laterLabel={t('common.close')}
+      />
     </Screen>
   );
 }

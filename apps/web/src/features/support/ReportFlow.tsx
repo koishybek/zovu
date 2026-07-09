@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BottomSheet, TextArea, Button, Icon, Celebration } from '../../components/ui';
+import { BottomSheet, TextArea, Button, Icon } from '../../components/ui';
 import { createTicket } from './api';
 import styles from './Report.module.scss';
 
@@ -24,15 +24,14 @@ export function ReportFlow({ open, onClose, subject }: ReportFlowProps) {
   const [done, setDone] = useState(false);
 
   function close() {
+    // Синхронный сброс: BottomSheet при open=false сразу размонтирует содержимое,
+    // поэтому «пустая форма» не мелькает, а отложенный таймер не затирает новый ввод.
+    setReason('');
+    setComment('');
+    setError('');
+    setDone(false);
+    setLoading(false);
     onClose();
-    // сброс после закрытия — чтобы повторное открытие было чистым
-    setTimeout(() => {
-      setReason('');
-      setComment('');
-      setError('');
-      setDone(false);
-      setLoading(false);
-    }, 250);
   }
 
   async function submit() {
@@ -57,7 +56,7 @@ export function ReportFlow({ open, onClose, subject }: ReportFlowProps) {
     <BottomSheet open={open} onClose={close} title={done ? undefined : t('report.title')}>
       {done ? (
         <div className={styles.done}>
-          <Celebration />
+          <div className={styles.doneIcon}><Icon name="check" size={30} color="var(--c-primary)" /></div>
           <div className={styles.doneTitle}>{t('report.successTitle')}</div>
           <div className={styles.doneHint}>{t('report.successHint')}</div>
           <Button onClick={close}>{t('common.done')}</Button>
@@ -70,6 +69,7 @@ export function ReportFlow({ open, onClose, subject }: ReportFlowProps) {
               <button
                 key={r}
                 className={[styles.reason, reason === r ? styles.reasonOn : ''].join(' ')}
+                aria-pressed={reason === r}
                 onClick={() => setReason(r)}
               >
                 <span>{t(`report.reason_${r}` as never)}</span>

@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Screen, AppBar, StatusPill, SkeletonChat, EmptyState, Rating, Icon } from '../../components/ui';
 import { fetchTickets, addTicketMessage, rateTicket } from './api';
+import { ticketCategoryKey } from './labels';
 import styles from './Support.module.scss';
 
 const ST: Record<string, { kind: 'new' | 'inProgress' | 'done'; key: string }> = {
@@ -21,16 +22,20 @@ export function SupportTicketScreen() {
   const ticket = useMemo(() => tickets.find((x) => x.id === id), [tickets, id]);
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState('');
   const [rated, setRated] = useState(0);
 
   async function send() {
     const val = text.trim();
     if (!val || sending) return;
     setSending(true);
+    setSendError('');
     try {
       await addTicketMessage(id, val);
       await qc.invalidateQueries({ queryKey: ['tickets'] });
       setText('');
+    } catch {
+      setSendError(t('common.error')); // не теряем текст — даём повторить
     } finally {
       setSending(false);
     }
@@ -70,23 +75,30 @@ export function SupportTicketScreen() {
   return (
     <Screen
       footer={
-        <div className={styles.replyBar}>
-          <input
-            className={styles.replyInput}
-            value={text}
-            placeholder={t('support.replyPlaceholder')}
-            onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && send()}
-          />
-          <button className={styles.replySend} onClick={send} disabled={!text.trim() || sending} aria-label={t('common.send')}>
-            <Icon name="chevronRight" size={22} color="#fff" strokeWidth={2.5} />
-          </button>
-        </div>
+        resolved ? (
+          <div className={styles.closedNote}>{t('support.stResolved')}</div>
+        ) : (
+          <div className={styles.replyWrap}>
+            {sendError && <div className={styles.sendError}>{sendError}</div>}
+            <div className={styles.replyBar}>
+              <input
+                className={styles.replyInput}
+                value={text}
+                placeholder={t('support.replyPlaceholder')}
+                onChange={(e) => setText(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && send()}
+              />
+              <button className={styles.replySend} onClick={send} disabled={!text.trim() || sending} aria-label={t('common.send')}>
+                <Icon name="chevronRight" size={22} color="#fff" strokeWidth={2.5} />
+              </button>
+            </div>
+          </div>
+        )
       }
     >
-      <AppBar showBack largeTitle={ticket.category} trailing={<StatusPill kind={status.kind} label={t(status.key as never)} />} />
+      <AppBar showBack largeTitle={t(ticketCategoryKey(ticket.category) as never)} trailing={<StatusPill kind={status.kind} label={t(status.key as never)} />} />
 
-      <div className={styles.thread}>
+      <div className={styles.thread} role="log" aria-live="polite" aria-relevant="additions">
         {ticket.messages.map((m) => (
           <div key={m.id} className={[styles.tRow, m.sender_type === 'user' ? styles.tMine : ''].join(' ')}>
             <div className={[styles.tBubble, m.sender_type === 'user' ? styles.tBubbleMine : styles.tBubbleAgent].join(' ')}>

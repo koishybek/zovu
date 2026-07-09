@@ -339,6 +339,8 @@ export const kk: Resources = {
     categoryOther: 'Басқа',
     newTicket: 'Жаңа өтініш',
     attachFiles: 'Файлдарды тіркеу',
+    describeProblem: 'Мәселені сипаттаңыз…',
+    emptyHint: 'Сұрағыңызды қойыңыз — қолдау жауап береді',
     ticketTitle: 'Өтініш',
     agent: 'Қолдау',
     replyPlaceholder: 'Хабарламаңыз…',

@@ -379,6 +379,8 @@ export const ru = {
     categoryOther: 'Иное',
     newTicket: 'Новое обращение',
     attachFiles: 'Прикрепить файлы',
+    describeProblem: 'Опишите проблему…',
+    emptyHint: 'Задайте вопрос — поддержка ответит',
     // Тред обращения (S-31a)
     ticketTitle: 'Обращение',
     agent: 'Поддержка',

@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Screen, AppBar, Button, Chip, TextArea, Card, StatusPill, EmptyState, SkeletonList } from '../../components/ui';
 import { createTicket, fetchTickets, type Ticket } from './api';
+import { ticketCategoryKey } from './labels';
 import { routes } from '../../router/routes';
 import styles from './Support.module.scss';
 
@@ -43,9 +44,9 @@ export function SupportScreen() {
       <Screen footer={<Button onClick={submit} loading={loading} disabled={!text.trim()}>{t('common.send')}</Button>}>
         <AppBar showBack onBack={() => setCreating(false)} largeTitle={t('support.newTicket')} />
         <div className={styles.cats}>
-          {CATEGORIES.map((c) => <Chip key={c} selected={cat === c} onClick={() => setCat(c)}>{c}</Chip>)}
+          {CATEGORIES.map((c) => <Chip key={c} selected={cat === c} onClick={() => setCat(c)}>{t(ticketCategoryKey(c) as never)}</Chip>)}
         </div>
-        <TextArea label="" maxLength={2000} value={text} placeholder="Опишите проблему…" onChange={(e) => setText(e.target.value)} />
+        <TextArea label="" maxLength={2000} value={text} placeholder={t('support.describeProblem')} onChange={(e) => setText(e.target.value)} />
       </Screen>
     );
   }
@@ -56,13 +57,13 @@ export function SupportScreen() {
       {isLoading ? (
         <SkeletonList count={4} />
       ) : tickets.length === 0 ? (
-        <EmptyState icon="support" title={t('common.emptyDefault')} hint="Задайте вопрос — поддержка ответит" />
+        <EmptyState icon="support" title={t('common.emptyDefault')} hint={t('support.emptyHint')} />
       ) : (
         <div className={styles.list}>
           {tickets.map((tk: Ticket) => (
             <Card key={tk.id} pressable onClick={() => navigate(routes.supportTicket(tk.id))}>
               <div className={styles.top}>
-                <span className={styles.cat}>{tk.category}</span>
+                <span className={styles.cat}>{t(ticketCategoryKey(tk.category) as never)}</span>
                 <StatusPill kind={(ST[tk.status] ?? ST.new).kind} label={t(((ST[tk.status] ?? ST.new).key) as never)} />
               </div>
               <div className={styles.msg}>{tk.messages[tk.messages.length - 1]?.text}</div>

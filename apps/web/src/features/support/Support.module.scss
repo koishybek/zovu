@@ -95,6 +95,24 @@
   font-weight: 600;
   color: var(--c-success);
 }
+.replyWrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.sendError {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-danger);
+  text-align: center;
+}
+.closedNote {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-ink-muted);
+  padding: var(--s-2) 0;
+}
 .replyBar {
   display: flex;
   gap: var(--s-2);

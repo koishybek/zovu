@@ -224,6 +224,13 @@ export const ru = {
     undoHide: 'Вернуть',
     emptyBidsTitle: 'Откликов пока нет',
     emptyBidsHint: 'Свайпните заказ вправо в колоде или нажмите «Откликнуться» — отклик появится здесь.',
+    // Табы откликов по стадии (S-14, п.12)
+    bidsTabActive: 'В работе',
+    bidsTabPending: 'Ожидают',
+    bidsTabArchive: 'Архив',
+    bidsEmpty_active: 'Нет активных заказов',
+    bidsEmpty_pending: 'Нет откликов на рассмотрении',
+    bidsEmpty_archive: 'Архив пуст',
     // S-15 баланс
     currentBalance: 'Текущий баланс',
     nextCharge: 'Следующее списание',

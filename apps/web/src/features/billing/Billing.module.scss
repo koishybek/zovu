@@ -116,6 +116,13 @@
   text-align: center;
   margin-top: var(--s-3);
 }
+.topupError {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-danger);
+  text-align: center;
+  margin-top: var(--s-2);
+}
 
 // S-17 lock
 .lock {

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { AppBar, Icon } from '../../components/ui';
+import { AppBar, Icon, ErrorState } from '../../components/ui';
 import { OrdersMap } from './OrdersMap';
 import { fetchFeed } from './api';
 import { ALMATY_FALLBACK, useGeo } from '../../lib/useGeo';
@@ -14,7 +14,7 @@ export function SpecialistMapScreen() {
   const navigate = useNavigate();
   const geo = useGeo();
   const pos = geo ?? ALMATY_FALLBACK;
-  const { data: orders = [] } = useQuery({
+  const { data: orders = [], isLoading, isError, refetch } = useQuery({
     queryKey: ['feed'],
     queryFn: () => fetchFeed(pos.lat, pos.lng),
     refetchInterval: 15000,
@@ -33,7 +33,13 @@ export function SpecialistMapScreen() {
         />
       </div>
       <div className={styles.mapArea}>
-        <OrdersMap orders={orders} onOpen={(o) => navigate(routes.spOrder(o.id))} />
+        {isError ? (
+          <ErrorState onRetry={() => refetch()} />
+        ) : isLoading ? (
+          <div className={styles.mapLoading}>{t('common.loading')}</div>
+        ) : (
+          <OrdersMap orders={orders} onOpen={(o) => navigate(routes.spOrder(o.id))} />
+        )}
       </div>
     </div>
   );

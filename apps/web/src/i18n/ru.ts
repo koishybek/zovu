@@ -14,6 +14,7 @@ export const ru = {
     done: 'Готово',
     loading: 'Загрузка…',
     error: 'Что-то пошло не так',
+    errorHint: 'Проверьте соединение и попробуйте снова',
     emptyDefault: 'Пока пусто',
     currency: '₸',
     priceWithCurrency: '{{amount}} ₸',
@@ -150,6 +151,7 @@ export const ru = {
     roleSettings: 'Настройки роли',
     canChangeAnytime: 'Вы можете сменить роль в любое время в настройках.',
     activateSecondRole: 'Активировать вторую роль',
+    switchRole: 'Сменить роль',
   },
 
   onboarding: {
@@ -161,6 +163,7 @@ export const ru = {
     extraCategories: 'Дополнительные категории',
     about: 'О себе',
     uploadDiploma: 'Загрузить диплом',
+    diplomaAttached: 'Диплом прикреплён — отправим на проверку',
     // S-06 верификация
     identityConfirm: 'Подтверждение личности',
     uploadPhotosForCheck: 'Загрузите фотографии для проверки',
@@ -214,6 +217,11 @@ export const ru = {
     offlineHint: 'Новые заказы скрыты. Включите приём, чтобы видеть ленту.',
     goOnline: 'Включить приём',
     viewOrders: 'Смотреть заказы',
+    // Колода заказов (§4.3)
+    deckEmptyHint: 'Загляните на карту — там могут быть заказы рядом',
+    hide: 'Скрыть',
+    orderHidden: 'Заказ скрыт',
+    undoHide: 'Вернуть',
     emptyBidsTitle: 'Откликов пока нет',
     emptyBidsHint: 'Свайпните заказ вправо в колоде или нажмите «Откликнуться» — отклик появится здесь.',
     // S-15 баланс
@@ -241,6 +249,7 @@ export const ru = {
     diplomaBadge: 'Дипломированный ✓',
     portfolio: 'Портфолио',
     reviews: 'Отзывы',
+    reviewsEmptyHint: 'Отзывы появятся после выполненных заказов',
     ordersCount: '{{count}} заказов',
     ordersCount_one: '{{count}} заказ',
     ordersCount_few: '{{count}} заказа',
@@ -253,7 +262,14 @@ export const ru = {
   client: {
     // S-20 создание
     createOrder: 'Создание заказа',
+    category: 'Категория',
     whatToDo: 'Что надо сделать',
+    // Инлайн-ошибки валидации (S-20)
+    errCategory: 'Выберите категорию',
+    errTitle: 'Опишите, что нужно сделать (минимум 3 символа)',
+    errDesc: 'Добавьте описание задачи',
+    errBudget: 'Укажите бюджет',
+    errAddress: 'Укажите адрес',
     photosUpTo5: 'Фото (до 5)',
     budget: 'Бюджет (₸)',
     address: 'Адрес',
@@ -281,6 +297,12 @@ export const ru = {
     emptyOrdersTitle: 'Заказов пока нет',
     emptyOrdersHint: 'Создайте первый заказ — специалисты рядом откликнутся. Примете одного, остальные отклонятся автоматически.',
     createFirstOrder: 'Создать заказ',
+    // Фильтр истории заказов (ИЗ-02)
+    ordersFilterActive: 'Активные',
+    ordersFilterDone: 'Завершённые',
+    ordersFilterCancelled: 'Отменённые',
+    emptyDoneTitle: 'Завершённых заказов нет',
+    emptyCancelledTitle: 'Отменённых заказов нет',
     // S-23 отклики — русская плюрализация (1 отклик / 2 отклика / 5 откликов)
     bidsReceived: 'Получено {{count}} откликов',
     bidsReceived_one: 'Получено {{count}} отклик',

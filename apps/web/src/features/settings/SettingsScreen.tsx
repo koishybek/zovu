@@ -45,11 +45,9 @@ export function SettingsScreen() {
       <div className={styles.sectionTitle}>{t('settings.general')}</div>
       {[
         { icon: 'bell' as const, label: t('notifications.title'), to: routes.notifications },
-        { icon: 'shield' as const, label: t('settings.security') },
-        { icon: 'globe' as const, label: t('settings.privacy') },
         { icon: 'support' as const, label: t('support.title'), to: routes.support },
       ].map((item) => (
-        <Card key={item.label} pressable className={styles.row} onClick={() => item.to && navigate(item.to)}>
+        <Card key={item.label} pressable className={styles.row} onClick={() => navigate(item.to)}>
           <Icon name={item.icon} size={20} color="var(--c-ink-secondary)" />
           <span className={styles.rowLabel}>{item.label}</span>
           <Icon name="chevronRight" size={20} color="var(--c-ink-muted)" />

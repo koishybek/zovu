@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, Card, Price, BidStatusPill, EmptyState, Button, SkeletonList } from '../../components/ui';
+import { Screen, AppBar, Card, Price, BidStatusPill, EmptyState, ErrorState, Button, SkeletonList } from '../../components/ui';
 import type { BidStatus } from '../../components/ui';
 import { formatTenge } from '../../lib/format';
 import { fetchMyBids } from './api';
@@ -19,13 +19,15 @@ const BID_LABEL: Record<string, string> = {
 export function MyBidsScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { data: bids = [], isLoading, refetch } = useQuery({ queryKey: ['my-bids'], queryFn: fetchMyBids, refetchInterval: 8000 });
+  const { data: bids = [], isLoading, isError, refetch } = useQuery({ queryKey: ['my-bids'], queryFn: fetchMyBids, refetchInterval: 8000 });
 
   return (
     <Screen onRefresh={() => refetch()}>
       <AppBar largeTitle={t('tabbar.bids')} />
       {isLoading ? (
         <SkeletonList />
+      ) : isError ? (
+        <ErrorState onRetry={() => refetch()} />
       ) : bids.length === 0 ? (
         <EmptyState
           icon="bids"

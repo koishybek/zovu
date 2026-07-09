@@ -39,22 +39,28 @@ export function NotificationsScreen() {
         <EmptyState icon="bell" title={t('common.emptyDefault')} />
       ) : (
         <div className={styles.list}>
-          {notifs.map((n: Notif) => (
-            <button
-              key={n.id}
-              className={[styles.item, n.read ? '' : styles.unread].join(' ')}
-              onClick={() => n.payload?.route && navigate(n.payload.route)}
-            >
-              <div className={styles.icon}>
-                <Icon name={ICON[n.type] ?? 'bell'} size={20} color="var(--c-primary)" />
-              </div>
-              <div className={styles.body}>
-                <div className={styles.title}>{n.title}</div>
-                <div className={styles.text}>{n.body}</div>
-              </div>
-              <div className={styles.date}>{new Date(n.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</div>
-            </button>
-          ))}
+          {notifs.map((n: Notif) => {
+            const to = n.payload?.route;
+            const cls = [styles.item, n.read ? '' : styles.unread].join(' ');
+            const inner = (
+              <>
+                <div className={styles.icon}>
+                  <Icon name={ICON[n.type] ?? 'bell'} size={20} color="var(--c-primary)" />
+                </div>
+                <div className={styles.body}>
+                  <div className={styles.title}>{n.title}</div>
+                  <div className={styles.text}>{n.body}</div>
+                </div>
+                <div className={styles.date}>{new Date(n.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</div>
+              </>
+            );
+            // Диплинк есть → кликабельная кнопка; информационное уведомление → статичный div (не «мёртвая» кнопка).
+            return to ? (
+              <button key={n.id} className={cls} onClick={() => navigate(to)}>{inner}</button>
+            ) : (
+              <div key={n.id} className={[cls, styles.static].join(' ')}>{inner}</div>
+            );
+          })}
         </div>
       )}
     </Screen>

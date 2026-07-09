@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, Button, Price, Icon, SkeletonDetail } from '../../components/ui';
+import { Screen, AppBar, Button, Price, Icon, SkeletonDetail, ErrorState } from '../../components/ui';
 import { RespondSheet } from './RespondSheet';
 import { fetchOrder } from './api';
 import { fileUrl } from '../../lib/image';
@@ -13,8 +13,16 @@ export function OrderDetailScreen() {
   const { t } = useTranslation();
   const { id = '' } = useParams();
   const [respond, setRespond] = useState(false);
-  const { data: order, isLoading } = useQuery({ queryKey: ['order', id], queryFn: () => fetchOrder(id) });
+  const { data: order, isLoading, isError, refetch } = useQuery({ queryKey: ['order', id], queryFn: () => fetchOrder(id) });
 
+  if (isError) {
+    return (
+      <Screen>
+        <AppBar showBack />
+        <ErrorState onRetry={() => refetch()} />
+      </Screen>
+    );
+  }
   if (isLoading || !order) {
     return (
       <Screen>

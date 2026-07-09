@@ -87,7 +87,7 @@ export function OrderDeck({ orders, onRespond, onHide, onOpen, onEmptyAction }: 
       <EmptyState
         icon="map"
         title={t('common.emptyDefault')}
-        hint="Загляните на карту — там могут быть заказы рядом"
+        hint={t('specialist.deckEmptyHint')}
         action={<Button fullWidth={false} variant="secondary" onClick={onEmptyAction}>{t('specialist.viewMap')}</Button>}
       />
     );
@@ -127,18 +127,18 @@ export function OrderDeck({ orders, onRespond, onHide, onOpen, onEmptyAction }: 
       </div>
 
       <div className={styles.actions}>
-        <button className={[styles.fab, styles.fabNope].join(' ')} onClick={() => commit('left')} aria-label="Скрыть">
+        <button className={[styles.fab, styles.fabNope].join(' ')} onClick={() => commit('left')} aria-label={t('specialist.hide')}>
           <Icon name="close" size={26} strokeWidth={2.5} />
         </button>
-        <button className={[styles.fab, styles.fabLike].join(' ')} onClick={() => commit('right')} aria-label="Откликнуться">
+        <button className={[styles.fab, styles.fabLike].join(' ')} onClick={() => commit('right')} aria-label={t('specialist.respond')}>
           <Icon name="check" size={28} strokeWidth={2.5} />
         </button>
       </div>
 
       {undo && (
         <div className={styles.snack}>
-          <span>Заказ скрыт</span>
-          <button onClick={undoHide}>Отменить</button>
+          <span>{t('specialist.orderHidden')}</span>
+          <button onClick={undoHide}>{t('specialist.undoHide')}</button>
         </div>
       )}
     </div>

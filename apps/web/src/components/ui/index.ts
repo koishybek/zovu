@@ -22,6 +22,7 @@ export { TabBar } from './TabBar';
 export type { TabItem } from './TabBar';
 export { Switch } from './Switch';
 export { EmptyState } from './EmptyState';
+export { ErrorState } from './ErrorState';
 export { Rating } from './Rating';
 export { Slider } from './Slider';
 export { RadioRow, CheckboxRow } from './Choice';

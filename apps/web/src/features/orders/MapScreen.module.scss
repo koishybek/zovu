@@ -21,6 +21,14 @@
   position: relative;
 }
 
+.mapLoading {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  color: var(--c-ink-muted);
+  font-size: 14px;
+}
+
 // Плавающая карточка выбранного заказа (карта заказчика).
 .card {
   position: absolute;

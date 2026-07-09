@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, Button, Chip, TextArea, Card, StatusPill, EmptyState } from '../../components/ui';
+import { Screen, AppBar, Button, Chip, TextArea, Card, StatusPill, EmptyState, SkeletonList } from '../../components/ui';
 import { createTicket, fetchTickets, type Ticket } from './api';
 import styles from './Support.module.scss';
 
@@ -20,7 +20,7 @@ export function SupportScreen() {
   const [cat, setCat] = useState('Заказ');
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
-  const { data: tickets = [] } = useQuery({ queryKey: ['tickets'], queryFn: fetchTickets, refetchInterval: 8000 });
+  const { data: tickets = [], isLoading } = useQuery({ queryKey: ['tickets'], queryFn: fetchTickets, refetchInterval: 8000 });
 
   async function submit() {
     if (!text.trim() || loading) return;
@@ -50,7 +50,9 @@ export function SupportScreen() {
   return (
     <Screen footer={<Button onClick={() => setCreating(true)}>{t('support.newTicket')}</Button>}>
       <AppBar showBack largeTitle={t('support.title')} />
-      {tickets.length === 0 ? (
+      {isLoading ? (
+        <SkeletonList count={4} />
+      ) : tickets.length === 0 ? (
         <EmptyState icon="support" title={t('common.emptyDefault')} hint="Задайте вопрос — поддержка ответит" />
       ) : (
         <div className={styles.list}>

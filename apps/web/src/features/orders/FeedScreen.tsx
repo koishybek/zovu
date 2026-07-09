@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, SegmentedControl, Card, StatusPill, Price, EmptyState, Icon, Switch, Button, SkeletonList } from '../../components/ui';
+import { Screen, AppBar, SegmentedControl, Card, StatusPill, Price, EmptyState, ErrorState, Icon, Switch, Button, SkeletonList } from '../../components/ui';
 import { OrderDeck } from './OrderDeck';
 import { OrdersMap } from './OrdersMap';
 import { RespondSheet } from './RespondSheet';
@@ -26,7 +26,7 @@ export function FeedScreen() {
   const [respond, setRespond] = useState<FeedOrder | null>(null);
 
   const pos = geo ?? ALMATY_FALLBACK;
-  const { data: orders = [], isLoading } = useQuery({
+  const { data: orders = [], isLoading, isError, refetch } = useQuery({
     queryKey: ['feed'],
     queryFn: () => fetchFeed(pos.lat, pos.lng),
     refetchInterval: 15000,
@@ -74,6 +74,8 @@ export function FeedScreen() {
 
           {isLoading ? (
             <SkeletonList />
+          ) : isError ? (
+            <ErrorState onRetry={() => refetch()} />
           ) : view === 'deck' ? (
             <OrderDeck
               orders={orders}

@@ -56,6 +56,12 @@ export function ProfileScreen() {
         <Icon name="chevronRight" size={20} color="var(--c-ink-muted)" />
       </Card>
 
+      <Card pressable onClick={() => navigate(routes.roleSwitch)} className={styles.row}>
+        <Icon name="profile" size={22} color="var(--c-primary)" />
+        <span className={styles.rowLabel}>{t('role.switchRole')}</span>
+        <Icon name="chevronRight" size={20} color="var(--c-ink-muted)" />
+      </Card>
+
       {p && p.categories.length > 0 && (
         <>
           <div className={styles.sectionTitle}>{t('onboarding.mainCategory')}</div>

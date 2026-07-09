@@ -1,13 +1,15 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, Card, Avatar, Rating, EmptyState, Icon } from '../../components/ui';
+import { Screen, AppBar, Card, Avatar, Rating, EmptyState, Icon, SkeletonList } from '../../components/ui';
 import { fetchUserReviews, type UserReview } from './api';
+import { routes } from '../../router/routes';
 import styles from './ReviewsList.module.scss';
 
 /** S-33 Отзывы о пользователе (только published, ОМ-08). Кнопка «Пожаловаться» на каждом (ОМ-03). */
 export function ReviewsListScreen() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { userId = '' } = useParams();
   const { data: reviews = [], isLoading } = useQuery({ queryKey: ['reviews', userId], queryFn: () => fetchUserReviews(userId) });
 
@@ -15,9 +17,9 @@ export function ReviewsListScreen() {
     <Screen>
       <AppBar showBack largeTitle={t('specialist.reviews')} />
       {isLoading ? (
-        <div className={styles.center}>{t('common.loading')}</div>
+        <SkeletonList count={4} />
       ) : reviews.length === 0 ? (
-        <EmptyState icon="star" title={t('common.emptyDefault')} hint="Отзывы появятся после выполненных заказов" />
+        <EmptyState icon="star" title={t('common.emptyDefault')} hint={t('specialist.reviewsEmptyHint')} />
       ) : (
         <div className={styles.list}>
           {reviews.map((r: UserReview) => (
@@ -31,8 +33,8 @@ export function ReviewsListScreen() {
                 <Rating value={r.stars} size={16} readOnly />
               </div>
               {r.text && <div className={styles.text}>{r.text}</div>}
-              <button className={styles.report}>
-                <Icon name="shield" size={14} color="var(--c-ink-muted)" /> {t('chat.report')}
+              <button className={styles.report} onClick={() => navigate(routes.support)}>
+                <Icon name="flag" size={14} color="var(--c-ink-muted)" /> {t('chat.report')}
               </button>
             </Card>
           ))}

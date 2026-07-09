@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Screen, AppBar, Button, TextField, TextArea, Chip, ProgressBar, BottomSheet, Icon } from '../../components/ui';
 import { fetchCategories } from '../auth/api';
-import { saveSpecialistProfile } from './api';
+import { saveSpecialistProfile, submitDiploma } from './api';
 import { useAuthStore } from '../../store/auth';
 import { routes } from '../../router/routes';
 import styles from './Onboarding.module.scss';
@@ -23,7 +23,9 @@ export function SpecialistProfileScreen() {
   const [extra, setExtra] = useState<string[]>([]);
   const [extraOpen, setExtraOpen] = useState(false);
   const [about, setAbout] = useState('');
+  const [diploma, setDiploma] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const diplomaInput = useRef<HTMLInputElement>(null);
 
   const mainName = categories.find((c) => c.id === mainId)?.name ?? '';
   const valid = name.trim().length >= 2 && mainId && /^\d{2}\.\d{2}\.\d{4}$/.test(dob);
@@ -39,6 +41,15 @@ export function SpecialistProfileScreen() {
       const [d, m, y] = dob.split('.');
       const user = await saveSpecialistProfile({ name: name.trim(), dob: `${y}-${m}-${d}`, mainCategoryId: mainId, categoryIds: extra, about: about.trim() || undefined });
       setUser(user);
+      // Диплом опционален — грузим ПОСЛЕ создания профиля (эндпоинт требует существующий профиль),
+      // сбой не блокирует переход к верификации.
+      if (diploma) {
+        try {
+          await submitDiploma(diploma);
+        } catch {
+          /* диплом можно догрузить позже из профиля */
+        }
+      }
       navigate(routes.spVerification);
     } finally {
       setLoading(false);
@@ -80,10 +91,17 @@ export function SpecialistProfileScreen() {
 
         <TextArea label={t('onboarding.about')} maxLength={500} value={about} placeholder="Расскажите о своём опыте…" onChange={(e) => setAbout(e.target.value)} />
 
-        <button className={styles.diploma}>
-          <Icon name="upload" size={18} color="var(--c-primary)" />
-          {t('onboarding.uploadDiploma')}
+        <button className={styles.diploma} onClick={() => diplomaInput.current?.click()}>
+          <Icon name={diploma ? 'check' : 'upload'} size={18} color={diploma ? 'var(--c-success)' : 'var(--c-primary)'} />
+          {diploma ? t('onboarding.diplomaAttached') : t('onboarding.uploadDiploma')}
         </button>
+        <input
+          ref={diplomaInput}
+          type="file"
+          accept="image/*,application/pdf"
+          className={styles.hidden}
+          onChange={(e) => setDiploma(e.target.files?.[0] ?? null)}
+        />
       </div>
 
       <BottomSheet open={catSheet} onClose={() => setCatSheet(false)} title={t('onboarding.mainCategory')}>

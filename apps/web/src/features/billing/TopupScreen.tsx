@@ -18,17 +18,21 @@ export function TopupScreen() {
   const [custom, setCustom] = useState('');
   const [method, setMethod] = useState<'kaspi' | 'card'>('kaspi');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const value = custom ? Number(custom.replace(/\D/g, '')) : amount;
 
   async function submit() {
     if (value <= 0 || loading) return;
     setLoading(true);
+    setError('');
     try {
       await topup(value, method);
       await qc.invalidateQueries({ queryKey: ['balance'] });
       await qc.invalidateQueries({ queryKey: ['transactions'] });
       navigate(-1);
+    } catch {
+      setError(t('common.error')); // раньше сбой глотался молча — теперь показываем
     } finally {
       setLoading(false);
     }
@@ -60,6 +64,7 @@ export function TopupScreen() {
         <RadioRow checked={method === 'card'} onChange={() => setMethod('card')}>{t('specialist.bankCard')}</RadioRow>
       </div>
       <div className={styles.noFee}>{t('specialist.noFee')}</div>
+      {error && <div className={styles.topupError}>{error}</div>}
     </Screen>
   );
 }

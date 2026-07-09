@@ -66,6 +66,9 @@ export function CreateOrderScreen() {
   const [uploading, setUploading] = useState(false);
   const [photoError, setPhotoError] = useState('');
   const [loading, setLoading] = useState(false);
+  // Валидация: ошибку показываем после blur поля или после попытки публикации (не молчаливый disabled).
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [attempted, setAttempted] = useState(false);
 
   // S-21 фильтры подбора (Ф-02…Ф-05)
   const [filterSheet, setFilterSheet] = useState(false);
@@ -99,10 +102,23 @@ export function CreateOrderScreen() {
 
   const suggested = SUGGESTED_BUDGET[catName] ?? 5000;
   const budgetNum = Number(budget);
-  const valid = catId && title.trim().length >= 3 && desc.trim() && budgetNum > 0 && address.trim().length >= 2;
+  const errors = {
+    cat: !catId ? t('client.errCategory') : '',
+    title: title.trim().length < 3 ? t('client.errTitle') : '',
+    desc: !desc.trim() ? t('client.errDesc') : '',
+    budget: !(budgetNum > 0) ? t('client.errBudget') : '',
+    address: address.trim().length < 2 ? t('client.errAddress') : '',
+  };
+  const valid = !errors.cat && !errors.title && !errors.desc && !errors.budget && !errors.address;
+  const show = (f: keyof typeof errors) => (attempted || touched[f]) && errors[f];
+  const mark = (f: string) => setTouched((s) => ({ ...s, [f]: true }));
 
   async function submit() {
-    if (!valid || loading) return;
+    if (loading) return;
+    if (!valid) {
+      setAttempted(true); // раскрыть все inline-ошибки — какие поля не заполнены
+      return;
+    }
     setLoading(true);
     try {
       const pos = geo ?? ALMATY_FALLBACK;
@@ -125,19 +141,25 @@ export function CreateOrderScreen() {
   }
 
   return (
-    <Screen footer={<Button onClick={submit} loading={loading} disabled={!valid}>{t('client.publish')}</Button>}>
+    <Screen footer={<Button onClick={submit} loading={loading}>{t('client.publish')}</Button>}>
       <AppBar
         showBack
         largeTitle={t('client.createOrder')}
         trailing={<button onClick={() => setFilterSheet(true)} aria-label={t('client.filters')}><Icon name="filter" size={22} color="var(--c-primary)" /></button>}
       />
       <div className={styles.form}>
-        <button className={styles.selector} onClick={() => setCatSheet(true)}>
-          <span className={catId ? styles.selVal : styles.selPh}>{catName || 'Категория *'}</span>
-          <Icon name="chevronDown" size={20} color="var(--c-ink-muted)" />
-        </button>
-        <TextField label={t('client.whatToDo')} required value={title} placeholder="Установить розетку" onChange={(e) => setTitle(e.target.value)} />
-        <TextArea label={t('specialist.description')} maxLength={2000} value={desc} placeholder="Опишите задачу…" onChange={(e) => setDesc(e.target.value)} />
+        <div>
+          <button className={[styles.selector, show('cat') ? styles.selectorError : ''].join(' ')} onClick={() => setCatSheet(true)}>
+            <span className={catId ? styles.selVal : styles.selPh}>{catName || `${t('client.category')} *`}</span>
+            <Icon name="chevronDown" size={20} color="var(--c-ink-muted)" />
+          </button>
+          {show('cat') && <span className={styles.fieldError}>{errors.cat}</span>}
+        </div>
+        <TextField label={t('client.whatToDo')} required value={title} placeholder="Установить розетку" onBlur={() => mark('title')} error={show('title') ? errors.title : undefined} onChange={(e) => setTitle(e.target.value)} />
+        <div>
+          <TextArea label={t('specialist.description')} maxLength={2000} value={desc} placeholder="Опишите задачу…" onBlur={() => mark('desc')} onChange={(e) => setDesc(e.target.value)} />
+          {show('desc') && <span className={styles.fieldError}>{errors.desc}</span>}
+        </div>
 
         <div>
           <div className={styles.fieldLabel}>{t('client.photosUpTo5')}</div>
@@ -161,7 +183,7 @@ export function CreateOrderScreen() {
         </div>
 
         <div>
-          <TextField label={t('client.budget')} required inputMode="numeric" value={budget} placeholder={String(suggested)} onChange={(e) => setBudget(e.target.value.replace(/\D/g, '').slice(0, 8))} />
+          <TextField label={t('client.budget')} required inputMode="numeric" value={budget} placeholder={String(suggested)} onBlur={() => mark('budget')} error={show('budget') ? errors.budget : undefined} onChange={(e) => setBudget(e.target.value.replace(/\D/g, '').slice(0, 8))} />
           <div className={styles.budgetHints}>
             {catId && <span>{t('client.suggestedBudget', { amount: formatTenge(suggested) })}</span>}
             <span>{t('client.budgetHint')}</span>
@@ -170,7 +192,7 @@ export function CreateOrderScreen() {
             )}
           </div>
         </div>
-        <TextField label={t('client.address')} required value={address} placeholder="ул. Абая, 150" onChange={(e) => setAddress(e.target.value)} />
+        <TextField label={t('client.address')} required value={address} placeholder="ул. Абая, 150" onBlur={() => mark('address')} error={show('address') ? errors.address : undefined} onChange={(e) => setAddress(e.target.value)} />
         <div className={styles.geoNote}>
           <Icon name="pin" size={16} color="var(--c-primary)" />
           {geo ? 'Геолокация определена' : 'Гео по умолчанию (Алматы)'}

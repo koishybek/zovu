@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Screen, AppBar, Button, EmptyState } from '../../components/ui';
+import { Screen, AppBar, Button, EmptyState, ErrorState, SkeletonList } from '../../components/ui';
 import { fetchBalance, fetchTransactions, type Transaction } from './api';
 import { formatTenge } from '../../lib/format';
 import { routes } from '../../router/routes';
@@ -18,10 +18,20 @@ const TX_LABEL: Record<Transaction['type'], string> = {
 export function BalanceScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { data: bal } = useQuery({ queryKey: ['balance'], queryFn: fetchBalance, refetchInterval: 10000 });
-  const { data: txs = [] } = useQuery({ queryKey: ['transactions'], queryFn: fetchTransactions });
+  const { data: bal, isError: balError, refetch: refetchBal } = useQuery({ queryKey: ['balance'], queryFn: fetchBalance, refetchInterval: 10000 });
+  const { data: txs = [], isLoading: txLoading } = useQuery({ queryKey: ['transactions'], queryFn: fetchTransactions });
 
   const nextDate = bal?.next_charge_date ? new Date(bal.next_charge_date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }) : null;
+
+  // Сбой загрузки баланса не должен «вечно висеть на …» — показываем ошибку с retry.
+  if (balError && !bal) {
+    return (
+      <Screen>
+        <AppBar showBack largeTitle={t('tabbar.profile') /* Баланс */} />
+        <ErrorState onRetry={() => refetchBal()} />
+      </Screen>
+    );
+  }
 
   return (
     <Screen footer={<Button onClick={() => navigate(routes.spTopup)}>{t('specialist.topup')}</Button>}>
@@ -44,7 +54,9 @@ export function BalanceScreen() {
       </div>
 
       <div className={styles.histTitle}>{t('specialist.operationsHistory')}</div>
-      {txs.length === 0 ? (
+      {txLoading ? (
+        <SkeletonList count={4} />
+      ) : txs.length === 0 ? (
         <EmptyState title={t('common.emptyDefault')} />
       ) : (
         <div className={styles.txList}>

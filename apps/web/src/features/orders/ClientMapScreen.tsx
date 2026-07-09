@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { AppBar, Card, Price, Button, EmptyState } from '../../components/ui';
+import { AppBar, Card, Price, Button, EmptyState, ErrorState } from '../../components/ui';
 import { MapView, type MapMarker } from '../../components/MapView';
 import { fetchMyOrders, type Order } from './api';
 import { formatTenge } from '../../lib/format';
@@ -13,7 +13,7 @@ import styles from './MapScreen.module.scss';
 export function ClientMapScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { data: orders = [] } = useQuery({ queryKey: ['my-orders'], queryFn: fetchMyOrders });
+  const { data: orders = [], isLoading, isError, refetch } = useQuery({ queryKey: ['my-orders'], queryFn: fetchMyOrders });
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const withGeo = useMemo(
@@ -45,7 +45,11 @@ export function ClientMapScreen() {
         <AppBar showBack title={t('map.clientTitle')} />
       </div>
       <div className={styles.mapArea}>
-        {withGeo.length === 0 ? (
+        {isError ? (
+          <ErrorState onRetry={() => refetch()} />
+        ) : isLoading ? (
+          <div className={styles.mapLoading}>{t('common.loading')}</div>
+        ) : withGeo.length === 0 ? (
           <EmptyState icon="map" title={t('map.clientEmptyTitle')} hint={t('map.clientEmptyHint')} />
         ) : (
           <>

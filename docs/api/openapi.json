@@ -615,6 +615,74 @@
         ]
       }
     },
+    "/v1/bids/{id}/counter": {
+      "post": {
+        "operationId": "BidsController_counter",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CounterBidDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "G6: заказчик предлагает встречную цену (round-trip)",
+        "tags": [
+          "bids"
+        ]
+      }
+    },
+    "/v1/bids/{id}/counter-accept": {
+      "post": {
+        "operationId": "BidsController_counterAccept",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "G6: специалист принимает встречную цену → сделка по counterPrice",
+        "tags": [
+          "bids"
+        ]
+      }
+    },
     "/v1/balance": {
       "get": {
         "operationId": "BillingController_balance",
@@ -1889,6 +1957,18 @@
           "comment": {
             "type": "string",
             "description": "Короткий комментарий/питч (≤200)"
+          }
+        },
+        "required": [
+          "price"
+        ]
+      },
+      "CounterBidDto": {
+        "type": "object",
+        "properties": {
+          "price": {
+            "type": "number",
+            "description": "Встречная цена заказчика (G6)"
           }
         },
         "required": [

@@ -7,8 +7,10 @@ import {
   Button, BidStatusPill, SkeletonBidCard, Icon, ConfirmDialog,
 } from '../../components/ui';
 import type { BidStatus } from '../../components/ui';
-import { fetchOrder, fetchOrderBids, acceptBid, declineBid, cancelOrder, type OrderBid } from './api';
+import { fetchOrder, fetchOrderBids, acceptBid, declineBid, cancelOrder, counterBid, type OrderBid } from './api';
+import { PriceOfferSheet } from './PriceOfferSheet';
 import { apiError } from '../../api/client';
+import { formatTenge } from '../../lib/format';
 import { routes } from '../../router/routes';
 import styles from './OrderBids.module.scss';
 
@@ -28,6 +30,7 @@ export function OrderBidsScreen() {
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [cancelError, setCancelError] = useState('');
+  const [counterFor, setCounterFor] = useState<OrderBid | null>(null);
 
   const { data: bids = [] } = useQuery({
     queryKey: ['order-bids', id],
@@ -37,7 +40,13 @@ export function OrderBidsScreen() {
   // Статус заказа (общий кэш с ActiveOrderScreen) — отмена доступна только пока active.
   const { data: order } = useQuery({ queryKey: ['order', id], queryFn: () => fetchOrder(id), refetchInterval: 5000 });
 
-  const active = bids.filter((b) => b.status === 'pending' || b.status === 'accepted');
+  const active = bids.filter((b) => b.status === 'pending' || b.status === 'accepted' || b.status === 'countered');
+
+  async function doCounter(price: number) {
+    if (!counterFor) return;
+    await counterBid(counterFor.id, price);
+    await qc.invalidateQueries({ queryKey: ['order-bids', id] });
+  }
 
   async function cancel() {
     setCancelling(true);
@@ -91,7 +100,7 @@ export function OrderBidsScreen() {
       ) : (
         <div className={styles.list}>
           {active.map((b) => (
-            <BidCard key={b.id} bid={b} busy={busy === b.id} onAccept={() => accept(b)} onDecline={() => decline(b)} />
+            <BidCard key={b.id} bid={b} busy={busy === b.id} onAccept={() => accept(b)} onDecline={() => decline(b)} onCounter={() => setCounterFor(b)} />
           ))}
         </div>
       )}
@@ -110,6 +119,15 @@ export function OrderBidsScreen() {
         onConfirm={cancel}
         danger
         loading={cancelling}
+      />
+
+      <PriceOfferSheet
+        open={counterFor != null}
+        onClose={() => setCounterFor(null)}
+        title={t('client.counterTitle')}
+        hint={counterFor ? t('client.counterHint', { price: formatTenge(counterFor.price) }) : undefined}
+        submitLabel={t('client.counterSubmit')}
+        onSubmit={doCounter}
       />
     </Screen>
   );
@@ -135,7 +153,7 @@ function MatchingState() {
 }
 
 /** Карточка отклика: фото, честный рейтинг/«Новый специалист», бейджи доверия, статус. */
-function BidCard({ bid: b, busy, onAccept, onDecline }: { bid: OrderBid; busy: boolean; onAccept: () => void; onDecline: () => void }) {
+function BidCard({ bid: b, busy, onAccept, onDecline, onCounter }: { bid: OrderBid; busy: boolean; onAccept: () => void; onDecline: () => void; onCounter: () => void }) {
   const { t } = useTranslation();
   const s = b.specialist;
   // Честный гейт: рейтинг и число заказов независимы — показываем звёзды только при
@@ -165,7 +183,7 @@ function BidCard({ bid: b, busy, onAccept, onDecline }: { bid: OrderBid; busy: b
           <Price amount={b.price} size="md" />
           <BidStatusPill
             status={b.status as BidStatus}
-            label={b.status === 'accepted' ? t('bidStatus.accepted') : t('bidStatus.awaitingDecision')}
+            label={b.status === 'accepted' ? t('bidStatus.accepted') : b.status === 'countered' ? t('bidStatus.countered') : t('bidStatus.awaitingDecision')}
           />
         </div>
       </div>
@@ -181,10 +199,16 @@ function BidCard({ bid: b, busy, onAccept, onDecline }: { bid: OrderBid; busy: b
         </div>
       )}
       {b.status === 'pending' && (
-        <div className={styles.actions}>
-          <Button variant="secondary" fullWidth loading={busy} onClick={onDecline}>{t('client.decline')}</Button>
-          <Button fullWidth loading={busy} onClick={onAccept}>{t('client.accept')}</Button>
-        </div>
+        <>
+          <div className={styles.actions}>
+            <Button variant="secondary" fullWidth loading={busy} onClick={onDecline}>{t('client.decline')}</Button>
+            <Button fullWidth loading={busy} onClick={onAccept}>{t('client.accept')}</Button>
+          </div>
+          <button className={styles.counterLink} onClick={onCounter}>{t('client.counterOffer')}</button>
+        </>
+      )}
+      {b.status === 'countered' && b.counter_price != null && (
+        <div className={styles.counteredNote}>{t('client.counteredWaiting', { price: formatTenge(b.counter_price) })}</div>
       )}
     </Card>
   );

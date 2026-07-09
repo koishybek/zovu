@@ -6,9 +6,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import type { BidStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { PUSH_PROVIDER, type PushProvider } from '../integrations/tokens';
 import type { CreateBidDto } from './dto';
+
+// «Проигравшие» при закрытии сделки — активные отклики, кроме принятого (в т.ч. с контрофером).
+const LOSER_STATUSES: BidStatus[] = ['pending', 'countered'];
 
 /**
  * Скрывает телефоны / ссылки / мессенджеры в тексте отклика — анти-спам, сделки остаются
@@ -58,16 +62,27 @@ export class BidsService {
     if (!canBid) throw new ForbiddenException('subscription_inactive');
 
     const commission = Math.round((price * this.commissionPct()) / 100);
-    const structured = {
-      availability: availability ?? null,
-      hasMaterials: hasMaterials ?? null,
-      comment: maskContacts(comment), // скрываем телефоны/ссылки (анти-спам, на платформе)
-    };
+    // Структурные поля не передали (напр. «перебить» встречную одной ценой) — в UPDATE их НЕ трогаем,
+    // чтобы re-counter не обнулял ранее указанные готовность/материалы/питч (сравнимость S-23).
+    const structuredUpdate: Record<string, unknown> = {};
+    if (availability !== undefined) structuredUpdate.availability = availability;
+    if (hasMaterials !== undefined) structuredUpdate.hasMaterials = hasMaterials;
+    if (comment !== undefined) structuredUpdate.comment = maskContacts(comment); // анти-спам, на платформе
 
     const bid = await this.prisma.bid.upsert({
       where: { orderId_specialistId: { orderId, specialistId: profile.id } },
-      create: { orderId, specialistId: profile.id, price, commission, status: 'pending', ...structured },
-      update: { price, commission, status: 'pending', ...structured },
+      create: {
+        orderId,
+        specialistId: profile.id,
+        price,
+        commission,
+        status: 'pending',
+        availability: availability ?? null,
+        hasMaterials: hasMaterials ?? null,
+        comment: maskContacts(comment),
+      },
+      // Повторный отклик (в т.ч. «перебить» встречную цену) — сбрасываем контрофер и статус в pending.
+      update: { price, commission, status: 'pending', counterPrice: null, ...structuredUpdate },
     });
 
     // Стрик: день с ≥1 откликом (§10 бизнес-правил).
@@ -85,9 +100,7 @@ export class BidsService {
   }
 
   /**
-   * S-24: заказчик принимает отклик. КАСКАД:
-   * bid→accepted, прочие pending→not_selected (+push), заказ→in_progress, создаётся чат,
-   * комиссия списывается с баланса специалиста (ADR-001, баланс может уйти в минус).
+   * S-24: заказчик принимает отклик по исходной цене. Требует статус pending.
    */
   async accept(userId: string, bidId: string) {
     const bid = await this.prisma.bid.findUnique({
@@ -97,27 +110,97 @@ export class BidsService {
     if (!bid) throw new NotFoundException('bid_not_found');
     if (bid.order.clientId !== userId) throw new ForbiddenException('not_your_order');
     if (bid.order.status !== 'active') throw new BadRequestException('order_not_active');
+    if (bid.status !== 'pending') throw new BadRequestException('bid_not_pending');
+    return this.closeDeal(bid, bid.price);
+  }
+
+  /**
+   * G6: заказчик предлагает встречную цену на pending-отклик (round-trip).
+   * bid→countered + counterPrice, push специалисту. Специалист отвечает
+   * acceptCounter (принять) или новым откликом create (перебить свою цену).
+   */
+  async counter(userId: string, bidId: string, price: number) {
+    if (!Number.isInteger(price) || price <= 0) throw new BadRequestException('invalid_price');
+    const bid = await this.prisma.bid.findUnique({
+      where: { id: bidId },
+      include: { order: true, specialist: true },
+    });
+    if (!bid) throw new NotFoundException('bid_not_found');
+    if (bid.order.clientId !== userId) throw new ForbiddenException('not_your_order');
+    if (bid.order.status !== 'active') throw new BadRequestException('order_not_active');
+    if (bid.status !== 'pending') throw new BadRequestException('bid_not_pending');
+
+    // Атомарный переход pending→countered: гонка «accept + counter» не должна перезаписать
+    // уже принятый отклик (guard в самом UPDATE, а не только в прочитанном ранее статусе).
+    const res = await this.prisma.bid.updateMany({
+      where: { id: bidId, status: 'pending' },
+      data: { status: 'countered', counterPrice: price },
+    });
+    if (res.count === 0) throw new BadRequestException('bid_not_pending');
+
+    await this.push.send(bid.specialist.userId, {
+      type: 'bid_countered',
+      title: 'Встречное предложение по цене',
+      body: bid.order.title,
+      payload: { route: `/sp/bids?tab=pending` },
+    });
+    const updated = await this.prisma.bid.findUnique({ where: { id: bidId } });
+    return this.serializeBid(updated!);
+  }
+
+  /**
+   * G6: специалист принимает встречную цену заказчика → сделка закрывается по counterPrice.
+   */
+  async acceptCounter(userId: string, bidId: string) {
+    const bid = await this.prisma.bid.findUnique({
+      where: { id: bidId },
+      include: { order: true, specialist: true },
+    });
+    if (!bid) throw new NotFoundException('bid_not_found');
+    if (bid.specialist.userId !== userId) throw new ForbiddenException('not_your_bid');
+    if (bid.status !== 'countered' || bid.counterPrice == null) throw new BadRequestException('no_counter');
+    if (bid.order.status !== 'active') throw new BadRequestException('order_not_active');
+    return this.closeDeal(bid, bid.counterPrice);
+  }
+
+  /**
+   * Закрытие сделки по финальной цене (ADR-001): bid→accepted (цена/комиссия пересчитаны от
+   * finalPrice), прочие pending/countered→not_selected (+push), заказ→in_progress, чат, комиссия.
+   * Общая логика для accept (по исходной цене) и acceptCounter (по встречной).
+   */
+  private async closeDeal(
+    bid: {
+      id: string;
+      orderId: string;
+      specialistId: string;
+      order: { title: string };
+      specialist: { userId: string; balance: number };
+    },
+    finalPrice: number,
+  ) {
+    const commission = Math.round((finalPrice * this.commissionPct()) / 100);
+    const newBalance = bid.specialist.balance - commission;
 
     const others = await this.prisma.bid.findMany({
-      where: { orderId: bid.orderId, status: 'pending', id: { not: bidId } },
+      where: { orderId: bid.orderId, status: { in: LOSER_STATUSES }, id: { not: bid.id } },
       include: { specialist: true },
     });
 
-    const newBalance = bid.specialist.balance - bid.commission;
-
     await this.prisma.$transaction([
-      this.prisma.bid.update({ where: { id: bidId }, data: { status: 'accepted' } }),
+      this.prisma.bid.update({
+        where: { id: bid.id },
+        data: { status: 'accepted', price: finalPrice, counterPrice: null, commission },
+      }),
       this.prisma.bid.updateMany({
-        where: { orderId: bid.orderId, status: 'pending', id: { not: bidId } },
+        where: { orderId: bid.orderId, status: { in: LOSER_STATUSES }, id: { not: bid.id } },
         data: { status: 'not_selected' },
       }),
       this.prisma.order.update({
         where: { id: bid.orderId },
-        data: { status: 'in_progress', acceptedBidId: bidId },
+        data: { status: 'in_progress', acceptedBidId: bid.id },
       }),
       this.prisma.chat.create({ data: { orderId: bid.orderId } }),
-      // Комиссия (ADR-001) — списание в момент принятия
-      ...(bid.commission > 0
+      ...(commission > 0
         ? [
             this.prisma.specialistProfile.update({
               where: { id: bid.specialistId },
@@ -127,16 +210,15 @@ export class BidsService {
               data: {
                 userId: bid.specialist.userId,
                 type: 'commission',
-                amount: -bid.commission,
+                amount: -commission,
                 balanceAfter: newBalance,
-                meta: { orderId: bid.orderId, bidId },
+                meta: { orderId: bid.orderId, bidId: bid.id },
               },
             }),
           ]
         : []),
     ]);
 
-    // Push: принятому + каждому «не выбранному» (каскад)
     await this.push.send(bid.specialist.userId, {
       type: 'bid_accepted',
       title: 'Заказ принят',
@@ -157,12 +239,17 @@ export class BidsService {
     return { ok: true, cascaded: others.length };
   }
 
-  /** Заказчик отклоняет отдельный отклик (S-24). */
+  /** Заказчик отклоняет отдельный отклик (S-24). Только активный отклик (pending/countered) —
+   *  нельзя «отклонить» уже принятую сделку (иначе заказ повиснет: acceptedBid=declined). */
   async decline(userId: string, bidId: string) {
     const bid = await this.prisma.bid.findUnique({ where: { id: bidId }, include: { order: true } });
     if (!bid) throw new NotFoundException('bid_not_found');
     if (bid.order.clientId !== userId) throw new ForbiddenException('not_your_order');
-    await this.prisma.bid.update({ where: { id: bidId }, data: { status: 'declined' } });
+    const res = await this.prisma.bid.updateMany({
+      where: { id: bidId, status: { in: ['pending', 'countered'] } },
+      data: { status: 'declined' },
+    });
+    if (res.count === 0) throw new BadRequestException('bid_not_pending');
     return { ok: true };
   }
 
@@ -195,6 +282,7 @@ export class BidsService {
     return bids.map((b) => ({
       id: b.id,
       price: b.price,
+      counter_price: b.counterPrice,
       status: b.status,
       availability: b.availability,
       has_materials: b.hasMaterials,
@@ -233,6 +321,7 @@ export class BidsService {
     id: string;
     orderId: string;
     price: number;
+    counterPrice?: number | null;
     commission: number;
     status: string;
     availability?: string | null;
@@ -243,6 +332,7 @@ export class BidsService {
       id: b.id,
       order_id: b.orderId,
       price: b.price,
+      counter_price: b.counterPrice ?? null,
       commission: b.commission,
       payout: b.price - b.commission,
       status: b.status,

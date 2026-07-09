@@ -6,6 +6,22 @@
   padding: var(--s-2) 0 var(--s-3);
 }
 
+.counterNote {
+  margin-top: var(--s-3);
+  padding: var(--s-3);
+  border-radius: 12px;
+  background: var(--c-primary-soft);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-primary);
+  text-align: center;
+}
+.bidActions {
+  display: flex;
+  gap: var(--s-2);
+  margin-top: var(--s-3);
+}
+
 .availRow {
   display: flex;
   align-items: center;

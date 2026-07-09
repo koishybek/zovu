@@ -34,7 +34,7 @@ function makeFake() {
       },
       findMany: async ({ where, include }: any) => {
         let rows = bids.filter((b) => b.orderId === where.orderId);
-        if (where.status) rows = rows.filter((b) => b.status === where.status);
+        if (where.status) rows = rows.filter((b) => (where.status.in ? where.status.in.includes(b.status) : b.status === where.status));
         if (where.id?.not) rows = rows.filter((b) => b.id !== where.id.not);
         return include ? rows.map(withRel) : rows;
       },
@@ -44,8 +44,10 @@ function makeFake() {
         return b;
       },
       updateMany: async ({ where, data }: any) => {
-        let rows = bids.filter((b) => b.orderId === where.orderId);
-        if (where.status) rows = rows.filter((b) => b.status === where.status);
+        let rows = bids;
+        if (where.orderId) rows = rows.filter((b) => b.orderId === where.orderId);
+        if (typeof where.id === 'string') rows = rows.filter((b) => b.id === where.id);
+        if (where.status) rows = rows.filter((b) => (where.status.in ? where.status.in.includes(b.status) : b.status === where.status));
         if (where.id?.not) rows = rows.filter((b) => b.id !== where.id.not);
         rows.forEach((b) => Object.assign(b, data));
         return { count: rows.length };
@@ -106,5 +108,69 @@ describe('BidsService.accept — каскад (§6.3, ADR-001)', () => {
     const fake = makeFake();
     const svc = new BidsService(fake as any, config, push);
     await expect(svc.accept('someone_else', 'bA')).rejects.toThrow();
+  });
+});
+
+describe('BidsService counter / acceptCounter (G6 — контрофер round-trip)', () => {
+  it('заказчик шлёт встречную → bid countered + counterPrice, push специалисту', async () => {
+    const fake = makeFake();
+    const svc = new BidsService(fake as any, config, push);
+    push.send.mockClear();
+
+    const res = await svc.counter('client1', 'bA', 4000);
+
+    expect(fake._bids.find((b) => b.id === 'bA').status).toBe('countered');
+    expect(fake._bids.find((b) => b.id === 'bA').counterPrice).toBe(4000);
+    expect(res).toMatchObject({ status: 'countered', counter_price: 4000 });
+    expect(push.send).toHaveBeenCalledTimes(1);
+  });
+
+  it('специалист принимает встречную → сделка по counterPrice, комиссия от неё, каскад', async () => {
+    const fake = makeFake();
+    const svc = new BidsService(fake as any, config, push);
+    await svc.counter('client1', 'bA', 4000);
+    push.send.mockClear();
+
+    const res = await svc.acceptCounter('ua', 'bA'); // ua = userId профиля sp_a
+
+    const bA = fake._bids.find((b) => b.id === 'bA');
+    expect(bA.status).toBe('accepted');
+    expect(bA.price).toBe(4000); // финальная цена = встречная
+    expect(bA.counterPrice).toBeNull();
+    expect(bA.commission).toBe(200); // 5% от 4000, а не от исходных 5000
+    expect(fake._bids.find((b) => b.id === 'bB').status).toBe('not_selected');
+    expect(fake._orders[0].status).toBe('in_progress');
+    expect(fake._profiles.find((p) => p.id === 'sp_a').balance).toBe(800); // 1000 - 200
+    expect(res).toEqual({ ok: true, cascaded: 2 });
+  });
+
+  it('accept на countered-отклике → 400 (по исходной цене принимают только pending)', async () => {
+    const fake = makeFake();
+    const svc = new BidsService(fake as any, config, push);
+    await svc.counter('client1', 'bA', 4000);
+    await expect(svc.accept('client1', 'bA')).rejects.toThrow();
+  });
+
+  it('чужой специалист не может принять встречную → 403', async () => {
+    const fake = makeFake();
+    const svc = new BidsService(fake as any, config, push);
+    await svc.counter('client1', 'bA', 4000);
+    await expect(svc.acceptCounter('ub', 'bA')).rejects.toThrow(); // ub ≠ владелец bA
+  });
+
+  it('гонка: counter уже принятого отклика не перезаписывает сделку', async () => {
+    const fake = makeFake();
+    const svc = new BidsService(fake as any, config, push);
+    await svc.accept('client1', 'bA'); // bA → accepted, заказ → in_progress
+    await expect(svc.counter('client1', 'bA', 4000)).rejects.toThrow();
+    expect(fake._bids.find((b) => b.id === 'bA').status).toBe('accepted'); // не перезаписан
+  });
+
+  it('decline уже принятого отклика → 400 (сделку не портим)', async () => {
+    const fake = makeFake();
+    const svc = new BidsService(fake as any, config, push);
+    await svc.accept('client1', 'bA');
+    await expect(svc.decline('client1', 'bA')).rejects.toThrow();
+    expect(fake._bids.find((b) => b.id === 'bA').status).toBe('accepted');
   });
 });

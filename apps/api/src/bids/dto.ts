@@ -26,3 +26,10 @@ export class CreateBidDto {
   @MaxLength(200)
   comment?: string;
 }
+
+export class CounterBidDto {
+  @ApiProperty({ description: 'Встречная цена заказчика (G6)' })
+  @IsInt()
+  @Min(1)
+  price!: number;
+}

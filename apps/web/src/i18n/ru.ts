@@ -52,6 +52,7 @@ export const ru = {
   // Ролевые статусы отклика (человеческие формулировки, не enum)
   bidStatus: {
     sent: 'Вы откликнулись',
+    countered: 'Встречная цена',
     accepted: 'Принят',
     notSelected: 'Не выбран',
     declined: 'Отклонён',
@@ -231,6 +232,13 @@ export const ru = {
     bidsEmpty_active: 'Нет активных заказов',
     bidsEmpty_pending: 'Нет откликов на рассмотрении',
     bidsEmpty_archive: 'Архив пуст',
+    // Ответ на встречную цену (G6)
+    counterFromClient: 'Заказчик предложил {{price}}',
+    acceptCounter: 'Принять {{price}}',
+    reCounter: 'Предложить другую',
+    reCounterTitle: 'Ваша новая цена',
+    reCounterHint: 'Заказчик предложил {{price}}. Назовите свою цену — он снова решит.',
+    reCounterSubmit: 'Отправить',
     // S-15 баланс
     currentBalance: 'Текущий баланс',
     nextCharge: 'Следующее списание',
@@ -335,6 +343,12 @@ export const ru = {
     reviewHelps: 'Ваш отзыв поможет другим пользователям',
     comment: 'Комментарий',
     leaveReview: 'Оставить отзыв',
+    // Контрпредложение по цене (G6)
+    counterOffer: 'Предложить свою цену',
+    counterTitle: 'Ваша цена',
+    counterHint: 'Специалист предложил {{price}}. Предложите свою — он примет или ответит встречным.',
+    counterSubmit: 'Отправить предложение',
+    counteredWaiting: 'Вы предложили {{price}} — ждём ответа специалиста',
     // Отмена заказа (ЗВ-07)
     cancelOrder: 'Отменить заказ',
     cancelTitle: 'Отменить заказ?',

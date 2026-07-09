@@ -45,6 +45,7 @@ export type BidAvailability = 'today' | 'tomorrow' | 'this_week';
 export interface OrderBid {
   id: string;
   price: number;
+  counter_price: number | null;
   status: string;
   availability: BidAvailability | null;
   has_materials: boolean | null;
@@ -70,6 +71,7 @@ export interface MyBid {
   id: string;
   order_id: string;
   price: number;
+  counter_price: number | null;
   commission: number;
   payout: number;
   status: string;
@@ -144,4 +146,16 @@ export async function acceptBid(bidId: string): Promise<{ ok: boolean; cascaded:
 
 export async function declineBid(bidId: string): Promise<void> {
   await api.post(`/bids/${bidId}/decline`);
+}
+
+/** G6: заказчик предлагает встречную цену на pending-отклик. */
+export async function counterBid(bidId: string, price: number): Promise<OrderBid> {
+  const { data } = await api.post(`/bids/${bidId}/counter`, { price });
+  return data;
+}
+
+/** G6: специалист принимает встречную цену заказчика → сделка по counterPrice. */
+export async function acceptCounterBid(bidId: string): Promise<{ ok: boolean; cascaded: number }> {
+  const { data } = await api.post(`/bids/${bidId}/counter-accept`);
+  return data;
 }

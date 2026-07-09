@@ -49,6 +49,7 @@ enum OrderStatus {
 
 enum BidStatus {
   pending
+  countered // заказчик предложил встречную цену, ждём ответа специалиста
   accepted
   declined
   not_selected
@@ -201,6 +202,7 @@ model Bid {
   specialistId String
   specialist   SpecialistProfile @relation(fields: [specialistId], references: [id])
   price        Int
+  counterPrice Int?              // встречная цена заказчика (G6, статус countered)
   commission   Int               @default(0) // ADR-001, списывается при accept
   status       BidStatus         @default(pending)
   // Структурированный отклик (S-13): когда готов приступить / есть материалы / короткий питч.

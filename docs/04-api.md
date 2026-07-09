@@ -128,9 +128,11 @@ stateDiagram-v2
 | `GET orders/:id/bids` | JWT, заказчик | Отклики на мой заказ: профиль, бейдж «Дипломированный ✓», рейтинг, `completed_orders`, цена, а также `availability`, `has_materials`, `comment` | S-23, О-05, ОМ-08 |
 | `GET bids/my` | JWT, специалист | Мои отклики со статусами: Отклик отправлен / Принят / Выполняется / Ожидает подтверждения / Выполнен / Не выбран / Отменён | ИС-02, S-14 |
 | `POST bids/:id/accept` | JWT, заказчик | Принять отклик: bid → `accepted`; **каскад** — все остальные `pending`-отклики заказа → `not_selected` + push каждому; заказ → `in_progress`; создаётся чат (Ч-01); с баланса специалиста списывается комиссия `ORDER_COMMISSION_PCT` от цены принятого отклика (баланс может уйти в минус, ADR-001) | S-24, Ч-01, ADR-001 |
-| `POST bids/:id/decline` | JWT, заказчик | Отклонить отклик → `declined` | S-24 |
+| `POST bids/:id/decline` | JWT, заказчик | Отклонить отклик → `declined` (только активный: `pending`/`countered`) | S-24 |
+| `POST bids/:id/counter` | JWT, заказчик | **Контрпредложение (G6):** заказчик предлагает встречную цену на `pending`-отклик → `countered` + `counter_price`, push специалисту. Атомарный переход (гонка с accept) | S-24, G6 |
+| `POST bids/:id/counter-accept` | JWT, специалист | **Контрпредложение (G6):** специалист принимает встречную цену → сделка закрывается по `counter_price` (комиссия от неё), каскад как в accept. Ответить встречным = новый `POST orders/:id/bids` | S-14, G6 |
 
-Статусы bid: `pending → accepted | declined | not_selected` — см. [07-business-rules.md](07-business-rules.md). Ранее отправленные отклики при неактивной подписке **остаются активными** и могут быть приняты (БП-03, БП-04).
+Статусы bid: `pending → countered → accepted | declined | not_selected` (round-trip: заказчик `counter` → специалист `counter-accept` или новый отклик) — см. [07-business-rules.md](07-business-rules.md). Ранее отправленные отклики при неактивной подписке **остаются активными** и могут быть приняты (БП-03, БП-04).
 
 ### 3.7 Balance / Transactions / Topup
 

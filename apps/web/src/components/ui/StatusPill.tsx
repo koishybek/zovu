@@ -10,7 +10,7 @@ export type OrderStatus =
   | 'cancelled'
   | 'disputed';
 
-export type BidStatus = 'pending' | 'accepted' | 'declined' | 'not_selected';
+export type BidStatus = 'pending' | 'countered' | 'accepted' | 'declined' | 'not_selected';
 
 type PillKind = keyof typeof statusPill;
 
@@ -27,6 +27,7 @@ const ORDER_KIND: Record<OrderStatus, PillKind> = {
 
 const BID_KIND: Record<BidStatus, PillKind> = {
   pending: 'waiting',
+  countered: 'review',
   accepted: 'accepted',
   declined: 'notSelected',
   not_selected: 'notSelected',

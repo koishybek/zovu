@@ -35,6 +35,7 @@ import { ReviewScreen } from '../features/deal/ReviewScreen';
 import { NotificationsScreen } from '../features/deal/NotificationsScreen';
 import { ReviewsListScreen } from '../features/deal/ReviewsListScreen';
 import { SupportScreen } from '../features/support/SupportScreen';
+import { SupportTicketScreen } from '../features/support/SupportTicketScreen';
 import { SettingsScreen } from '../features/settings/SettingsScreen';
 import { RoleSwitchScreen } from '../features/settings/RoleSwitchScreen';
 import { routes, SPECIALIST_TABS, CLIENT_TABS } from './routes';
@@ -108,7 +109,7 @@ export const router = createBrowserRouter([
       // Общие (S-30…S-35)
       { path: routes.chat(), element: <RequireAuth><ChatScreen /></RequireAuth> },
       { path: routes.support, element: <RequireAuth><SupportScreen /></RequireAuth> },
-      { path: routes.supportTicket(), element: <RequireAuth><SupportScreen /></RequireAuth> },
+      { path: routes.supportTicket(), element: <RequireAuth><SupportTicketScreen /></RequireAuth> },
       { path: routes.notifications, element: <RequireAuth><NotificationsScreen /></RequireAuth> },
       { path: routes.reviews(), element: <RequireAuth><ReviewsListScreen /></RequireAuth> },
       { path: routes.roleSwitch, element: <RequireAuth><RoleSwitchScreen /></RequireAuth> },

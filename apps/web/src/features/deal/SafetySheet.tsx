@@ -20,10 +20,12 @@ interface SafetySheetProps {
   onClose: () => void;
   order: { id: string; title: string; address: string };
   performerName?: string | null;
+  /** Открыть флоу жалобы у родителя (если не задан — навигация в список поддержки). */
+  onReport?: () => void;
 }
 
 /** Слой безопасности активного заказа (Uber-стиль): шеринг статуса, SOS 112, жалоба, доверенные контакты. */
-export function SafetySheet({ open, onClose, order, performerName }: SafetySheetProps) {
+export function SafetySheet({ open, onClose, order, performerName, onReport }: SafetySheetProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [contacts, setContacts] = useState<string[]>(loadContacts);
@@ -81,7 +83,7 @@ export function SafetySheet({ open, onClose, order, performerName }: SafetySheet
         </span>
       </a>
 
-      <button className={styles.tile} onClick={() => { onClose(); navigate(routes.support); }}>
+      <button className={styles.tile} onClick={() => { onClose(); if (onReport) onReport(); else navigate(routes.support); }}>
         <span className={[styles.tileIcon, styles.amber].join(' ')}><Icon name="flag" size={20} color="#fff" /></span>
         <span className={styles.tileLabel}>{t('safety.report')}</span>
         <Icon name="chevronRight" size={18} color="var(--c-ink-muted)" />

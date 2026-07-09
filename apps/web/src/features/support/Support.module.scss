@@ -32,3 +32,93 @@
   font-size: 14px;
   color: var(--c-primary);
 }
+
+/* Тред обращения */
+.thread {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-3) 0;
+}
+.tRow {
+  display: flex;
+  justify-content: flex-start;
+}
+.tRow.tMine {
+  justify-content: flex-end;
+}
+.tBubble {
+  max-width: 82%;
+  padding: var(--s-3) var(--s-4);
+  border-radius: 16px;
+  font-size: 15px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.tBubbleAgent {
+  background: var(--c-surface);
+  color: var(--c-ink);
+  border-bottom-left-radius: 4px;
+}
+.tBubbleMine {
+  background: var(--c-primary);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.tAgent {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-primary);
+  margin-bottom: 2px;
+}
+.rateBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-4);
+  margin: var(--s-3) 0;
+  background: var(--c-surface);
+  border-radius: var(--r-card);
+}
+.rateTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--c-ink);
+}
+.rateThanks {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-success);
+}
+.replyBar {
+  display: flex;
+  gap: var(--s-2);
+  align-items: center;
+}
+.replyInput {
+  flex: 1;
+  height: var(--h-input);
+  padding: 0 15px;
+  border-radius: 999px;
+  background: var(--c-surface);
+  box-shadow: inset 0 0 0 1px var(--c-border);
+  font-size: 15px;
+  color: var(--c-ink);
+}
+.replySend {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: var(--c-primary);
+  display: grid;
+  place-items: center;
+}
+.replySend:disabled {
+  opacity: 0.4;
+}

@@ -1,20 +1,23 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Screen, AppBar, Button, Chip, TextArea, Card, StatusPill, EmptyState, SkeletonList } from '../../components/ui';
 import { createTicket, fetchTickets, type Ticket } from './api';
+import { routes } from '../../router/routes';
 import styles from './Support.module.scss';
 
 const CATEGORIES = ['Заказ', 'Оплата', 'Жалоба', 'Верификация', 'Иное'];
 const ST: Record<string, { kind: 'new' | 'inProgress' | 'done'; key: string }> = {
-  new: { kind: 'new', key: 'Новое' },
-  in_progress: { kind: 'inProgress', key: 'В работе' },
-  resolved: { kind: 'done', key: 'Решено' },
+  new: { kind: 'new', key: 'support.stNew' },
+  in_progress: { kind: 'inProgress', key: 'support.stInProgress' },
+  resolved: { kind: 'done', key: 'support.stResolved' },
 };
 
 /** S-31 Поддержка: список обращений + создание (категория, текст). */
 export function SupportScreen() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const qc = useQueryClient();
   const [creating, setCreating] = useState(false);
   const [cat, setCat] = useState('Заказ');
@@ -57,15 +60,15 @@ export function SupportScreen() {
       ) : (
         <div className={styles.list}>
           {tickets.map((tk: Ticket) => (
-            <Card key={tk.id}>
+            <Card key={tk.id} pressable onClick={() => navigate(routes.supportTicket(tk.id))}>
               <div className={styles.top}>
                 <span className={styles.cat}>{tk.category}</span>
-                <StatusPill kind={ST[tk.status].kind} label={ST[tk.status].key} />
+                <StatusPill kind={(ST[tk.status] ?? ST.new).kind} label={t(((ST[tk.status] ?? ST.new).key) as never)} />
               </div>
               <div className={styles.msg}>{tk.messages[tk.messages.length - 1]?.text}</div>
               {tk.messages.some((m) => m.sender_type === 'agent') && (
                 <div className={styles.agentReply}>
-                  Поддержка: {tk.messages.filter((m) => m.sender_type === 'agent').slice(-1)[0]?.text}
+                  {t('support.agent')}: {tk.messages.filter((m) => m.sender_type === 'agent').slice(-1)[0]?.text}
                 </div>
               )}
             </Card>

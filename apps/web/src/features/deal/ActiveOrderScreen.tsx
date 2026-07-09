@@ -6,6 +6,7 @@ import { Screen, AppBar, Button, Price, Icon, StatusTimeline, SkeletonDetail, Av
 import { fetchOrder, fetchOrderBids, type OrderBid } from '../orders/api';
 import { completeOrder } from './api';
 import { createTicket } from '../support/api';
+import { ReportFlow } from '../support/ReportFlow';
 import { SafetySheet } from './SafetySheet';
 import { routes } from '../../router/routes';
 import styles from './ActiveOrder.module.scss';
@@ -20,6 +21,7 @@ export function ActiveOrderScreen() {
   const qc = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [safety, setSafety] = useState(false);
+  const [report, setReport] = useState(false);
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [cancelError, setCancelError] = useState('');
@@ -126,7 +128,10 @@ export function ActiveOrderScreen() {
         onClose={() => setSafety(false)}
         order={{ id, title: order.title, address: order.address }}
         performerName={performer?.specialist.name}
+        onReport={() => setReport(true)}
       />
+
+      <ReportFlow open={report} onClose={() => setReport(false)} subject={order.title} />
 
       <ConfirmDialog
         open={confirmCancel}

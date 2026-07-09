@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Screen, AppBar, Icon, Button, SkeletonChat } from '../../components/ui';
 import { fetchChats, fetchMessages, confirmOrder, type ChatMessage } from './api';
+import { ReportFlow } from '../support/ReportFlow';
 import { useChatSocket } from './useChatSocket';
 import { useAuthStore } from '../../store/auth';
 import { routes } from '../../router/routes';
@@ -19,6 +20,7 @@ export function ChatScreen() {
   const [text, setText] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [confirming, setConfirming] = useState(false);
+  const [report, setReport] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
 
   const { data: chats = [] } = useQuery({ queryKey: ['chats'], queryFn: fetchChats, refetchInterval: 5000 });
@@ -70,7 +72,14 @@ export function ChatScreen() {
         <AppBar
           showBack
           title={chat?.order.title ?? t('chat.title')}
-          trailing={<span className={styles.status}>{closed ? t('chat.readonly') : connected ? t('chat.online') : '…'}</span>}
+          trailing={
+            <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <button aria-label={t('report.title')} onClick={() => setReport(true)}>
+                <Icon name="flag" size={20} color="var(--c-ink-muted)" />
+              </button>
+              <span className={styles.status}>{closed ? t('chat.readonly') : connected ? t('chat.online') : '…'}</span>
+            </span>
+          }
         />
       </div>
 
@@ -116,6 +125,8 @@ export function ChatScreen() {
       ) : (
         <div className={styles.closed}>{t('chat.readonly')}</div>
       )}
+
+      <ReportFlow open={report} onClose={() => setReport(false)} subject={chat?.order.title} />
     </Screen>
   );
 }

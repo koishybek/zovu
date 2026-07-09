@@ -379,6 +379,32 @@ export const ru = {
     categoryOther: 'Иное',
     newTicket: 'Новое обращение',
     attachFiles: 'Прикрепить файлы',
+    // Тред обращения (S-31a)
+    ticketTitle: 'Обращение',
+    agent: 'Поддержка',
+    replyPlaceholder: 'Ваше сообщение…',
+    stNew: 'Новое',
+    stInProgress: 'В работе',
+    stResolved: 'Решено',
+    rateTitle: 'Оцените поддержку',
+    rateThanks: 'Спасибо за оценку!',
+    ticketEmpty: 'Обращение не найдено',
+  },
+
+  // Флоу жалобы (ОМ-03): причина → комментарий → подтверждение
+  report: {
+    title: 'Пожаловаться',
+    reasonTitle: 'Что случилось?',
+    reason_fraud: 'Обман или мошенничество',
+    reason_rude: 'Грубость или оскорбления',
+    reason_noShow: 'Не пришёл или не выполнил',
+    reason_spam: 'Спам или реклама',
+    reason_other: 'Другое',
+    commentTitle: 'Подробнее',
+    commentPlaceholder: 'Опишите, что произошло…',
+    submit: 'Отправить жалобу',
+    successTitle: 'Жалоба отправлена',
+    successHint: 'Поддержка рассмотрит обращение и свяжется с вами.',
   },
 
   notifications: {

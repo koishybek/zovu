@@ -110,6 +110,13 @@ export async function hideOrder(id: string): Promise<void> {
   await api.post(`/orders/${id}/hide`);
 }
 
+/** Отмена заказа (ЗВ-07). Разрешена бэкендом только до принятия отклика (status active);
+ * после принятия вернёт 400 cancel_after_accept_via_support — отмена идёт через тикет-спор. */
+export async function cancelOrder(id: string): Promise<{ status: string }> {
+  const { data } = await api.post(`/orders/${id}/cancel`);
+  return data;
+}
+
 export async function createBid(orderId: string, input: BidInput): Promise<MyBid> {
   const { data } = await api.post(`/orders/${orderId}/bids`, {
     price: input.price,

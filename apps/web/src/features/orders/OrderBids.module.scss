@@ -4,6 +4,14 @@
   place-items: center;
   color: var(--c-ink-muted);
 }
+.cancelOrder {
+  display: block;
+  margin: var(--s-5) auto var(--s-3);
+  padding: var(--s-2) var(--s-3);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-danger);
+}
 .list {
   display: flex;
   flex-direction: column;

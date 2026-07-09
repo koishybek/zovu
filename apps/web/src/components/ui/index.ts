@@ -17,6 +17,7 @@ export { TextField, TextArea } from './TextField';
 export { OtpInput } from './OtpInput';
 export { SegmentedControl } from './SegmentedControl';
 export { BottomSheet } from './BottomSheet';
+export { ConfirmDialog } from './ConfirmDialog';
 export { ProgressBar } from './ProgressBar';
 export { TabBar } from './TabBar';
 export type { TabItem } from './TabBar';

@@ -122,7 +122,12 @@ export class OrdersService {
     if (!order) throw new NotFoundException('order_not_found');
     if (order.clientId !== userId) throw new ForbiddenException('not_your_order');
     if (order.status !== 'active') throw new BadRequestException('cancel_after_accept_via_support');
-    await this.prisma.order.update({ where: { id: orderId }, data: { status: 'cancelled' } });
+    // Заказ отменён до принятия → закрываем висящие отклики (специалист видит «Не выбран»,
+    // а не вечное «Вы откликнулись» на мёртвом заказе). Списаний нет — заказ не был принят.
+    await this.prisma.$transaction([
+      this.prisma.order.update({ where: { id: orderId }, data: { status: 'cancelled' } }),
+      this.prisma.bid.updateMany({ where: { orderId, status: 'pending' }, data: { status: 'not_selected' } }),
+    ]);
     return { status: 'cancelled' };
   }
 

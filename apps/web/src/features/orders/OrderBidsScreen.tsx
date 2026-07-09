@@ -4,10 +4,11 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
   Screen, AppBar, Card, Avatar, Rating, Price, DiplomaBadge, VerifiedBadge, NewSpecialistBadge,
-  Button, BidStatusPill, SkeletonBidCard, Icon,
+  Button, BidStatusPill, SkeletonBidCard, Icon, ConfirmDialog,
 } from '../../components/ui';
 import type { BidStatus } from '../../components/ui';
-import { fetchOrderBids, acceptBid, declineBid, type OrderBid } from './api';
+import { fetchOrder, fetchOrderBids, acceptBid, declineBid, cancelOrder, type OrderBid } from './api';
+import { apiError } from '../../api/client';
 import { routes } from '../../router/routes';
 import styles from './OrderBids.module.scss';
 
@@ -24,14 +25,42 @@ export function OrderBidsScreen() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [busy, setBusy] = useState<string | null>(null);
+  const [confirmCancel, setConfirmCancel] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
+  const [cancelError, setCancelError] = useState('');
 
   const { data: bids = [] } = useQuery({
     queryKey: ['order-bids', id],
     queryFn: () => fetchOrderBids(id),
     refetchInterval: 5000,
   });
+  // Статус заказа (общий кэш с ActiveOrderScreen) — отмена доступна только пока active.
+  const { data: order } = useQuery({ queryKey: ['order', id], queryFn: () => fetchOrder(id), refetchInterval: 5000 });
 
   const active = bids.filter((b) => b.status === 'pending' || b.status === 'accepted');
+
+  async function cancel() {
+    setCancelling(true);
+    setCancelError('');
+    try {
+      await cancelOrder(id);
+      // Общий кэш с ActiveOrderScreen — сразу отражаем 'cancelled', иначе тап покажет стейл 'active'.
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: ['my-orders'] }),
+        qc.invalidateQueries({ queryKey: ['order', id] }),
+        qc.invalidateQueries({ queryKey: ['order-bids', id] }),
+      ]);
+      navigate(routes.clientOrders, { replace: true });
+    } catch (e) {
+      // Оставляем диалог открытым с видимой ошибкой (не «молчаливое» закрытие).
+      setCancelling(false);
+      setCancelError(apiError(e) === 'cancel_after_accept_via_support' ? t('client.cancelTooLate') : t('client.cancelError'));
+    }
+  }
+  function closeCancel() {
+    setConfirmCancel(false);
+    setCancelError('');
+  }
 
   async function accept(bid: OrderBid) {
     setBusy(bid.id);
@@ -66,6 +95,22 @@ export function OrderBidsScreen() {
           ))}
         </div>
       )}
+
+      {order?.status === 'active' && (
+        <button className={styles.cancelOrder} onClick={() => setConfirmCancel(true)}>{t('client.cancelOrder')}</button>
+      )}
+
+      <ConfirmDialog
+        open={confirmCancel}
+        onClose={closeCancel}
+        title={t('client.cancelTitle')}
+        message={t('client.cancelActiveMsg')}
+        error={cancelError}
+        confirmLabel={t('client.cancelActiveConfirm')}
+        onConfirm={cancel}
+        danger
+        loading={cancelling}
+      />
     </Screen>
   );
 }

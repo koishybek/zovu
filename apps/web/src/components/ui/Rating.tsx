@@ -9,10 +9,12 @@ interface RatingProps {
   size?: number;
   /** Только показ (в карточках), без интерактива. */
   readOnly?: boolean;
+  /** Цвет заполненной звезды. Дефолт — золотой (карточки/профиль); синий — на экране оценки (макет S-27). */
+  color?: string;
 }
 
 /** Оценка 1–5★. Интерактив для S-27, read-only для карточек/профиля. */
-export function Rating({ value, onChange, size = 36, readOnly = false }: RatingProps) {
+export function Rating({ value, onChange, size = 36, readOnly = false, color = '#E8981F' }: RatingProps) {
   const [hover, setHover] = useState(0);
   const shown = hover || value;
 
@@ -37,7 +39,7 @@ export function Rating({ value, onChange, size = 36, readOnly = false }: RatingP
             name="star"
             size={size}
             filled={n <= shown}
-            color={n <= shown ? '#E8981F' : 'var(--c-border)'}
+            color={n <= shown ? color : 'var(--c-border)'}
             strokeWidth={n <= shown ? 0 : 1.5}
           />
         </button>

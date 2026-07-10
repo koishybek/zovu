@@ -50,6 +50,9 @@ export const routes = {
   reviews: (userId: string | number = ':userId') => `/reviews/${userId}`, // S-33
   roleSwitch: '/role', // S-34
   settings: '/settings', // S-35
+  settingsSecurity: '/settings/security',
+  settingsPrivacy: '/settings/privacy',
+  settingsAbout: '/settings/about',
 
   // Dev
   uikit: '/dev/uikit',

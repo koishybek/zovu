@@ -33,7 +33,7 @@ export function WelcomeScreen() {
         <p className={styles.slogan}>{t('auth.welcomeSlogan')}</p>
       </div>
 
-      {import.meta.env.DEV && (
+      {(import.meta.env.DEV || import.meta.env.VITE_DEMO === 'true') && (
         <div className={styles.dev}>
           <div className={styles.devLabel}>Быстрый вход (demo)</div>
           <div className={styles.devRow}>

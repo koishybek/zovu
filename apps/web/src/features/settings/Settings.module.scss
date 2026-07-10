@@ -34,3 +34,61 @@
   color: var(--c-ink-muted);
   margin-top: var(--s-3);
 }
+
+/* Info-страницы настроек (Безопасность / Конфиденциальность / О приложении) */
+.infoP {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--c-ink-secondary);
+  margin: var(--s-3) 0 var(--s-4);
+}
+.infoRow {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.infoLabel {
+  flex: 1;
+  font-size: 15px;
+  color: var(--c-ink-secondary);
+}
+.infoValue {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--c-ink);
+}
+.infoNote {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--c-ink-muted);
+  margin-top: var(--s-4);
+}
+.infoList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  margin: 0;
+  padding-left: var(--s-4);
+}
+.infoList li {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--c-ink);
+}
+.aboutHead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-6) 0 var(--s-4);
+}
+.aboutLogo {
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--c-primary);
+}
+.aboutVersion {
+  font-size: 13px;
+  color: var(--c-ink-muted);
+}

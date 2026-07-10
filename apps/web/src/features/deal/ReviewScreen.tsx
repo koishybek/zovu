@@ -85,7 +85,7 @@ export function ReviewScreen() {
       <AppBar showBack largeTitle={t('client.howWasWork')} />
       <p className={styles.hint}>{t('client.reviewHelps')}</p>
       <div className={styles.stars}>
-        <Rating value={stars} onChange={pickStars} size={44} />
+        <Rating value={stars} onChange={pickStars} size={44} color="var(--c-primary)" />
         {stars > 0 && <div className={styles.starLabel}>{STAR_LABEL[stars]}</div>}
       </div>
 

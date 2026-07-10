@@ -50,6 +50,9 @@ export function SettingsScreen() {
       {[
         { icon: 'bell' as const, label: t('notifications.title'), to: routes.notifications },
         { icon: 'support' as const, label: t('support.title'), to: routes.support },
+        { icon: 'shield' as const, label: t('settings.security'), to: routes.settingsSecurity },
+        { icon: 'globe' as const, label: t('settings.privacy'), to: routes.settingsPrivacy },
+        { icon: 'document' as const, label: t('settings.about'), to: routes.settingsAbout },
       ].map((item) => (
         <Card key={item.label} pressable className={styles.row} onClick={() => navigate(item.to)}>
           <Icon name={item.icon} size={20} color="var(--c-ink-secondary)" />

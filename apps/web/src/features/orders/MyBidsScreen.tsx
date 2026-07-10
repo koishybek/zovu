@@ -21,16 +21,20 @@ const BID_LABEL: Record<string, string> = {
   declined: 'bidStatus.declined',
 };
 
-// Группировка откликов по стадии (S-14, п.12): В работе / Ожидают решения / Архив.
-type BidTab = 'active' | 'pending' | 'archive';
-const TABS: BidTab[] = ['active', 'pending', 'archive'];
-// «Живой» заказ, где сделка ещё идёт — включая disputed: во время спора чат нужнее всего,
-// поэтому спорная принятая сделка остаётся в «В работе» и открывается в чат, а не уходит в архив.
+// Табы откликов (S-14, макет «Статусы откликов»): Все / Активные / Завершённые.
+type BidTab = 'all' | 'active' | 'done';
+const TABS: BidTab[] = ['all', 'active', 'done'];
+// «Живой» заказ, где сделка ещё идёт — включая disputed: во время спора чат нужнее всего.
 const LIVE = ['in_progress', 'awaiting_confirmation', 'disputed'];
-function tabOf(b: MyBid): BidTab {
-  if (b.status === 'accepted') return LIVE.includes(b.order.status) ? 'active' : 'archive';
-  if (b.status === 'pending' || b.status === 'countered') return 'pending'; // countered = ждёт ответа специалиста
-  return 'archive'; // not_selected, declined
+/** Активный отклик = ещё в игре: pending/countered (ждёт решения) или принятый на живом заказе. */
+function isActive(b: MyBid): boolean {
+  if (b.status === 'pending' || b.status === 'countered') return true;
+  if (b.status === 'accepted') return LIVE.includes(b.order.status);
+  return false; // not_selected, declined, принятый на завершённом заказе
+}
+function inTab(b: MyBid, tab: BidTab): boolean {
+  if (tab === 'all') return true;
+  return tab === 'active' ? isActive(b) : !isActive(b);
 }
 /** Открывается только у активной сделки (есть чат) — иначе карточка не «обманывает» нажимаемостью. */
 function isOpenable(b: MyBid): boolean {
@@ -44,16 +48,16 @@ export function MyBidsScreen() {
   const qc = useQueryClient();
   const [params] = useSearchParams();
   const paramTab = params.get('tab');
-  const [tab, setTab] = useState<BidTab>(TABS.includes(paramTab as BidTab) ? (paramTab as BidTab) : 'active');
+  const [tab, setTab] = useState<BidTab>(TABS.includes(paramTab as BidTab) ? (paramTab as BidTab) : 'all');
   const [busy, setBusy] = useState<string | null>(null);
   const [reCounterFor, setReCounterFor] = useState<MyBid | null>(null);
-  // Диплинк (push «Не выбран» → ?tab=archive) должен переключать таб и когда экран уже открыт.
+  // Диплинк (push «Не выбран» → ?tab=done) должен переключать таб и когда экран уже открыт.
   useEffect(() => {
     if (paramTab && TABS.includes(paramTab as BidTab)) setTab(paramTab as BidTab);
   }, [paramTab]);
   const { data: bids = [], isLoading, isError, refetch } = useQuery({ queryKey: ['my-bids'], queryFn: fetchMyBids, refetchInterval: 8000 });
 
-  const visible = bids.filter((b) => tabOf(b) === tab);
+  const visible = bids.filter((b) => inTab(b, tab));
 
   // G6: специалист принимает встречную цену заказчика → сделка закрывается, идём в чат.
   async function acceptCounter(b: MyBid) {
@@ -102,9 +106,9 @@ export function MyBidsScreen() {
           <div className={styles.ordersFilter}>
             <SegmentedControl<BidTab>
               segments={[
+                { value: 'all', label: t('specialist.bidsTabAll') },
                 { value: 'active', label: t('specialist.bidsTabActive') },
-                { value: 'pending', label: t('specialist.bidsTabPending') },
-                { value: 'archive', label: t('specialist.bidsTabArchive') },
+                { value: 'done', label: t('specialist.bidsTabDone') },
               ]}
               value={tab}
               onChange={setTab}

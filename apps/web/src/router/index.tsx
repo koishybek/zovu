@@ -37,6 +37,7 @@ import { ReviewsListScreen } from '../features/deal/ReviewsListScreen';
 import { SupportScreen } from '../features/support/SupportScreen';
 import { SupportTicketScreen } from '../features/support/SupportTicketScreen';
 import { SettingsScreen } from '../features/settings/SettingsScreen';
+import { SecurityScreen, PrivacyScreen, AboutScreen } from '../features/settings/SettingsPages';
 import { RoleSwitchScreen } from '../features/settings/RoleSwitchScreen';
 import { routes, SPECIALIST_TABS, CLIENT_TABS } from './routes';
 
@@ -114,6 +115,9 @@ export const router = createBrowserRouter([
       { path: routes.reviews(), element: <RequireAuth><ReviewsListScreen /></RequireAuth> },
       { path: routes.roleSwitch, element: <RequireAuth><RoleSwitchScreen /></RequireAuth> },
       { path: routes.settings, element: <RequireAuth><SettingsScreen /></RequireAuth> },
+      { path: routes.settingsSecurity, element: <RequireAuth><SecurityScreen /></RequireAuth> },
+      { path: routes.settingsPrivacy, element: <RequireAuth><PrivacyScreen /></RequireAuth> },
+      { path: routes.settingsAbout, element: <RequireAuth><AboutScreen /></RequireAuth> },
 
       // Dev — витрина UI-кита (реальный экран)
       { path: routes.uikit, element: <UiKitPage /> },

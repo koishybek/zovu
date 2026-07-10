@@ -9,7 +9,12 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('v1');
-  app.enableCors({ origin: true, credentials: true });
+  // Прод: закрепить origin через CORS_ORIGIN (список через запятую, напр. https://zovu.vercel.app).
+  // Dev/по умолчанию: origin:true (рефлект любого) — удобно для локалки и превью.
+  const corsOrigin = process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
+    : true;
+  app.enableCors({ origin: corsOrigin, credentials: true });
 
   // Единый ValidationPipe: whitelist + forbidNonWhitelisted + transform (стек-стандарт).
   app.useGlobalPipes(

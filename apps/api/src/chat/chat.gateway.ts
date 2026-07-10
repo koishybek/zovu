@@ -15,8 +15,12 @@ interface AuthedSocket extends Socket {
   userId?: string;
 }
 
+const WS_CORS_ORIGIN = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
+  : true;
+
 /** WS namespace /chat (docs/04-api.md): message:new, message:read, chat:closed. */
-@WebSocketGateway({ namespace: '/chat', cors: { origin: true } })
+@WebSocketGateway({ namespace: '/chat', cors: { origin: WS_CORS_ORIGIN } })
 export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer() server!: Server;
   private readonly logger = new Logger('ChatGateway');

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { API_BASE } from '../config';
 
 export interface SessionUser {
   id: string;
@@ -41,7 +42,7 @@ export const useAuthStore = create<AuthState>()(
         const rt = get().refreshToken;
         if (!rt) return null;
         try {
-          const { data } = await axios.post('/v1/auth/refresh', { refresh_token: rt });
+          const { data } = await axios.post(`${API_BASE}/v1/auth/refresh`, { refresh_token: rt });
           set({
             accessToken: data.access_token,
             refreshToken: data.refresh_token,

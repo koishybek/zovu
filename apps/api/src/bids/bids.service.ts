@@ -231,7 +231,7 @@ export class BidsService {
           type: 'bid_not_selected',
           title: 'Заказчик выбрал другого специалиста',
           body: bid.order.title,
-          payload: { route: `/sp/bids?tab=archive` },
+          payload: { route: `/sp/bids?tab=done` },
         }),
       ),
     );

@@ -1,8 +1,9 @@
 // Клиентское сжатие фото перед загрузкой (НФ-08) — Canvas, без внешних зависимостей.
+import { API_BASE } from '../config';
 
-/** URL публичного файла по ключу хранилища (`public/<hex>.jpg`) через прокси /v1. */
+/** URL публичного файла по ключу хранилища (`public/<hex>.jpg`). Dev — через vite-proxy, prod — API_BASE. */
 export function fileUrl(key: string): string {
-  return `/v1/files/${key}`;
+  return `${API_BASE}/v1/files/${key}`;
 }
 
 /** Сжимает изображение до maxDim по большей стороне и отдаёт JPEG-Blob. */

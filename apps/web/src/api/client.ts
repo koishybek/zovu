@@ -1,8 +1,9 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '../store/auth';
+import { API_BASE } from '../config';
 
-// Dev-proxy Vite: /v1 → http://localhost:3000 (vite.config.ts).
-export const api = axios.create({ baseURL: '/v1' });
+// Dev: относительный /v1 через vite-proxy → :3000. Prod: API_BASE (VITE_API_URL) + /v1.
+export const api = axios.create({ baseURL: `${API_BASE}/v1` });
 
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = useAuthStore.getState().accessToken;

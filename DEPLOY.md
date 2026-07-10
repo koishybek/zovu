@@ -5,14 +5,55 @@ cron-задачами и PostgreSQL. Поэтому «только Vercel» не
 
 ```
 Фронт (apps/web, статика PWA)        →  Vercel
-Бэкенд (apps/api, always-on Node)    →  Railway
-PostgreSQL + том для файлов          →  Railway
+Бэкенд (apps/api, always-on Node)    →  Render (Free) ← бесплатно, без карты
+PostgreSQL                           →  Render (Free)
 ```
 
 Оба приложения **самодостаточны** (свой package.json, без npm-workspaces), поэтому
-собираются независимо. Ниже — по шагам. Предполагается, что репозиторий залит на GitHub
-(Railway и Vercel деплоят из GitHub). Альтернатива без GitHub — CLI (`railway up`, `vercel`)
-из папок `apps/api` и `apps/web` соответственно.
+собираются независимо. Деплоят из GitHub, так что сначала `git push origin main`.
+
+---
+
+## 0. Бесплатный вариант — Render Blueprint (рекомендуется, без карты)
+
+Railway убрал бесплатный тариф. **Render** даёт бесплатный always-on-ish web-сервис
+(Docker) + бесплатную Postgres, карта не нужна. В корне репо лежит `render.yaml` —
+Render развернёт по нему всё сам.
+
+1. **Пуш.** Убедиться, что последний коммит с `render.yaml` на GitHub (`git push origin main`).
+2. **Аккаунт.** [render.com](https://render.com) → Sign up (через GitHub, бесплатно, без карты).
+3. **Blueprint.** Dashboard → **New** → **Blueprint** → выбрать этот репозиторий → **Apply**.
+   Render прочитает `render.yaml`: создаст сервис `zovu-api` + БД `zovu-db`, свяжет
+   `DATABASE_URL`, сгенерит JWT-секреты, соберёт по `apps/api/Dockerfile`. На старте
+   команда `start:demo` применит миграции и **засеет демо-данные** (6 специалистов Алматы,
+   заказы, активная сделка с чатом, завершённый заказ) — БД наполнится сама.
+4. **Домен API.** У сервиса `zovu-api` → он получит `https://zovu-api-xxxx.onrender.com`.
+   Проверить: открыть `.../v1/categories` — должен вернуться JSON-массив категорий.
+5. **Связать фронт.** На Vercel (проект `web`) → Settings → Environment Variables:
+   - `VITE_API_URL` = `https://zovu-api-xxxx.onrender.com` (**без** `/` и без `/v1`),
+   - `VITE_DEMO` = `true`, → **Redeploy**.
+6. **CORS.** На Render у `zovu-api` → Environment → `CORS_ORIGIN` = домен Vercel
+   (`https://web-xxxx.vercel.app`) → сервис перезапустится.
+7. Готово: открыть домен Vercel → «Быстрый вход (demo)» или телефон + код `1111`.
+
+**Оговорки Free-плана Render:**
+- Сервис засыпает после ~15 мин простоя; первый запрос будит его ~30–50 c (cold start).
+  Чтобы демо открывалось мгновенно — держать «тёплым» бесплатным пингером
+  (UptimeRobot / cron-job.org, дёргать `.../v1/categories` раз в 10 мин).
+- ФС контейнера эфемерна (тома на Free нет), но демо-фото **регенерируются сидом на
+  каждом старте**, поэтому сцена всегда целая; пропадают лишь файлы, загруженные
+  вручную во время показа.
+- Free Postgres живёт ~30 дней — для демо «показать сейчас» достаточно. Нужна
+  на дольше — заменить `DATABASE_URL` на бесплатную [Neon](https://neon.tech)
+  (постоянная, тоже поддерживает `cube`/`earthdistance`), остальное без изменений.
+- Если сборка упадёт на `CREATE EXTENSION` — значит на этой БД нет `cube/earthdistance`;
+  тогда просто перевести `DATABASE_URL` на Neon (одна переменная).
+
+---
+
+## Альтернатива: Railway (если появится платный бюджет)
+
+Railway удобнее (том для файлов, always-on без cold start), но платный. Шаги ниже.
 
 ---
 

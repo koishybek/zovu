@@ -1,0 +1,58 @@
+# Zovu — бесплатный демо-деплой БЭКЕНДА на Render (web service + PostgreSQL).
+# Оба ресурса — план Free (без кредитной карты). Тянет весь продукт целиком:
+# живой NestJS-процесс → WebSocket-чат, cron (@nestjs/schedule) и Prisma работают.
+# Гео — без PostGIS (ADR-005): extensions cube + earthdistance, они есть на Render PG.
+#
+# Как развернуть: render.com → New → Blueprint → подключить этот репозиторий → Apply.
+# Render прочитает этот файл, создаст сервис + БД, свяжет DATABASE_URL, соберёт по
+# apps/api/Dockerfile и на старте применит миграции + засеет демо-данные (start:demo).
+#
+# Фронт (apps/web) уже на Vercel. После первого деплоя: вписать сюда домен Vercel в
+# CORS_ORIGIN (в дашборде Render, переменная помечена sync:false), а на Vercel —
+# VITE_API_URL = https://<этот-сервис>.onrender.com.
+
+services:
+  - type: web
+    name: zovu-api
+    runtime: docker
+    plan: free
+    region: frankfurt           # ближайший к Казахстану регион Render (Европа)
+    rootDir: apps/api           # apps/api самодостаточен (свой package.json + Dockerfile)
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    dockerCommand: npm run start:demo   # migrate deploy + seed + seed:demo + node dist/main
+    healthCheckPath: /v1/categories     # публичный GET, 200 → сервис здоров
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: zovu-db
+          property: connectionString
+      - key: JWT_ACCESS_SECRET
+        generateValue: true      # Render сгенерит случайный секрет
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: ADMIN_TOKEN
+        generateValue: true
+      - key: AUTO_APPROVE_VERIFICATION
+        value: "true"            # демо: верификация одобряется за ~5 c
+      - key: DEV_OTP_CODE
+        value: "1111"            # демо: вход по коду 1111 без реальной SMS
+      - key: SMS_PROVIDER
+        value: "dev"             # не слать реальные SMS
+      - key: EXPORT_OPENAPI
+        value: "false"           # не писать openapi.json в рантайме
+      - key: TZ
+        value: "Asia/Almaty"     # таймзона cron (списание подписки в 00:00)
+      - key: LOCAL_STORAGE_DIR
+        value: "/app/storage"    # файлы на ФС контейнера (эфемерно; демо-фото
+                                 # регенерятся сидом на каждом старте — самолечение)
+      - key: STORAGE_PROVIDER
+        value: "local"
+      - key: CORS_ORIGIN
+        sync: false              # вписать домен Vercel вручную после деплоя фронта
+
+databases:
+  - name: zovu-db
+    plan: free                   # Render Free Postgres (эфемерна ~30 дней — для демо ок)
+    region: frankfurt

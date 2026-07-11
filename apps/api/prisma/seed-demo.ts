@@ -48,11 +48,18 @@ function solidPng(w: number, h: number, rgb: [number, number, number]): Buffer {
 }
 // resolve() совпадает с логикой LocalStorageProvider (важно при абсолютном LOCAL_STORAGE_DIR).
 const STORAGE_PUBLIC = resolve(process.env.LOCAL_STORAGE_DIR ?? '.storage', 'public');
-function writeDemoPhoto(rgb: [number, number, number]): string {
+// Записать PNG под конкретный ключ (public/<name>.png). Идемпотентно: на эфемерной
+// ФС (Render Free) файлы пропадают при рестарте, а ключи живут в БД — этим методом
+// перезаписываем файлы под уже существующие ключи на каждом старте (самолечение).
+function writeDemoPhotoAt(key: string, rgb: [number, number, number]): void {
   mkdirSync(STORAGE_PUBLIC, { recursive: true }); // папка может не существовать до старта API
-  const name = `${randomBytes(12).toString('hex')}.png`;
+  const name = key.replace(/^public\//, '');
   writeFileSync(join(STORAGE_PUBLIC, name), solidPng(400, 300, rgb));
-  return `public/${name}`;
+}
+function writeDemoPhoto(rgb: [number, number, number]): string {
+  const key = `public/${randomBytes(12).toString('hex')}.png`;
+  writeDemoPhotoAt(key, rgb);
+  return key;
 }
 const DEMO_PHOTOS: Record<string, [number, number, number][]> = {
   'Установить розетку': [[206, 212, 224], [96, 122, 186]],
@@ -153,12 +160,18 @@ async function main(): Promise<void> {
   // от свайпов влево). Демо всегда должно показывать заказы в ленте.
   await prisma.hiddenOrder.deleteMany({ where: { specialistId: { in: [...profileByPhone.values()] } } });
 
-  // Демо-фото заказов (идемпотентно: только если фото ещё нет).
+  // Демо-фото заказов. Ключи фото хранятся в БД (переживают рестарт), а файлы на
+  // Free-хостинге эфемерны — поэтому на каждом старте ПЕРЕзаписываем файлы под текущие
+  // ключи (самолечение), а если фото ещё нет — генерируем новые ключи.
   for (const o of orderRecords) {
-    if (o.photos.length === 0 && DEMO_PHOTOS[o.title]) {
-      const keys = DEMO_PHOTOS[o.title].map(writeDemoPhoto);
+    const palette = DEMO_PHOTOS[o.title];
+    if (!palette) continue;
+    if (o.photos.length === 0) {
+      const keys = palette.map(writeDemoPhoto);
       await prisma.order.update({ where: { id: o.id }, data: { photos: keys } });
       o.photos = keys;
+    } else {
+      o.photos.forEach((key, i) => writeDemoPhotoAt(key, palette[i % palette.length]));
     }
   }
 
